@@ -7,6 +7,7 @@
 * Lecture slides will be posted here after class
 * New lab materials will be made available here before each lab
 * The structure of the course is summarized below
+* Instructions for how to use this repository for your labs are at the [bottom of this page](#Lab-materials-and-server)
 
 
 ## Introduction
@@ -41,4 +42,8 @@ The purpose of this introductory data analysis course is to teach students in mo
 |10|23-03-2022 | Basic modeling | 25-03-2022 | Creating, utilizing, and visualizing models | NA |
 |11|30-03-2022 | Methods for enhancing reproducibility | 01-04-2022 | Introduction to Snakemake | 5 |
 |12|06-04-2022 | Data analysis pipelines | 08-04-2022 | open lab | 5 (continued) |
+
+## Lab materials and server
+
+Our labs will ideally be run on the MBB RStudio server. 
 
