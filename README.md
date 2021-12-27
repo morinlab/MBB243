@@ -67,7 +67,7 @@ git clone git@github.com:morinlab/MBB243.git
 * Every week afterward
 ```
 cd ~/MBB243
-git pull
+git pull --ff-only
 ```
 
 ## More Resources
