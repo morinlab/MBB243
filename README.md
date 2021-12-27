@@ -45,5 +45,30 @@ The purpose of this introductory data analysis course is to teach students in mo
 
 ## Lab materials and server
 
-Our labs will ideally be run on the MBB RStudio server. 
+### Connecting to Rstudio server
 
+Our labs will ideally be run on the MBB RStudio server. This is a new server that, due to SFU security policies, cannot be accessed directly. Details for how to connect to this server will be added here shortly.
+
+
+![Login Page](images/rstudio_login.png)
+
+
+### Accessing/refreshing lab materials each week
+
+The lab materials will be hosted in this GitHub repository. At the start of every lab you will need to "pull" the content from GitHub. Although the approach is likely new to most of you, the process should be straightforward. Learning the basics is a useful skill as you will likely encounter tools in GitHub or other similar version-control systems throughout this course and your studies. 
+
+**In the command line Terminal in Rstudio:**
+![Terminal](images/rstudio_terminal.png)
+
+* One-time setup
+```
+git clone git@github.com:morinlab/MBB243.git
+```
+* Every week afterward
+```
+cd ~/MBB243
+git pull
+```
+
+## More Resources
+* [What is Git and GitHub all about?](https://www.educative.io/blog/git-github-tutorial-beginners)
