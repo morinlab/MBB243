@@ -62,7 +62,7 @@ The lab materials will be hosted in this GitHub repository. At the start of ever
 
 * One-time setup
 ```
-git clone git@github.com:morinlab/MBB243.git
+git clone https://github.com/morinlab/MBB243.git
 ```
 * Every week afterward
 ```
