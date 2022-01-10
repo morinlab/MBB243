@@ -6,6 +6,10 @@
 
 Genomic annotation refers to the process of identifying functional elements in a genome. Annotations are also what we call any set of coordinate-based information that result from this process, in other words, the locations of functional elements and their relationships to other annotations. Examples: gene, a gene's exons, an exon's splice sites, a gene's transcripts, repetitive elements.
 
+### BED
+
+A commonly used tab-separated format for storing and manipulating genomic annotations. [See more.](https://genome.ucsc.edu/FAQ/FAQformat.html)
+
 ### bit
 
 The minimal unit of binary data representation/storage. Can exist in two states (on or off, i.e. 0 or 1).
@@ -17,6 +21,10 @@ A set of eight bits. A minimum amount of information needed to store an ASCII ch
 ### character
 
 A data type in some programming languages used to store a single character (printable or whitespace). Examples: `a`, `?`, `\n` (newline).
+
+### FASTA
+
+A simple plain-text format for storing one or more DNA, RNA or protein sequence records. 
 
 ### string
 
