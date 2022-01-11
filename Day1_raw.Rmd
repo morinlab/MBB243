@@ -3,7 +3,6 @@ title: "MBB 243 - Lecture 1"
 author: "Ryan Morin"
 date: "2022/01/12"
 output:
-  slidy_presentation: default
   powerpoint_presentation: default
 ---
 
@@ -11,6 +10,7 @@ output:
 require(reticulate)
 knitr::opts_chunk$set(echo = FALSE)
 glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
+#NOTE: to run this on the lab server you will need the same data files and a symbolic link to the data directory but with the name "data".
 
 ```
 
@@ -48,13 +48,33 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
   
 # Grading
 
-
+* 20% In each lab, there is a list of tasks that should be accomplished in class and submitted by the end of each lab. 
+* 35% Lab assignments: For some labs, short assignments will be made available and due at the start of your lab one week later. 
+* 10% In-class midterm exam
+* 25% cumulative final exam mixture of multiple choice, short answer and written questions
+* 10% Attendance and participation in both lecture and lab 
 
 # How to get a good grade
 
-- Come to class and ask questions when you feel lost
-- Come to lab and ask more questions if you're still lost
-- Come to office hours and ask more questions if you're still lost
+- Come to class and ask questions if you're lost
+- Come to lab and ask more questions
+- Come to office hours to ask more questions, if necessary
+- Post questions to Slack using channels such as [lab-discussion](https://mbb243.slack.com/archives/C02U4MU6NUQ) 
+- *Practice* the things you are learning in class and not just within the context of lab assignments
+  - This is the only effective way to learn programming/data analysis concepts!
+
+# Reading
+
+- NO REQUIRED TEXTBOOX
+- Reading material will be provided throughout the course as linked content
+- As we sink into R, [this free book](https://r4ds.had.co.nz/) is an excellent resource
+
+# Other resources
+
+- All source code shown in lectures is in the accosicated R markdown file
+- Individual code chunks should run on your lab server
+  - Play with it, tweak it, break it, remix it, repurpose it!
+- 
 
 # Important links
 
@@ -63,8 +83,7 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 - [TA office hours](https://sfu.zoom.us/j/8109061879) Thursdays 4-5 PM
 - [Link for remote lab workstation connections](https://gateway.its.sfu.ca/guacamole/#/) This is only needed to connect to the lab server from *off campus*
 
-
-# Learning goals
+# Learning goals for the course
 
 - Molecular biology generates large volumes of data
   - Text-based (DNA/RNA/Protein Sequences)
@@ -73,7 +92,7 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 - The basics of the Python language to perform some analyses and file manipulations
 - Become familiar with the statistical programming language R
   - Analyze numerical data of various types
-  - Produce visualizations (plots) NOT using Excel
+  - Produce visualizations (plots) **NOT using Excel**
 
 # General data flavours in biology
 
@@ -216,20 +235,16 @@ the sequence of human chromosome 1?
 :::
 ::::::::::::::
 
-# Most human cells have 47 distinct DNA molecules 
+# Size of the human genome in plain text
 
-:::::::::::::: {.columns}
-::: {.column}
-- Each somatic cell in humans have 23 pairs of DNA sequences in the nucleus, and a DNA sequence in the mitochondrion.
-  - exceptions include germ cells and red blood cells
-- Of the 23 pairs of DNA sequences, one pair are sex chromosomes. 
-The total size of a haploid human genome is 3 Gb
-
-:::
-::: {.column}
-![](images/karyotype.png)
-:::
-::::::::::::::
+- Let's jump right in: the size of the human reference genome on disk can be determined with a simple bash command (`ls -l`)
+```{bash, eval=T,echo=T}
+ls -l data/hg38.fa
+```
+- Using `ls -lh` gives the same output but with the size in a more human readable format
+```{bash, eval=T,echo=T}
+ls -lh data/hg38.fa
+```
 
 # DNA sequence as plain text files
 :::::::::::::: {.columns}
@@ -294,6 +309,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAA <- and so on
 ::::::::::::::
 
 # Genes and Transcripts
+
 :::::::::::::: {.columns}
 ::: {.column}
 - All genes have unique names

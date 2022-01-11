@@ -1,4 +1,59 @@
-# Terminology introduced in class
+# Glossary and quick reference of commonly used symbols 
+
+### `!` exclamation mark
+
+- In many programming languages this reverses the logic of an operation 
+  - e.g. `!=` means *not equal to*
+  - Shortcut for checking if an operation or function call returns FALSE, negating it (`! some_operation`) will cause it to evaluate to TRUE 
+  
+### `#` hash symbol or number sign
+
+- A common way to embed lines of text in code that is ignored by the compiler (i.e. create a comment)
+- Used at the start of scripts in combination with `!` to create the *shebang* line `#!`
+- Also used for making hashtags although that's not relevant for this course
+
+### `*` Asterisk
+
+- In bash this is used for globbing
+- Indicates multiplication operation in most programming languages
+
+### `~` tilde
+
+- Found to the left of the 1 on most keyboards
+- Used in unix-like systems as a shortcut to your home directory 
+- Used as an operator for regular expressions in some languages (i.e. `~=` sorta equal to)
+
+### `-` hypen or minus sign
+
+- Used as a minus sign
+- Various uses in different contexts in bash
+ - Convention to use this before named arguments e.g. `program -i input_file`
+ - Can be used to tell a command-line program to read from STDIN instead of an input file e.g. `some_other_program | program -i - `
+ 
+
+### `|` vertical bar or pipe 
+
+- used in unix-like systems to flow data between multiple processes
+- Two vertical bars together almost always means logical OR `||`
+- In R a single `|` can mean OR in many contexts
+
+### `&` ampersand
+
+- Adding this to the end of a command in bash sends the process to the background and frees your terminal to allow more commands to be run
+- Two ampersands together mean logical AND `&&`
+
+### `/` forward slash
+
+- The *normal* function of the `?` key on your keyboard
+- used a LOT in unix-like operating systems to separate directory levels.
+- On its own it has a special meaning as the "root" directory of a filesystem 
+- *not to be confused with backslash*
+
+### `\` backslash
+
+- above the return/enter key on most keyboards
+- used in windows to separate directory levels
+- acts as a special *escape* character in various programming languages as a way to hide special symbols from being interpreted by the compiler
 
 ## Week 1
 

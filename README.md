@@ -61,10 +61,9 @@ If you succeed, you should see a page like the one below, probably with white in
 
 ![Login Page](images/rstudio_login.png)
 
+### Accessing/refreshing lab tutorial and activity materials
 
-### Accessing/refreshing lab materials each week
-
-The lab materials will be hosted in this GitHub repository. At the start of every lab you will need to "pull" the content from GitHub. Although the approach is likely new to most of you, the process should be straightforward. Learning the basics is a useful skill as you will likely encounter tools in GitHub or other similar version-control systems throughout this course and your studies. 
+Most lab materials will be hosted in this GitHub repository. At the start of every lab you will need to "pull" the content from GitHub. Although the approach is likely new to most of you, the process should be straightforward. Learning the basics is a useful skill as you will likely encounter tools in GitHub or other similar version-control systems throughout this course and your studies. 
 
 **In the command line Terminal in Rstudio:**
 
@@ -78,6 +77,15 @@ git clone https://github.com/morinlab/MBB243.git
 ```
 cd ~/MBB243
 git pull --ff-only
+```
+### Accessing and submitting lab assignments
+
+We plan to use GitHub Classroom to distribute and collect assignments. Some labs will be graded only for completion. In the first week we'll test this out. Similar to how you get the lab materials above, you'll have to clone your assignment using the Terminal on the lab server:
+
+*IMPORTANT*: Note the syntax is using ssh instead of https here. 
+
+```
+git clone git@github.com:morinlab/assignment-1-rdmorin.git
 ```
 
 ## More Resources
