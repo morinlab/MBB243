@@ -120,7 +120,7 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 - For us it is redundant to represent both strands because the other can always be inferred using base pairing rules
 :::
 ::: {.column}
-![](images/DNA1.jpeg)
+![](images/dna1.jpeg)
 :::
 ::::::::::::::
 
