@@ -48,8 +48,16 @@ The purpose of this introductory data analysis course is to teach students in mo
 
 ### Connecting to Rstudio server
 
-Our labs will ideally be run on the MBB RStudio server. This is a new server that, due to SFU security policies, cannot be accessed directly. Details for how to connect to this server will be added here shortly.
+Our labs will ideally be run on the MBB RStudio server. This is a new server that, due to SFU security policies, cannot be accessed directly. If you are off campus (as you will be for at least the first two weeks), you will need to connect remotely to one of the computers in our MBB computer lab using Guacamole. This is done by following [this link](https://gateway.its.sfu.ca/guacamole/#/). This should bring you to a generic SFU login page where you will have to enter your credentials and probably the MFA token. After that you should see a list of lab computers that are available. Workstations with active sessions should be avoided. Select any workstation that doesn't have a session and you should then see a dialog box that looks like this:
 
+![Login page](images/guacamole.png)
+
+Enter your SFU user ID and password into the first two boxes. In the third box (Domain) enter `ad.sfu.ca`. If you succeed, you should see a computer desktop in your browser window, similar to the image below. You will need to open Google Chrome to connect to the server you will use for the labs. 
+
+![desktop](images/guacamole_screen.png)
+
+Unfortunately, you won't be able to pass your clipboard from your local (home) computer to the remote desktop. Type this address into the browser on the Google Chrome running on the remote computer (not in the address bar on your home computer!). `http://datascience.mbb.sfu.ca:8787`
+If you succeed, you should see a page like the one below, probably with white instead of black background. 
 
 ![Login Page](images/rstudio_login.png)
 
@@ -59,6 +67,7 @@ Our labs will ideally be run on the MBB RStudio server. This is a new server tha
 The lab materials will be hosted in this GitHub repository. At the start of every lab you will need to "pull" the content from GitHub. Although the approach is likely new to most of you, the process should be straightforward. Learning the basics is a useful skill as you will likely encounter tools in GitHub or other similar version-control systems throughout this course and your studies. 
 
 **In the command line Terminal in Rstudio:**
+
 ![Terminal](images/rstudio_terminal.png)
 
 * One-time setup
@@ -72,4 +81,5 @@ git pull --ff-only
 ```
 
 ## More Resources
+
 * [What is Git and GitHub all about?](https://www.educative.io/blog/git-github-tutorial-beginners)

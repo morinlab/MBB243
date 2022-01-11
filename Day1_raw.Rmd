@@ -1,17 +1,16 @@
 ---
 title: "MBB 243 - Lecture 1"
 author: "Ryan Morin"
-date: 2022/01/12
-output: 
-  powerpoint_presentation
-header-includes:
-  - \usepackage{xcolor}
+date: "2022/01/12"
+output:
+  slidy_presentation: default
+  powerpoint_presentation: default
 ---
 
 ```{r setup, include=FALSE}
 require(reticulate)
 knitr::opts_chunk$set(echo = FALSE)
-glossary="https://github.com/morinlab/data_analysis_MBB/blob/main/Glossary.md#"
+glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 
 ```
 
@@ -46,6 +45,24 @@ glossary="https://github.com/morinlab/data_analysis_MBB/blob/main/Glossary.md#"
   - Command-line interpreter (Bash)
   - A popular scripting language (Python)
   - A popular statistical programming language (R )
+  
+# Grading
+
+
+
+# How to get a good grade
+
+- Come to class and ask questions when you feel lost
+- Come to lab and ask more questions if you're still lost
+- Come to office hours and ask more questions if you're still lost
+
+# Important links
+
+- [Lab landing page](https://github.com/morinlab/MBB243), with all this information
+- [Zoom for class](https://us02web.zoom.us/j/85725104049)
+- [TA office hours](https://sfu.zoom.us/j/8109061879) Thursdays 4-5 PM
+- [Link for remote lab workstation connections](https://gateway.its.sfu.ca/guacamole/#/) This is only needed to connect to the lab server from *off campus*
+
 
 # Learning goals
 
@@ -91,7 +108,7 @@ glossary="https://github.com/morinlab/data_analysis_MBB/blob/main/Glossary.md#"
 # DNA sequence as data
 
 - The minimal unit of data in computers is a [bit](`r glossary`bit), which has two states (0 or 1)
-- There are eight bits per [byte](Glossary.html# byte)
+- There are eight bits per [byte](`r glossary`byte)
   - One byte can be used to encode any ASCII character in a plain text file
 - In programming, text-based information is represented as either [character](Glossary.html# character) (length of 1) or [string](`r glossary`string) (arbitrary length) but can also be represented in other ways for efficiency
   - e.g. two bits are sufficient to represent each of the four nucleotide characters
@@ -217,7 +234,7 @@ The total size of a haploid human genome is 3 Gb
 # DNA sequence as plain text files
 :::::::::::::: {.columns}
 ::: {.column}
-- Most common way to store DNA sequences is FASTA format
+- Most common way to store DNA sequences is [FASTA](`r glossary`FASTA) format
 - Two components:
   - header lines begin with `>`
   - sequence lines are just sequence
@@ -315,7 +332,7 @@ R is an exception
 most are delimited plain text
 - Delimiters such as tab, comma or semicolon are treated as special characters to separate columns
 - Standardized formats dictate what data each column contains
-  - e.g. [BED format](https://genome.ucsc.edu/FAQ/FAQformat.html
+  - e.g. [BED format](`r glossary`BED)
 )
 :::
 ::: {.column}
@@ -472,14 +489,14 @@ rs4475691	1	846808	CC
 - Bioinformatics community loves creating data standards
 - Bioinformaticians seem to be bad at adhering to them
 - Variant Call Format (VCF) is one such widely adopted and broadly despised standard
-- We will revisit this in a future lab and MBB 342
+- We will revisit this in a future lab and MBB 342, if you can wait that long
 :::
 ::: {.column}
 ![](images/standards.png)
 :::
 ::::::::::::::
 
-# "Fun" useless exercise
+# "Fun" exercise
 
 - What is the breakdown of heterozygous and homozygous positions in Dr. Morin's genome?
 - Let's solve this with the command line (bash)
@@ -530,7 +547,7 @@ cut -d " " -f 1 | paste -sd+ - | bc
 # What did I just watch?
 
 - the command line is a powerful way to manipulate data in text files 
-- Simple commands are often combined together with a pipe `|`, which allows the output of one command to be the input for another command
+- Simple commands are often combined together with a [pipe](`r glossary`pipe) `|`, which allows the output of one command to be the input for another command
 - Output can also be "redirected" into a file with `>`
 - `cut` extracts a single column for subsequent steps
 - `paste` combines lines into one row
@@ -575,6 +592,28 @@ echo "100*$N_HOMO/($N_HOMO+$N_HETERO)"
 echo "100*$N_HOMO/($N_HOMO+$N_HETERO)" | bc
 
 ```
+
+# Variables don't always vary
+
+- As you will explore in the lab, many variables will be set at the start of your bash session and never change
+  - Environment variables store useful information about your session that allows things to work the way you want
+- Example: PATH environment variable tells Linux where to find all the executables you may want to run
+- When you type a command such as `python` the exact program that is run will depend on the contents of PATH
+
+
+# Variables don't always vary
+- The `which` program tells the user the path to the program that gets run when you enter a given command without the full path
+
+```{bash, eval=TRUE, echo=TRUE}
+echo $PATH
+```
+```{bash, eval=TRUE, echo=TRUE}
+which python
+```
+```{bash, eval=TRUE, echo=TRUE}
+which R
+```
+
 
 # From interactive sessions to scripts
 

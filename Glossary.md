@@ -8,7 +8,7 @@ Genomic annotation refers to the process of identifying functional elements in a
 
 ### BED
 
-A commonly used tab-separated format for storing and manipulating genomic annotations. [See more.](https://genome.ucsc.edu/FAQ/FAQformat.html)
+A commonly used tab-separated format for storing and manipulating genomic annotations. [See also.](https://genome.ucsc.edu/FAQ/FAQformat.html)
 
 ### bit
 
@@ -25,6 +25,14 @@ A data type in some programming languages used to store a single character (prin
 ### FASTA
 
 A simple plain-text format for storing one or more DNA, RNA or protein sequence records. 
+
+### Globbing
+
+A convenience feature used by bash to restrict files to all those matching more generic patterns specified by the glob. The general use is to us `*` to represent a component of the filename that matches the files the user wants to specify. [See also](https://mywiki.wooledge.org/glob)
+
+### Pipe
+
+A stream of data from one program to another. In bash, a pipe of standard output (STDOUT) is achieved by separating commands with the bar `|` symbol. 
 
 ### string
 
