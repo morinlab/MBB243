@@ -523,7 +523,7 @@ egrep -v "MT|X|Y|--" |
 cut -f 4 | 
 sort | 
 uniq -c | 
-perl -pe 's/^\s+//' > data/genotype_counts.txt
+perl -pe 's/^\s+//' > genotype_counts.txt
 # get non-header lines from the file with tail
 # drop non-autosome rows using egrep
 # keep only the fourth column (the genotype)
@@ -541,7 +541,7 @@ perl -pe 's/^\s+//' > data/genotype_counts.txt
 # egrep can keep or drop homozygous lines
 # the -v switches the behaviour
 # paste is a tool to combine rows into one line
-egrep "AA|CC|DD|GG|TT|II" data/genotype_counts.txt | 
+egrep "AA|CC|DD|GG|TT|II" genotype_counts.txt | 
 cut -d " " -f 1 | paste -sd+ - | bc
 
 ```
@@ -555,7 +555,7 @@ cut -d " " -f 1 | paste -sd+ - | bc
 # egrep can keep or drop homozygous lines
 # the -v switches the behaviour
 # paste is a tool to combine rows into one line
-egrep -v "AA|CC|DD|GG|TT|II" data/genotype_counts.txt | 
+egrep -v "AA|CC|DD|GG|TT|II" genotype_counts.txt | 
 cut -d " " -f 1 | paste -sd+ - | bc
 
 ```
