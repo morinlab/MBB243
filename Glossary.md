@@ -1,6 +1,6 @@
 # Glossary and quick reference
 
-# Command-line utilities used in class/labs
+## Command-line utilities used in class/labs
 
 ### `bash`
 

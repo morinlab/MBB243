@@ -403,6 +403,16 @@ chr7 7473530 7474697
 :::
 ::::::::::::::
 
+# How it looks to a computer
+- Tabs (`\t`) separate each column, newlines (`\n`) separate each row
+- The meaning of each column is entirely dependent on knowing what file format you have
+  - More generic delimited files will have a header line defining each column
+```
+chr7\t7471196\t7472363\n
+chr7\t7472363\t7473530\n
+chr7\t7473530\t7474697\n
+```
+
 # From Features to Sequence
 
 - Extracting DNA sequence from a region of interest at the command line
@@ -462,6 +472,25 @@ samtools faidx data/hg38.fa chr2:178807210-178807299
 ```{bash, eval=T,echo=T, engine.opts='-l'}
 # get the sequence of the region, skipping header
 seq=$(samtools faidx data/hg38.fa chr1:23,559,389-23,559,426 | grep -v \> )
+
+```
+
+# Transcription is "simple" to code
+
+```{bash, eval=T,echo=T, engine.opts='-l'}
+# get the sequence of the region, skipping header
+seq=$(samtools faidx data/hg38.fa chr1:23,559,389-23,559,426 | grep -v \> )
+# reverse the sequence (- strand gene)
+reversed_seq=$(echo $seq | rev)
+# Complement sequence
+complemented=$(echo $reversed_seq | perl -pe 'tr/ACTG/TGAC/')
+```
+
+# Transcription is "simple" to code
+
+```{bash, eval=T,echo=T, engine.opts='-l'}
+# get the sequence of the region, skipping header
+seq=$(samtools faidx data/hg38.fa chr1:23,559,389-23,559,426 | grep -v \> )
 # reverse the sequence (- strand gene)
 reversed_seq=$(echo $seq | rev)
 # Complement sequence
@@ -473,6 +502,7 @@ echo "$seq<-DNA"; echo $reversed_seq; echo $complemented; echo "$rna <-mRNA!"
 
 ```
 
+
 # What just happened?
 
 - The sequence of a region was extracted and the output of that command was used to set a new variable named `seq`
@@ -483,7 +513,7 @@ echo "$seq<-DNA"; echo $reversed_seq; echo $complemented; echo "$rna <-mRNA!"
 
 # Outlook
 
-- The example on the previous slide could be accomplished numerous ways at the command line
+- The example on the previous slide could be done numerous ways at the command line
   - There is always more than one way to get the same (or similar) result
   - Tradeoff between code efficiency (CPU/memory usage), readability, ease of implementation
 - Once comfortable in bash, the interactive environment can be a handy way to accomplish many "one-off" analyses
@@ -581,7 +611,7 @@ echo "$seq<-DNA"; echo $reversed_seq; echo $complemented; echo "$rna <-mRNA!"
   - usually have two possible alleles
 - Each allele has a frequency relative to any population in which the allele exists (i.e. how common it is among the individuals)
 - Genotypes are a feature of an *individual*
- - A concise representation of the most informative regions of the genome
+ - A concise representation of the most informative regions of a person's genome
  - Every person can be described by their genotype at all/some SNPs
 
 # Genotypes as data
@@ -595,27 +625,22 @@ rs3094315	1	752566	AA
 rs3131972	1	752721	GG
 rs12124819	1	776546	--
 rs11240777	1	798959	GG
-rs6681049	1	800007	CC
 rs4970383	1	838555	AC
 rs4475691	1	846808	CC
-rs7537756	1	854250	AA
-rs13302982	1	861808	GG
 ```
 
 # Genotypes as data
 
-- Genotypes can be represented in a basic plain text, delimited format
+- Sets of genotypes can be represented in a basic plain text, delimited format
 - 23andMe result for Dr. Morin is below (about 960,000 rows)
 ```
 #rsid	chromosome	position	genotype
-rs4477212	1	82154	--
+rs4477212	1	82154	-- <--- not called
 rs3094315	1	752566	AA <--- homozygous A
 rs3131972	1	752721	GG
 rs12124819	1	776546	--
 rs11240777	1	798959	GG <--- homozygous G
-rs6681049	1	800007	CC
 rs4970383	1	838555	AC  <--- heterozygous
-rs4475691	1	846808	CC
 ```
 
 # Standard format for variants
@@ -631,6 +656,22 @@ rs4475691	1	846808	CC
 ![](images/standards.png)
 :::
 ::::::::::::::
+
+
+# "Fun" exercise
+
+- What is the breakdown of heterozygous and homozygous positions in Dr. Morin's genome?
+- Let's solve this with the command line (bash)
+ 
+```{bash,eval=TRUE, echo=TRUE}
+tail -n +2 data/Morin_genotypes.txt | 
+egrep -v "MT|X|Y|--" | 
+cut -f 4 | head -n 2
+# get non-header lines from the file with tail
+# drop non-autosome rows using egrep
+# keep only the fourth column (the genotype)
+
+```
 
 # "Fun" exercise
 
@@ -688,6 +729,14 @@ cut -d " " -f 1 | paste -sd+ - | bc
 - `cut` extracts a single column for subsequent steps
 - `paste` combines lines into one row
 - `egrep` and `grep` are searching plain text for exact or partial matches
+
+# egrep and `|`
+
+- `egrep` is the simplest way to match one of a number of different search criteria
+- Combining your search patterns is as simple as separating them with `|`
+  - This is not acting as a pipe in this context, instead it's interpreted as OR
+- egrep "A|B|C|D" will match any line containing A or B or C or D 
+
 
 # Command-line arguments
 

@@ -11,15 +11,24 @@
 
 
 ## Introduction
+
 The purpose of this introductory data analysis course is to teach students in molecular biology or any students who will analyze molecular data, basic knowledge of molecular biology data types, data analysis methods including basic programming skills using Python, and basic statistics skills using R.
 
 ## Location
+
 * **Until further notice, lectures and labs will NOT be held in person**
 * Zoom link for class is https://us02web.zoom.us/j/85725104049 and the passcode can be found in our Slack workspace
 * Lectures will be held in AQ 4130 (once we resume in-person teaching)
 * Labs will be in SSB 6178 (once we resume in-person teaching)
 
+## Other links
+
+- [Zoom for Dr. Morin's office hours](https://us02web.zoom.us/j/85725104049)
+- [TA office hours](https://sfu.zoom.us/j/8109061879) Thursdays 4-5 PM
+- [Link for remote lab workstation connections](https://gateway.its.sfu.ca/guacamole/#/) This is only needed to connect to the lab server from *off campus*
+
 ## Grading
+
 * 20% In each lab, there is a list of tasks that should be accomplished in class. Results are submitted by the end of each lab. 
 * 35% Lab assignments: For some labs, additional short assignments will be made available in lab sessions and will be due at the start of your lab one week later (unless indicated otherwise). There is a 10% per day late penalty for assignments received after the due date time. 
 * 10% In-class midterm exam
@@ -28,7 +37,7 @@ The purpose of this introductory data analysis course is to teach students in mo
 
 ## Schedule
 
-|Week|Date| Lecture topic     | Date| Lab topic | Assignment (# or NA) |
+|Week|Date| Lecture topic     | Date| Lab topic | Assignment (# or NA - completion only) |
 |--|------| ----------- | ------|----------- | ---|
 |1|12-01-2022 | Molecular biology data flavours  | 14-01-2022 | Setting up a bash environment, installing software | NA |
 |2|19-01-2022 | Genomic data types  | 21-01-2022 | Manipulating and searching text files | 1 |
@@ -90,4 +99,5 @@ git clone git@github.com:morinlab/assignment-1-rdmorin.git
 
 ## More Resources
 
+* [Free R textbook](https://r4ds.had.co.nz/)
 * [What is Git and GitHub all about?](https://www.educative.io/blog/git-github-tutorial-beginners)
