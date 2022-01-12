@@ -3,8 +3,8 @@ title: "MBB 243 - Lecture 1"
 author: "Ryan Morin"
 date: "2022/01/12"
 output:
-  slidy_presentation: default
   powerpoint_presentation: default
+  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,6 +12,8 @@ require(reticulate)
 knitr::opts_chunk$set(echo = FALSE)
 glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 #NOTE: to run this on the lab server you will need the same data files and a symbolic link to the data directory but with the name "data".
+data="data/"
+scripts="scripts/"
 
 ```
 
@@ -32,10 +34,17 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 
 # Welcome to the course
 
+:::::::::::::: {.columns}
+::: {.column}
 - T.A. Casey Engstrom
 - Graduate student, Quarmby Lab
-- Office hour: TBD
-- Office:
+- Office hour: *tentatively* Thursdays at 4-5
+- Bioinformatician, geneticist, snow algae enthusiast
+:::
+::: {.column}
+![](images/TA.jpg)
+:::
+::::::::::::::
 
 # Schedule
 
@@ -46,7 +55,14 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
   - Command-line interpreter (Bash)
   - A popular scripting language (Python)
   - A popular statistical programming language (R )
-  
+
+# Getting started
+
+- Are you in the [Slack Workspace?](https://mbb243.slack.com/archives/C02R7MCU2UB)
+- Do you have a [github account? ](github.com)
+- Do you have [SFU Multifactor Authentication ](https://www.sfu.ca/information-systems/services/mfa.html) set up and working?
+- Do you have access to the course [StackOverflow](https://stackoverflow.com/c/mbb243/questions) site?
+
 # Grading
 
 * 20% In each lab, there is a list of tasks that should be accomplished in class and submitted by the end of each lab. 
@@ -57,10 +73,9 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 
 # How to get a good grade
 
-- Come to class and ask questions if you're lost
-- Come to lab and ask more questions
+- Come to class and labs and ask questions if you're lost/stuck
 - Come to office hours to ask more questions, if necessary
-- Post questions to Slack using channels such as [lab-discussion](https://mbb243.slack.com/archives/C02U4MU6NUQ) 
+- Post questions to the course [StackOverflow page](https://stackoverflow.com/c/mbb243/questions) or Slack using channels such as [lab-discussion](https://mbb243.slack.com/archives/C02U4MU6NUQ)
 - *Practice* the things you are learning in class and not just within the context of lab assignments
   - This is the only effective way to learn programming/data analysis concepts!
 
@@ -72,15 +87,18 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 
 # Other resources
 
-- All source code shown in lectures is in the accosicated R markdown file
+- All source code shown in lectures is in the associated Rmarkdown file
 - Individual code chunks should run on your lab server
   - Play with it, tweak it, break it, remix it, repurpose it!
-- 
+- Course [glossary and "cheat sheet"](`r glossary`)
+ - Suggestions for glossary terms I haven't included are welcome
+ - Submissions of new cheat sheet/glossary entries are highly encouraged and will be rewarded with participation marks
 
 # Important links
 
 - [Lab landing page](https://github.com/morinlab/MBB243), with all this information
 - [Zoom for class](https://us02web.zoom.us/j/85725104049)
+- [Zoom for Dr. Morin's office hours](https://us02web.zoom.us/j/85725104049)
 - [TA office hours](https://sfu.zoom.us/j/8109061879) Thursdays 4-5 PM
 - [Link for remote lab workstation connections](https://gateway.its.sfu.ca/guacamole/#/) This is only needed to connect to the lab server from *off campus*
 
@@ -94,6 +112,13 @@ glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
 - Become familiar with the statistical programming language R
   - Analyze numerical data of various types
   - Produce visualizations (plots) **NOT using Excel**
+
+# Learning goals for this week
+
+- Become familiar with some common data types we encounter in the life sciences, particularly molecular biology and biochemistry
+- Understand some basic computer science concepts relating to different data types
+- Know some basic ways we can represent and manipulate DNA (genome) sequences and their annotations
+- Become familiar with the command line and appreciate how it enables us to work with some of these data types
 
 # General data flavours in biology
 
@@ -236,7 +261,7 @@ the sequence of human chromosome 1?
 :::
 ::::::::::::::
 
-# Size of the human genome in plain text
+# File size of the genome
 
 - Let's jump right in: the size of the human reference genome on disk can be determined with a simple bash command (`ls -l`)
 ```{bash, eval=T,echo=T}
@@ -250,12 +275,11 @@ ls -lh data/hg38.fa
 # DNA sequence as plain text files
 :::::::::::::: {.columns}
 ::: {.column}
-- Most common way to store DNA sequences is [FASTA](`r glossary`FASTA) format
-- Two components:
+- Most common way to store DNA sequences is [FASTA](`r glossary`FASTA) format, which has two components
   - header lines begin with `>`
-  - sequence lines are just sequence
-- Many other formats available, most with much more detailed information about the sequence
-- More complex formats are harder to work with but more useful, depending on the needs of your analysis
+  - sequence lines are just sequence, usually split across multiple lines
+- Many more verbose formats available for different applications
+  - harder to work with but can be more versatile
 :::
 ::: {.column}
 ```
@@ -280,12 +304,25 @@ AAAAAAAAAAAAAAAAAAAAAAAAAA <- the next sequence
 AAAAAAAAAAAAAAAAAAAAAAAAAA <- and so on
 ```
 
+# How it looks to a computer
+
+- Whitespace is important to computers and this can be useful and annoying
+- Since we can't see them, in programs we use special notation to represent them (e.g. `\n` means a line break/ [newline](`r glossary`newline))
+```
+>NC_002516.2\n
+TTTAAAGAGACCGGCGATTCTAGTGAAATC\n
+GCAGGTCAATTTCCAACCAGCGATGACGTA\n
+AGATACAAGGAAG\n
+>NCC1701-D\n
+AAAAAAAAAAAAAAAAAAAAAAAAAA\n
+AAAAAAAAAAAAAAAAAAAAAAAAAA\n
+```
+
 # Genes and Chromosomes
 
 :::::::::::::: {.columns}
 ::: {.column}
-- A gene is a functional region that consists of one or more exon sequences
-  - usually separated by introns
+- A gene is a functional region that consists of one or more exon sequences, usually separated by introns
 - Exons and introns of a gene are all on the same strand
   - Genes can exist on the + or the - strand
 - Broad variability in gene size
@@ -334,8 +371,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAA <- and so on
 
 # What is the first number?
 
-- When storing multiple variables in a variable (e.g. an array or list), the first one is referred to by its index
-- Programming languages almost universally use 0 as the first index (including Python)
+- When storing multiple values in one variable (e.g. an array or list), each is retrieved/set using a unique index
+- Programming languages almost universally use 0 as the first available index (including Python)
 R is an exception
 - Genomic coordinate systems have a similar inconsistency
   - [Zero-based vs 1-based systems](https://www.biostars.org/p/84686/)
@@ -374,10 +411,83 @@ chr7 7473530 7474697
 # samtools is the program we are using
 # faidx tells it we want to extract sequence
 # data/hg38.fa is the file we will extract from
-# chr2:178807210-178807423 is our region
-samtools faidx data/hg38.fa chr2:178807210-178807423
+# chr2:178807210-178807299 is our region
+samtools faidx data/hg38.fa chr2:178807210-178807299
 #output is in fasta format and the header is auto-generated: 
 ```
+
+# Respect your computer's limits
+
+:::::::::::::: {.columns}
+::: {.column}
+- The simple act of reading a file from disk into RAM (memory) can be noticeably slow
+- Storing text (strings) in RAM will consume more memory than you expect
+- The procedure on the previous slide uses indexing to allow you to rapidly skip to the place in the file you need without reading/storing the entire contents
+:::
+::: {.column}
+![](images/Processing2.gif)
+:::
+::::::::::::::
+
+
+# Respect your computer's limits
+
+:::::::::::::: {.columns}
+::: {.column}
+- It's virtually never necessary to store large sequences as variables
+  - Use an indexed file and skip to the data you need OR
+  - Read from the start and don't store until necessary (e.g. when you hit a specific line of text, e.g. a chromosome of interest) OR
+  - read from the start and process data in a stream while also outputting results
+:::
+::: {.column}
+![](images/io-ins.gif)
+:::
+::::::::::::::
+
+
+
+# From DNA sequence to mRNA sequence
+:::::::::::::: {.columns}
+::: {.column}
+- The rules of transcription are simple: the template strand of the DNA duplex becomes complementary RNA
+- The resulting mRNA has the same nucleotide sequence as the coding strand but with U in place of T
+:::
+::: {.column}
+![](images/transcription.png)
+:::
+::::::::::::::
+
+# Transcription is "simple" to code
+
+```{bash, eval=T,echo=T, engine.opts='-l'}
+# get the sequence of the region, skipping header
+seq=$(samtools faidx data/hg38.fa chr1:23,559,389-23,559,426 | grep -v \> )
+# reverse the sequence (- strand gene)
+reversed_seq=$(echo $seq | rev)
+# Complement sequence
+complemented=$(echo $reversed_seq | perl -pe 'tr/ACTG/TGAC/')
+# Substitute all T positions with U
+rna=$(echo $complemented | perl -pe 's/T/U/g')
+#print them all out for visual comparison
+echo "$seq<-DNA"; echo $reversed_seq; echo $complemented; echo "$rna <-mRNA!"
+
+```
+
+# What just happened?
+
+- The sequence of a region was extracted and the output of that command was used to set a new variable named `seq`
+- The contents, `$seq`, were manipulated using several utilities and saved as a new variable each time: `reversed_seq`, `complemented`, `rna`.
+  - Multiple steps used Perl, a programming language that has many convenient features for text manipulation
+  - `rev` could be accomplished with `perl -pe 'reverse'`
+- We will see more examples of how to accomplish this in a single language (Python) later in the course
+
+# Outlook
+
+- The example on the previous slide could be accomplished numerous ways at the command line
+  - There is always more than one way to get the same (or similar) result
+  - Tradeoff between code efficiency (CPU/memory usage), readability, ease of implementation
+- Once comfortable in bash, the interactive environment can be a handy way to accomplish many "one-off" analyses
+- Implementing full scripts or programs to do this involves more of a time investment
 
 # Thought experiment
 
@@ -465,9 +575,18 @@ samtools faidx data/hg38.fa chr2:178807210-178807423
 :::
 ::::::::::::::
 
+# Polymorphisms vs genotypes
+
+- SNPs are essentially a type of genome annotation relative to a population
+  - usually have two possible alleles
+- Each allele has a frequency relative to any population in which the allele exists (i.e. how common it is among the individuals)
+- Genotypes are a feature of an *individual*
+ - A concise representation of the most informative regions of the genome
+ - Every person can be described by their genotype at all/some SNPs
+
 # Genotypes as data
 
-- Genotypes can be represented in a basic plain text, delimited format
+- Sets of genotypes can be represented in a basic plain text, delimited format
 - 23andMe result for Dr. Morin is below (about 960,000 rows)
 ```
 #rsid	chromosome	position	genotype
@@ -664,7 +783,7 @@ echo "Hello World"
 ![](images/permissions_comic.png)
 
 ```{bash,eval=T,echo=F}
-chmod 400 hello_world.sh
+chmod 400 scripts/hello_world.sh
 ```
 
 # Changing file permissions with `chmod`
@@ -673,17 +792,17 @@ chmod 400 hello_world.sh
 # a = all, u=owner, g=group, o=others
 # use +x to give -x to revoke executable permissions
 # other permissions: r=read, w=write/delete
-ls -l hello_world.sh
+ls -l scripts/hello_world.sh
 
 ```
 ```{bash,eval=T,echo=T}
-chmod u+x hello_world.sh
-ls -l hello_world.sh
+chmod u+x scripts/hello_world.sh
+ls -l scripts/hello_world.sh
 
 ```
 ```{bash,eval=T,echo=T}
-chmod o+x hello_world.sh
-ls -l hello_world.sh
+chmod o+x scripts/hello_world.sh
+ls -l scripts/hello_world.sh
 ```
 
 # What command would we need to 
