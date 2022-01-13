@@ -1,0 +1,302 @@
+---
+title: "Lab 01: Getting Started with RStudio"
+author: "Authors: Bruno Grande and Ryan Morin"
+date: "Last updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Quick start
+
+*Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
+
+
+The following code will ensure you have the necessary proxy settings in your ssh config. It also creates a symbolic link (like a shortcut) to the directory that contains the course files. If this is nonsense to you, don't worry about it and just read on. 
+
+```{bash}
+mkdir ~/.ssh/
+chmod 700 ~/.ssh/
+mkdir ~/MBB243/
+ln -s /local-scratch/course_files/MBB243/ ~/files
+cp /local-scratch/course_files/MBB243/ssh_config_template.txt ~/.ssh/config
+cp /local-scratch/course_files/MBB243/condarc_template.txt ~/.condarc
+
+if [[ -e ~/.ssh/id_rsa ]]
+then
+  echo skipping creation of ~/.ssh/id_rsa
+else
+  echo will create ~/.ssh/id_rsa
+  ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -P ""
+fi
+```
+
+The first run of the code chunk above (or the first time you knit this document) should automatically generate a few things for you. One of these is a pair of "keys" that will allow you to securely connect from this server to another specific server. You need this for completing assignments in GitHub. If you haven't already, take a minute to create a new account for yourself at `https://github.com/`. Either type or paste this into a browser on a separate tab on your computer (*not the lab computer you're remotely connected to!*). Once you have your account set up, you will need to add your public key to your account. Start by copying the contents of your key file to your clipboard. The easiest way to do this is by typing the following command in your terminal then highlighting the entire output and using COMMAND-C (or control-C). 
+
+`cat ~/.ssh/id_rsa.pub`
+
+The output should start with `ssh-rsa` and end with something that looks like an email address.
+
+1. Log into your GitHub account.
+2. Click your avatar and choose Settings.
+3. Select SSH and GPG keys.
+4. Click New SSH key.
+5. Enter a title in the field (e.g. enter "MBB243 server").
+6. Paste your public key into the Key field.
+7. Click Add SSH key.
+
+## Getting acquainted with the server on the Terminal
+
+Each RStudio user is given a home directory on the course server under `/localhome/`. For example, the instructor's is `/localhome/rdmorin/` and the TA's is `/localhome/cengstro/`. Using the Terminal window, you can find your current working directory with the bash `pwd` command (print working directory). The equivalent command in R itself is `getwd()`. The table below provides a few pairs of commands for navigating the file system in bash and R, respectively.
+
+| Bash | R | Effect |
+| :-: | :-: | - |
+| `pwd` | `getwd()` | Print/return the current working directory |
+| `cd DIR` | `setwd("DIR")` | Change to directory specified by DIR |
+| `ls DIR` | `dir("DIR")` | Get a list of all the files in DIR |
+| `ls` | `dir()` | Get a list of all the files in your working directory |
+| `mkdir DIR` | `dir.create(DIR)` | Create a new directory named DIR (can be full or relative) | 
+
+**NOTE**: When you are using copy and paste to enter code into your terminal you should NOT copy the backtick portion of the code (visible in the Rmd file but not the html). The backticks are used only to highlight syntax. If you copy from the html instead of the Rmd this is not an issue. 
+
+**Task:**
+
+Add R code and Bash code to the two empty code blocks below, respectively, to print out your current working directory. Add a comment to one of the code blocks that is just the full path to your home directory similar to the examples above.
+
+```{r}
+
+```
+
+```{bash, engine.opts='-l'}
+
+```
+## Other extremely useful bash commands
+
+|Bash Command|Effect|
+|-|-|
+|`cat FILE1 FILEN` |print contents of one or more files to STDOUT (i.e. to the terminal)|
+|`head FILE` | print the first few (10 by default) lines of a file to STDOUT |
+|`tail FILE` | print the last few (10 by default) lines of a file to STDOUT |
+|`tail -n +NUM FILE` | print the last lines of a file to STDOUT starting at offset NUM |
+|`rm FILE`|permanently delete FILE **use with caution!**|
+|`mv FILE NEWNAME`|rename or move FILE to NEWNAME|
+|`less FILE`|open file in a scrollable text viewer (Q to exit)|
+|`wc FILE`|print the tabulation of characters, words and lines to STDOUT|
+|`cut -f 1,2,N FILE`| Take columns 1,2,N from a delimited file and pass to STDOUT|
+|`grep PATTERN FILE`| `grep` and `egrep` both search for simple or complex patterns of text in files |
+
+## Exploring `|`,`>`, `>>` and `<`
+
+Let's revisit some of the commands you saw used in class individually. The code below runs the same command and either prints the result out or stores it in a file. You can view the contents of the new file either in the file explorer in Rstudio or at the Terminal (e.g. using `cat`). 
+
+**Task** 
+* Duplicate the last line in this code chunk and modify it by replacing the single `>` with `>>`. What happens when you rerun it? 
+
+* What happens if you change the output file name (after `>>`) to `~/MBB243/out/genotype_head.txt`? Why do you think that is?
+
+```{bash, engine.opts='-l'}
+head -n 25 /local-scratch/course_files/MBB243/Morin_genotypes.txt
+# translation:
+# head: take the first N lines (default is 10 if not specified)
+# -n 5: specifies to take the first 5 lines instead
+# the last bit is the full path to the file we want to use as input for the head command
+# You can save the output you see by "redirecting" STDOUT to a file. 
+
+head -n 25 /local-scratch/course_files/MBB243/Morin_genotypes.txt > ~/MBB243/genotype_head.txt
+
+```
+
+You should have a few lines of genotype information in a new file named `~/MBB243/genotype_head.txt`. Do you notice any genotypes in there that look "off"? Assuming we wanted to sanity check this whole file for what genotypes exist, we can use a combination the `cut`, `uniq` and `sort` commands (uniq is dumb and only works properly if its input is sorted). The code chunk below does this but uses our smaller file as input for efficiency. The result should be all unique genotypes in that file. What did we do wrong? 
+
+```{bash, engine.opts='-l'}
+cut -f 4 ~/MBB243/genotype_head.txt | sort | uniq
+# to help debug this, deconstruct it into smaller pieces.
+# then try running each set of commands before the pipe, e.g. uncomment the line below and re-run this chunk. What is the output?  
+#This is probably easier to do at the terminal instead of in the Rmarkdown
+# cut -f 4 ~/MBB243/genotype_head.txt | sort 
+# cut -f 4 ~/MBB243/genotype_head.txt 
+```
+
+## Setting the value of a variable
+
+Basic variables store a single value that can be changed over time within your program. Creating (or "declaring" a new variable is usually coupled with setting it's value. It is common to use a variable to capture or store the output of some other code or a function. Anything that is printed to your screen in Rstudio or shown in the output of your markdown can instead be stored in a variable. Why might we want to do this? Here's an example that we'll use later. The data files that we will use in each lab are all being put in one shared directory on this server:
+
+`/local-scratch/course_files/MBB243/`
+
+Do you want to type that whole directory or paste it into your code every time you need to refer to a file there? Me neither! We can instead create a variable that stores that information and use it as a shortcut to represent that path. In bash, here's how we can create a variable named `DATA` and store this information in it. The next few lines show how it can be put to use various ways. This is a bit irrelevant for this directory since we created a symbolic link to it above and that acts as a shortcut but it isn't as versatile. For example, from any working directory, you can use $DATA to refer to that file path but you would need to be in your home directory to use the symbolic link (`files`) or specify the path to that link (`~/files`) if you are in another directory. 
+
+```{bash, engine.opts='-l'}
+DATA="/local-scratch/course_files/MBB243/" 
+# NOTE: if you aren't using the course server you will need to copy the contents of this directory to whatever computer you are running Rstudio on.
+
+# print the contents of our new variable with the echo command
+# IMPORTANT: when retrieving the contents of a variable we need to preface it with $
+echo data path is $DATA
+echo another way to refer to it is ~/files
+# how about using it in combination with ls to view what's in the directory?
+echo contents of the directory:
+ls -l $DATA
+echo contents of symbolic link to directory:
+ls -l ~/files/
+```
+
+
+## Setting up bash preferences and managing custom software
+
+Many things you do in the bash terminal are "one-off" commands that wouldn't make sense to run in a markdown document. For example, you can create, destroy, manipulate or rename files from bash and these changes will exist outside the sandboxed environment. For example, the first time you run this code chunk you will create a new file and add one line of text to it. In most scenarios, you are much more likely to use bash directly in an interactive shell session. RStudio gives you a terminal session where you can run bash commands interactively and navigate the file system. 
+
+**Task:**
+
+Run the following code chunk once then use the RStudio terminal (not the Console) to find and view the contents of that file. If you have already "knit" the document then the code has been run. The `cat` command will dump the contents of any file to your terminal and is a convenient way to look at the contents of a file. For larger files, it's better to use either `head` to view the first few lines or `tail` to view the last few. What changes in the file if you manually run the code chunk a few more times?
+
+```{bash}
+echo "Hello terminal!" >> EMPTY.txt
+echo $(date) >> EMPTY.txt
+# The redirect operators > and >> are related but have different effects on existing files. It's important that you know the difference. 
+# If you aren't clear, go back to the earlier portion of this document that introduces it and/or ask the TA or instructor. 
+```
+
+**Task:**
+
+Make a copy of the code chunk above and put it below this text in your version of the Rmd file. Modify the code so it instead creates a file with this exact name: `~/.bash_profile`. *General hint*: when you can, use copy/paste so you don't have to re-type a command or file name. You also need to change the code chunk to add a single line to the new file. The first line of text should be:
+
+`source ~/.bashrc`
+
+The second line should be:
+
+`DATA=/local-scratch/course_files/MBB243/`
+
+Be careful here with the distinction between `>` and `>>`. The code should only "append" lines to the file if/when necessary (i.e. when re-run you will not get additional lines in the file). You can check that your code is working by running the chunk more than once and then verifying the contents of the file. If you are so inclined, you can even add a line to your code chunk that will report the current number of lines in the file each time the code chunk is run. Give it a try if you're feeling ambitious! By the end of this lab you will need to have completed this such that you have a bash_profile file with those two lines in it. See the instructor or TA for help if you don't think you succeeded. The easist way to confirm is to run this command in your terminal (not in Rmarkdown) and looking at the contents:
+
+`cat ~/.bash_profile`
+
+**DELETE THIS TEXT AND PUT YOUR NEW CODE CHUNK HERE**
+
+## Setting a variable in R
+
+All programming languages has variables. R has a much more complex (and useful) set of variable types. Here we will just repeat what we learned in bash to see how the syntax looks. In this case, it turns out that using the bash syntax does the same thing but that's not always the case. The example below shows two ways to accomplish the same thing in R with the second example illustrating the preferred syntax to use in R (`<-` instead of `=`).
+
+
+```{r}
+DATA="/local-scratch/course_files/MBB243/"
+print(DATA)
+
+#do the same thing in a preferred syntax
+DATA <- "/local-scratch/course_files/MBB243/"
+print(DATA)
+
+#get directory contents
+dir(DATA)
+
+#store directory contents in a new variable
+data_list = dir(DATA)
+
+```
+
+
+## Configuring your terminal to run custom software
+
+There are some things we need to set up for each user that are great examples of bash code that we want to be reproducible. One of them is to ensure any software you install on the server will always be available. Unlike some operating systems, Linux allows individual users to install software in any location they have the appropriate permissions. Users can install different versions/flavours of the same software on one computer. For any such software to be run, the shell needs to know where to look for it. When we open a new terminal session (i.e. bash is launched) the contents of a few files are automatically interpreted. These configuration files are often named with a `.` character before the filename, which is a way to "hide" files from normal directory listing. For example, today we will work with `.bash_profile`, `.bashrc` and `.condarc`. To see the hidden files in the Files pane you can select "show hidden files" under the "More" menu. If you did the task above properly, you should now have a .bashrc and a .bash_profile file.
+
+## Installing miniconda and snakemake
+
+Some of the software we will need later in the semester isn't installed on the server. Here we will install the miniconda package, which makes the process of installing and maintaining multiple versions of other tools relatively painless. For your bash session to be aware of software, the location of it's executable needs to be known to the environment. Bash has special variables that keep track of various important configuration. The location of available software is stored in the environment variable known as PATH. Notably, you have a ton of environment variables that are convenient shortcuts. Try adding some code below to print the contents of other environment variables such as HOME, HOSTNAME, and USER.
+
+```{bash, engine.opts='-l'}
+echo $PATH
+
+```
+
+**Task** 
+
+In the Terminal you need to run the script miniconda_installer.sh. This will launch an interactive process so you will have to run it directly in the terminal not in a code chunk. To run it, simply enter the full path to the installer script  `/local-scratch/course_files/MBB243/miniconda_installer.sh` in the Terminal and hit ENTER. You must respond to the on-screen prompts. You have to hit the ENTER key and (theoretically) you will read the EULA. Then you will need to type "yes" and hit ENTER again. Hit ENTER again at each prompt. Don't change any of the default options. *IMPORTANT*: To test that your installation worked you will need to reload your bash environment. This can always be done by running `source ~/.bashrc`. If you did this step and the previous steps properly, your prompt should now look like this:
+
+`(base) [yourname@mbb-bioinf yourname]$`
+
+## Executing Python in RStudio
+
+The R language has many benefits for the analysis of data types commonly produced in the life sciences. Python is another popular programming language that will be covered in this course. For our labs, we will configure RStudio to evaluate code blocks in either language. This first requires the installation and loading of the `reticulate` package. If you are running this on the lab server it should already be installed. The following code should install (if necessary) and load the package. The third line configures the library to use a specific python interpreter. **you shouldn't have to uncomment the first line if the server is set up properly**
+
+```{r}
+#install.packages("reticulate")
+library(reticulate)
+use_python("/usr/bin/python3")
+```
+
+When we want to use Python instead of R we simply need to change the first part of the code block to specify the language. Although you can't easily tell from the example below, the code is being interpreted as Python code. The two examples below show you how switching between the two interpreters can yield different results even if the syntax is "valid" for both. 
+
+```{python}
+this_string = "ATT" + "TAG"
+this_string
+```
+```{r,eval=FALSE}
+this_string = "ATT" + "TAG"
+this_string
+```
+The second code block will throw an error if evaluated. Try running the block or change it to `eval=TRUE` then knit the document. 
+
+
+## Installing BioPython
+Conda can be used to install both command-line tools and Python libraries. Run the following command at your Terminal and respond to any prompts. 
+
+```
+conda install -c conda-forge biopython
+```
+
+## Testing BioPython
+
+To run Python code we always need to ensure we've loaded the `reticulate` R package and specified the python interpreter we want to use. The code below also configures reticulate to use the miniconda version you theoretically just updated. To actually run this part of the code you will first need to have completed the earlier tasks. 
+
+**Task** Set eval=TRUE in the two chunks below and run them (in order!).
+
+```{r, eval=TRUE}
+library(reticulate)
+use_python("miniconda3/bin/python")
+use_condaenv("base")
+
+```
+
+The next code block simply prints the path to the python executable that is used and then loads and tests some functionality provided by the BioPython library. 
+
+```{python, eval=TRUE}
+
+sys.executable
+from Bio.Seq import Seq
+my_seq = Seq("AGTACACTGGT")
+complemented_seq = my_seq.complement()
+str(complemented_seq)
+```
+
+## Installing more utilities
+
+We also need the program `samtools` installed to perform our next (optional) task. It will be needed later in the semester so please install it now even if you opt out of the last task. 
+
+**Task**
+Run this command in your terminal and make sure it completes successfully. Test it by simply entering `samtools` in your terminal (followed by <ENTER>). 
+
+```
+conda install -c bioconda samtools
+```
+
+**Optional Task**
+
+The human reference genome in fasta format can be found in the lab data directory, specifically ` /local-scratch/course_files/MBB243/hg38.fa`. Using what you learned in lecture, construct a command that uses samtools to extract the sequence from this region: `chr14:65102304-65102339` and store the sequence as a variable. Note that we don't want to store the "header" (starts with `>`). Construct this code in the code chunk below. Your code chunk should end with an `echo` command that prints the contents of your new variable.
+
+Think about how you might make this code output to a file instead of just to the terminal. How might this be useful? 
+
+## Lab Completion Checklist
+**Task**
+At the end of every lab, replace TODO with DONE to the left of each task to indicate you've completed it
+
+|status|task|
+|-|-|
+|DONE|This file has been knit|
+|TODO| My .bashrc file exists|
+|TODO| Miniconda is installed|
+|TODO| I was able to install both Bioconda and samtools using conda|
+|TODO| The last few code chunks that run Python code run without errors when I knit this document|
