@@ -8,7 +8,7 @@
 
 ### `echo`
 
--  display a line of text
+-  display a line of text (i.e. send that line of text to STDOUT)
 
 ### `grep` and `egrep`
 
@@ -45,6 +45,10 @@
 ### `samtools`
 
 - Utilities for the Sequence Alignment/Map (SAM) format
+
+### `seqtk`
+
+- Tools for processing sequences in the FASTA or FASTQ format
 
 ### `less`
 
