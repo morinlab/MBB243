@@ -1,0 +1,9 @@
+# Ignore Mac system files
+.DS_store
+
+# Ignore all html files from knitting/previews
+*.html
+
+#ignore plain text files
+*.txt
+
