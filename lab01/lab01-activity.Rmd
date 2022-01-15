@@ -254,7 +254,7 @@ To run Python code we always need to ensure we've loaded the `reticulate` R pack
 
 **Task** Set eval=TRUE in the two chunks below and run them (in order!).
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 library(reticulate)
 use_python("miniconda3/bin/python")
 use_condaenv("base")
@@ -263,7 +263,7 @@ use_condaenv("base")
 
 The next code block simply prints the path to the python executable that is used and then loads and tests some functionality provided by the BioPython library. 
 
-```{python, eval=TRUE}
+```{python, eval=FALSE}
 
 sys.executable
 from Bio.Seq import Seq
