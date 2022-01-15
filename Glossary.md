@@ -6,14 +6,6 @@
 
 -  GNU Bourne-Again SHell
 
-### `echo`
-
--  display a line of text (i.e. send that line of text to STDOUT)
-
-### `grep` and `egrep`
-
-- print lines matching a pattern
-
 ### `cat`
 
 - concatenate files and print on the standard output
@@ -22,9 +14,20 @@
 
 - remove sections from each line of files
 
-### `paste`
 
-- Write lines consisting of the sequentially corresponding lines from each FILE, separated by TABs, to standard output.  With no FILE, or when FILE is -, read standard input.
+### `echo`
+
+-  display a line of text (i.e. send that line of text to STDOUT)
+
+### `grep` and `egrep`
+
+- print lines matching a pattern
+
+### `gzip`, `gunzip` and `zcat`
+
+- compression/decompression tool using Lempel-Ziv coding (LZ77)
+- `gzip` for compressing, and the other two are for decompressing. 
+- `zcat` decompresses to STDOUT and is simply an alias for `gunzip -c` 
 
 ### `head`
 
@@ -33,6 +36,11 @@
 ### `ls`
 
 - list directory contents
+
+### `paste`
+
+- Write lines consisting of the sequentially corresponding lines from each FILE, separated by TABs, to standard output.  With no FILE, or when FILE is -, read standard input.
+
 
 ### `tail`
 
@@ -96,9 +104,8 @@
 - Used as a minus sign
 - Various uses in different contexts in bash
  - Convention to use this before named arguments e.g. `program -i input_file`
- - Can be used to tell a command-line program to read from STDIN instead of an input file e.g. `some_other_program | program -i - `
+ - Can be used to tell a command-line program to read from STDIN instead of an input file e.g. `some_other_program | program -i`
  
-
 ### vertical bar or pipe `|`
 
 - used in unix-like systems to flow data between multiple processes
@@ -125,7 +132,7 @@
 
 ## Week 1
 
-## annotation
+### annotation
 
 Genomic annotation refers to the process of identifying functional elements in a genome. Annotations are also what we call any set of coordinate-based information that result from this process, in other words, the locations of functional elements and their relationships to other annotations. Examples: gene, a gene's exons, an exon's splice sites, a gene's transcripts, repetitive elements.
 
@@ -160,3 +167,10 @@ A stream of data from one program to another. In bash, a pipe of standard output
 ### string
 
 A common data type used in virtually all programming languages. Used for values that are made up of ordered sequences of characters. A string can contain any sequence of characters, printable or whitespace. Examples: `AAAAA`, `hello world`, `GATTACA`.
+
+## Week 2
+
+### alias
+
+- A user-settable shorthand way to run a command in bash. Often used to run a command that reqires complex set of parameters 
+- These are set using the built-in alias command, usually in the `.bashrc` or `.bash_profile` file: `alias alias_name="command_to_run"`
