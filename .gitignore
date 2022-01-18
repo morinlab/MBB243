@@ -7,3 +7,7 @@
 #ignore plain text files
 *.txt
 
+#ignore output files
+*.out
+
+recordings/*

@@ -23,7 +23,7 @@
 
 - print lines matching a pattern
 
-### `gzip`, `gunzip` and `zcat`
+### `gzip`, `gunzip` and `gzcat`
 
 - compression/decompression tool using Lempel-Ziv coding (LZ77)
 - `gzip` for compressing, and the other two are for decompressing. 
@@ -65,6 +65,10 @@
 ### `wc`
 
 - word, line, character, and byte count
+
+### `which`
+
+- locate a program file in the user's path
 
 ## Commonly used symbols and their various applications
 
