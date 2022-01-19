@@ -10,6 +10,10 @@
 
 - concatenate files and print on the standard output
 
+### `chmod`
+
+- change file mode bits (i.e. the permissions for whether users can read, write and execute)
+
 ### `cut`
 
 - remove sections from each line of files
@@ -37,6 +41,10 @@
 
 - list directory contents
 
+### `man`
+
+-  an interface to the on-line reference manuals (or "man pages")
+
 ### `paste`
 
 - Write lines consisting of the sequentially corresponding lines from each FILE, separated by TABs, to standard output.  With no FILE, or when FILE is -, read standard input.
@@ -57,6 +65,11 @@
 ### `seqtk`
 
 - Tools for processing sequences in the FASTA or FASTQ format
+
+### `sort`
+
+- sort lines of text files using one or more column
+- can perform numeric or alphabetic/alphanumeric sort
 
 ### `less`
 
@@ -79,6 +92,11 @@
 ### tab `\t`
 
 - A highly important whitespace character that is commonly used as a delimiter between columns (e.g. in a tsv or tab-separated values file)
+
+### dollar sign `$`
+
+- Goes before a bash variable when retrieving (but not when setting) its value
+- Acts as a pattern anchor on the right-hand side when used in the context of a regular expression
 
 ### exclamation mark `!` 
 
@@ -178,3 +196,9 @@ A common data type used in virtually all programming languages. Used for values 
 
 - A user-settable shorthand way to run a command in bash. Often used to run a command that reqires complex set of parameters 
 - These are set using the built-in alias command, usually in the `.bashrc` or `.bash_profile` file: `alias alias_name="command_to_run"`
+
+### argument
+
+- A value (e.g. string, integer) given to a program at runtime. Typically these will specify the input for the program or the path to an input file along with specifying options or settings for the program.
+
+
