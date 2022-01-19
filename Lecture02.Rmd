@@ -11,7 +11,10 @@ require(reticulate)
 knitr::opts_chunk$set(echo = FALSE)
 # if necessary, use this command to install required non-standard command-line tools:
 # conda install -c bioconda samtools seqtk
-
+glossary="https://github.com/morinlab/MBB243/blob/main/Glossary.md#"
+#NOTE: to run this on the lab server you will need the same data files and a symbolic link to the data directory but with the name "data".
+data="data/"
+scripts="scripts/"
 ```
 
 # Recap
@@ -31,7 +34,7 @@ knitr::opts_chunk$set(echo = FALSE)
 - Understand what types of numerical data, including estimates of error, are associated with different data types
 - Get more familiar with some common applications of the command line for manipulating sequence and delimited text files
 
-# `man`: your best friend
+# [man](`r glossary`man): your best friend
 
 :::::::::::::: {.columns}
 ::: {.column}
@@ -84,12 +87,22 @@ DESCRIPTION
 
 - Any file with "." at the start of its name is hidden from display by default (e.g. `~/.bash_profile`)
   - `ls -a` will show hidden files
+- File names and paths must be exact (including upper/lowercase)
+  - README.txt is not the same as Readme.txt
+  - .bash_profile is not the same as ~/.bash_profile unless your working directory is ~/
 - The reticulate package has some oddities in how it finds python
+
+# Lessons learned from the lab
+
 - Useful things to check when deciding if something was properly installed
-  - To test if a tool named PROGRAM is available in your terminal and to check which one is being used, run `which PROGRAM` 
+  - To test if PROGRAM is available in your terminal and to check which one is being used, run [which](`r glossary`which) PROGRAM
+  - If your environment has miniconda working you should see the environment name to the left of your prompt `(base) [me@server ]$`
+- If you change something in your environment, it is sometimes helpful to restart your R session
 
 # Variables don't always vary
-- The `which` program tells the user the path to the program that gets run when you enter a given command without the full path
+
+- `which` reports the path to the program that gets run when you enter a given command without specifying the full path
+- You can override this to run a specific program instead by providing the full path 
 
 ```{bash, eval=TRUE, echo=TRUE}
 echo $PATH
@@ -97,15 +110,12 @@ echo $PATH
 ```{bash, eval=TRUE, echo=TRUE}
 which python
 ```
-```{bash, eval=TRUE, echo=TRUE}
-which R
-```
 
 # Variables don't always vary
 
 - As you have already seen in the lab, many variables will be set at the start of your bash session and never change (e.g. via your .bashrc and .bash_profile files)
   - Environment variables store information about your session that allows things to work the way you want
-- Example: PATH environment variable tells Linux where to find all the executables you have available
+- Example: PATH variable tells Linux where to find all the executables you have available
 - When you type a command such as `python` the exact program that is run will depend on the contents of PATH
 
 
@@ -145,7 +155,7 @@ echo "Hello World"
 chmod 400 scripts/hello_world.sh
 ```
 
-# Changing file permissions with `chmod`
+# Changing file permissions with [chmod](`r glossary`chmod)
 
 ```{bash,eval=T,echo=T}
 # a = all, u=owner, g=group, o=others
@@ -173,6 +183,25 @@ ls -l scripts/hello_world.sh
 - Prevent people outside the students group from reading the contents of filez.gz?
 
 `-rw-r--r--@ 1 big_nerd2 students 31B 8 Jan 14:52 filez.gz`
+
+# What command would we need to 
+
+- Allow any user to run the script `a.sh`?
+
+`-rw-r--r--@ 1 big_nerd1 scientists 31B 8 Jan 14:52 a.sh`
+
+`chmod a+x a.sh`
+
+`-rwxr-xr-x@ 1 big_nerd1 scientists 31B 8 Jan 14:52 a.sh`
+
+
+- Prevent people outside the students group from reading the contents of filez.gz?
+
+`-rw-r--r--@ 1 big_nerd2 students 31B 8 Jan 14:52 filez.gz`
+
+
+`-rw-r-----@ 1 big_nerd2 students 31B 8 Jan 14:52 filez.gz`
+
 
 # What command would we need to 
 
@@ -398,7 +427,7 @@ grep -w "LHFPL3$"
 
 # See you in 5 minutes
 
-1[](images/intermission.jpeg)
+![](images/intermission.jpeg)
 
 
 # Most genes have multiple isoforms due to alternative splicing
