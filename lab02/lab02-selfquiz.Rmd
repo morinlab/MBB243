@@ -1,5 +1,5 @@
 ---
-title: "Tutorial"
+title: "Self Quiz"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -11,9 +11,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Quick Start
 
-Before running this document, run the following command in your R console:
+If you can't get this document to run, try entering each of the following into your R console:
 
 install.packages("learnr")
+install.packages("shiny")
 
 As the name implies, this install.packages() function will allow you to install any R package you need for lab activities. 
 
