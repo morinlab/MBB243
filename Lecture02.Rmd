@@ -1,9 +1,10 @@
 ---
 title: "MBB 243 - Lecture 2"
 author: "Ryan Morin"
-date: 2022/01/19
-output: 
-  powerpoint_presentation
+date: "2022/01/19"
+output:
+  slidy_presentation: default
+  powerpoint_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -107,7 +108,7 @@ DESCRIPTION
 ```{bash, eval=TRUE, echo=TRUE}
 echo $PATH
 ```
-```{bash, eval=TRUE, echo=TRUE}
+```{bash, eval=TRUE, echo=TRUE,engine.opts="-l"}
 which python
 ```
 
