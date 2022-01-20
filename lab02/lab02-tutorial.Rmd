@@ -80,11 +80,11 @@ Concise:
 `[A]{10}GGCCA[T]{3}ACATACCTTAAC[CT]{4}A{10}`
 
 
-This reformatting may not feel like a huge reduction in file size but keep in mind that the genome has quite large repeats in many places. Compression can also recognize other patterns in text allowing algorithms to further reduce the file size, e.g. by utilizing a better encoding when there is a limited number of characters present. The compression we tend to use in research is lossless, meaning that we lose no information during the compression and the process is entirely reversible. Let's look at a few examples and how they work in reality. This lab contains two fasta files that were each compressed with `gzip`. Knitting this markdown will decompress them to new files using `zcat`. To decompress them to files with their original name (minus the `.gz` suffix), we would use `gunzip FILE`. We used zcat here for pragmatic reasons, i.e. to retain the original files so this document can easily be re-knit. 
+This reformatting may not feel like a huge reduction in file size but keep in mind that the genome has quite large repeats in many places. Compression can also recognize other patterns in text allowing algorithms to further reduce the file size, e.g. by utilizing a better encoding when there is a limited number of characters present. The compression we tend to use in research is lossless, meaning that we lose no information during the compression and the process is entirely reversible. Let's look at a few examples and how they work in reality. This lab contains two fasta files that were each compressed with `gzip`. Knitting this markdown will decompress them to new files using `gzip`. To decompress them to files with their original name (minus the `.gz` suffix), we would use `gunzip FILE`. We used `gunzip -c` here to force gzip to write to STDOUT and redirect to the .gz file for pragmatic reasons, i.e. to retain the original files so this document can easily be re-knit. 
 
 ```{bash}
-gzcat lab_files/fake_sequence1.fa.gz > lab_files/fake_sequence1.fa
-gzcat lab_files/real_sequence1.fa.gz > lab_files/real_sequence1.fa
+gunzip -c lab_files/fake_sequence1.fa.gz > lab_files/fake_sequence1.fa
+gunzip -c lab_files/real_sequence1.fa.gz > lab_files/real_sequence1.fa
 
 #glob matches all fasta files including those ending with .gz
 ls -l lab_files/*fa*
@@ -93,9 +93,11 @@ ls -l lab_files/*fa*
 
 Scrutinize the file sizes in the output above. What do you notice about the file sizes of the two uncompressed (.fa) files? What about their corresponding compressed file? 
 
-**Important!**: Compressing text files is a convenient way to save disk space. The tradeoff is that the files are generally not directly useable. For example, you can't use `grep` or `egrep` directly on them to search for specific data in the files. In the lab activity you will see an alternative to `gzip` that allows some rapid access to compressed files that uses indexing, namely (`tabix` and `bgzip`). 
+**Important!**: Compressing text files is a convenient way to save disk space. The tradeoff is that the files are generally not directly useable. For example, you can't use `grep` or `egrep` directly on them to search for specific data in the files. Go ahead and try to grep for the header in each file with this command:
 
+`grep \> ~/MBB243/lab02/lab_files/*gz`
 
+Take some time reviewing the grep man page by entering `man grep` into your Terminal. Can you think of a way to use grep on these files without converting them back to their decompressed .fa file on disk? 
 
 
 

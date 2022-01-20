@@ -14,14 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Quick start
 
-*Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
+1. Install dependencies by entering these into your Terminal
+
+`conda install -c bioconda bedtools`
+`conda install -c bioconda tabix`
+
+2. *Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
 
 ## Install dependencies
 
-```{bash, engine.opts="-l"}
-#conda install -c bioconda tabix
-#conda install -c bioconda bedtools
-```
 
 ## The permissions puzzle
 
@@ -77,7 +78,7 @@ tail -n 3 permissions.out
 In class you briefly saw a few basic ways of representing generic annotations and quantitative annotations relative to genome sequence data. This lab will look at the BED format in more detail and will put some of these files to use. This portion of the lab was adopted from the [bedtools tutorial](http://quinlanlab.org/tutorials/bedtools/bedtools.html). You should refer to that page for guidance as you encounter the bedtools tasks below. Manually run the chunk below to get started. 
 
 ```{bash, eval=FALSE}
-# this downloads the files you need
+# this downloads the files you need but it's unnecessary to run it because the files are provided for you
 curl -O https://s3.amazonaws.com/bedtools-tutorials/web/cpg.bed
 curl -O https://s3.amazonaws.com/bedtools-tutorials/web/exons.bed
 curl -O https://s3.amazonaws.com/bedtools-tutorials/web/genome.txt
@@ -93,14 +94,14 @@ Some information about these files:
 ```{bash}
 echo "cpg.bed:"
 echo "columns are: chromosome, start, end, CpG details (probably some sort of score?)"
-head -n 5 cpg.bed
+head -n 5 lab_files/cpg.bed
 echo "====="
 echo "exons.bed"
 echo "columns are: chromosome, start, end, gene_exon_details, 0, strand"
-head -n 5 exons.bed
+head -n 5 lab_files/exons.bed
 echo "======"
 echo "hesc.chromHmm.bed"
-head -n 5 hesc.chromHmm.bed
+head -n 5 lab_files/hesc.chromHmm.bed
 ```
 
 *IMPORTANT*:
