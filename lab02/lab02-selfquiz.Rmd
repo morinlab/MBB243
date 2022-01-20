@@ -1,0 +1,112 @@
+---
+title: "Tutorial"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Quick Start
+
+Before running this document, run the following command in your R console:
+
+install.packages("learnr")
+
+As the name implies, this install.packages() function will allow you to install any R package you need for lab activities. 
+
+### Self-Quiz
+
+```{r question1, echo=FALSE}
+question("Assuming your user is yourusername, which of the following refers to your home directory on a unix system?",
+  answer("~/yourusername"),
+  answer("~/"),
+  answer("/home/yourusername/"),
+  answer("all of them",correct = TRUE)
+)
+```
+
+```{r question2, echo=FALSE}
+question("Assuming your user is yourusername, if your current working directory was /home/drmorin/is/old/, which of the following commands would move you to /home/drmorin/ ?",
+  answer("cd ~"),
+  answer("cd .."),
+  answer("cd -"),
+  answer("cd ../../",correct = TRUE),
+  answer("cd")
+)
+```
+
+```{r question3, echo=FALSE}
+question("Assuming your working directory is /home/yourusername/, which command allows you to view the entire contents of /home/yourusername/file.txt in your terminal?",
+  answer("head file.txt"),
+  answer("tail file.txt"),
+  answer("cat file.txt",correct = TRUE),
+  answer("grep file.txt"),
+  answer("none of these will work")
+)
+```
+
+
+
+
+
+```{r question5, echo=FALSE}
+question("Which of the following commands would allow you to see the permissions of all the files in the directory /home/someuser/.ssh/?",
+  answer("ls -a /home/someuser/.ssh/"),
+  answer("ls -s /home/someuser/.ssh/"),
+  answer("dir -l /home/someuser/.ssh/"),
+  answer("ls -l /home/someuser/.ssh/",correct = TRUE),
+  answer("cd /home/someuser/.ssh/")
+)
+```
+
+-rw-r-xrw-  1 someguy  staff   2.3K  8 Jun  2021 SOME_FILE
+
+```{r question6, echo=FALSE}
+question("Based on the permissions shown above, which of the following statements about SOME_FILE are TRUE?",
+  answer("The user someguy cannot execute the file",correct = TRUE),
+  answer("All members of the staff group can edit the contents of the file"),
+  answer("Anyone can execute the file"),
+  answer("Anyone can delete the file"),
+  answer("All members of the staff group cannot read the contents of the file")
+)
+```
+
+
+```{r question7, echo=FALSE}
+question("Which bash code will add a single line containing the word HELLO to the end of stuff.txt?",
+  answer("cat HELLO stuff.txt"),
+  answer("\"HELLO\" > stuff.txt"),
+  answer("grep HELLO stuff.txt"),
+  answer("echo \"HELLO\" > stuff.txt"),
+  answer("echo \"HELLO\" >> stuff.txt",correct = TRUE)
+)
+```
+
+```{r question4, echo=FALSE}
+question("Which of the following commands would extract column 3 from a tab-delimited file (tabby.tsv) and write the contents of that column to a new file c3.txt?",
+  answer("head -n 3 tabby.tsv >> c3.txt"),
+  answer("grep -c 3 tabby.tsv > c3.txt"),
+  answer("ls -l tabby.tsv"),
+  answer("cut -f 3 tabby.tsv >> c3.txt"),
+  answer("cut -f 3 tabby.tsv > c3.txt",correct = TRUE)
+)
+```
+
+-rwx------  1 someguy  classmates   2.3K  8 Jun  2021 coolscript.py
+
+
+```{r question8, echo=FALSE}
+question("Which command will allow all members of the group classmates to execute the file coolscript.py",
+answer("rm -g+x coolscript.py"),
+answer("echo classmates coolscript.py"),
+answer("no change is necessary because they already have that permission"),
+answer("chmod g+x coolscript.py", correct=TRUE),
+answer("chmod o+x coolscript.py")
+)
+
+```
+
+
