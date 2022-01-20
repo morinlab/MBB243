@@ -1,0 +1,175 @@
+---
+title: "Lab 02: Building on Unix fundamentals"
+author: "Authors: Ryan Morin"
+date: "Last updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Quick start
+
+*Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
+
+## Install dependencies
+
+```{bash, engine.opts="-l"}
+#conda install -c bioconda tabix
+#conda install -c bioconda bedtools
+```
+
+## The permissions puzzle
+
+More often than not, encountering a file with the wrong permissions will feel like a puzzle. This puzzle may sound simple. There are three scripts in the lab_files directory. Their permissions are all set by the chunk below to be readable by the owner but otherwise have zero permissions for the owner or other users. To solve this puzzle, you need to make:
+
+perm1.sh executable _only_ by the owner (i.e. you) and readable by everyone
+perm2.sh executable by the owner and group and readable by you
+perm3.sh executable by everyone AND both readable and writeable by you 
+
+**Some Reminders for `chmod`**
+
+|who (shorthand) | who (meaning)|
+|-|-|
+|u|user, i.e. the owner of the file|
+|g|group, i.e. anyone in the group that owns the file|
+|o|other, everyone not governed by the u and g permissions|
+|a|all of the above|
+
+|bit|meaning|
+|-|-|
+|r|Readable|
+|w|Writeable|
+|x|eXecutable|
+
+```{bash}
+# don't use this style of syntax unless you REALLY want to
+chmod 400 lab_files/perm*sh
+# use this style instead
+# chmod o+w FILE
+
+```
+
+**Task** 
+In the empty code chunk below, construct a series of `chmod` commands that set the file permissions as detailed above. Running the chunk below it will allow you to check your progress as you go. When you have it right, the first file should have one `x`, the second should have two `x` and the third should have 3 `x` in the permissions. There should be three `r` on the first file and a single `r` (as in the original files) for the other two, etc.
+
+```{bash}
+
+```
+
+```{bash,eval=FALSE}
+#set eval=TRUE after completing the task above and run this chunk
+#this runs all three scripts, which will each output to permissions.out
+lab_files/perm1.sh
+lab_files/perm2.sh
+lab_files/perm3.sh 
+
+# because each script appends to this, let's just look at the last three lines, which will be the current permissions
+tail -n 3 permissions.out
+```
+
+## Tab-delimited annotations
+
+In class you briefly saw a few basic ways of representing generic annotations and quantitative annotations relative to genome sequence data. This lab will look at the BED format in more detail and will put some of these files to use. This portion of the lab was adopted from the [bedtools tutorial](http://quinlanlab.org/tutorials/bedtools/bedtools.html). You should refer to that page for guidance as you encounter the bedtools tasks below. Manually run the chunk below to get started. 
+
+```{bash, eval=FALSE}
+# this downloads the files you need
+curl -O https://s3.amazonaws.com/bedtools-tutorials/web/cpg.bed
+curl -O https://s3.amazonaws.com/bedtools-tutorials/web/exons.bed
+curl -O https://s3.amazonaws.com/bedtools-tutorials/web/genome.txt
+curl -O https://s3.amazonaws.com/bedtools-tutorials/web/hesc.chromHmm.bed
+```
+
+Some information about these files:
+`exons.bed` contains the coordinates for every exon for the Refseq annotations of the human genome. 
+`cpg.bed` contains the coordinates for every CpG island detected in the human genome.
+
+`hesc.chromMmm.bed` is an annotation of the predicted function of genomic regions as determined based on their epigenetic states in human embryonic stem cells. 
+
+```{bash}
+echo "cpg.bed:"
+echo "columns are: chromosome, start, end, CpG details (probably some sort of score?)"
+head -n 5 cpg.bed
+echo "====="
+echo "exons.bed"
+echo "columns are: chromosome, start, end, gene_exon_details, 0, strand"
+head -n 5 exons.bed
+echo "======"
+echo "hesc.chromHmm.bed"
+head -n 5 hesc.chromHmm.bed
+```
+
+*IMPORTANT*:
+
+Debugging bash code in RStudio can be problematic if the output to the terminal is verbose (i.e many lines). You should be entering your commands in the Terminal as you get them working and only putting the final command into your code chunk when you know it outputs only a small number of lines to STDOUT, as it should.
+
+**Task**
+
+The code chunk below uses `bedtools` to perform a join the information for each of the CpG islands in `cpg.bed` that overlap with an exon to the associated exon information from `exons.bed`.  The two commands give you the following information: 
+1. How many total overlaps there are between the two files and
+2. the details of each pair of features that overlap
+If you look carefully at the output, what do you notice about the start/end positions in column 2 and 3 as well as columns 4 and 5 when you compare consecutive rows?
+Hopefully you'll notice that there's some redundancy in `exons.bed` due to the same exon being assigned to more than one transcript (i.e. they're different isoforms of the same gene). Modify the code chunk below to output the number of _unique_ lines in `cpg.bed` that overlap with any feature in `exons.bed`. Add
+
+```{bash, engine.opts="-l"}
+
+bedtools intersect -a cpg.bed -b exons.bed -wa -wb | wc -l
+
+bedtools intersect -a cpg.bed -b exons.bed -wa -wb | head -n 8
+
+#add your own code here as described  in the task above and add a brief explanation below of how it works and why
+
+```
+
+**Task**
+
+Using a similar technique the above example used, find the number of exons that overlap with a region annotated as either *Weak_Enhancer* or *Strong_Enhancer*. Hint: There are no other annotations in this file that contain the string *Enhancer*. Once you have the command that accomplishes this, enter it into the empty code chunk below. 
+
+```{bash,engine.opts="-l"}
+#enter your command(s) that find the number of exons overlapping Strong_Enhancer or Weak_Enhancer here
+
+```
+
+## Compression and indexing
+
+The `tabix` utility allows rapid retrieval of data from compressed files in various tab-delimited formats. This works only when files are sorted on chromosome and coordinate. If you run the code chunk below, you'll get a bed file that is compatible with tabix with a similar usage to the `samtools faidx` command we used previously. Refer to the tabix man [page](http://www.htslib.org/doc/tabix.html) to find out more information about how to use it or simply run `tabix` in your terminal with no arguments. This is a common way to find the "help" for a utility that has multiple options. 
+
+```{bash,engine.opts="-l", eval=FALSE}
+#sort the bed file on chromosome (k1,1) then numerically on start position (k2,2n)
+sort -k1,1 -k2,2n exons.bed > exons.sorted.bed
+#compress with bgzip rather than gzip
+bgzip exons.sorted.bed
+
+```
+**Task**
+
+Each of you will add code to the chunk below that will report the number of exons in a different genomic region of size 1,000,000 (one million nucleotides). Your region will be based on the month you were born (January: chr1, February: chr2 etc) and the start position will be the *last six digits of your student number*. For example, Dr. Morin was born in September and his student number is 200021912.
+
+This gives: September (9) and 200*021912* gives chr9:21,912-1,021,912
+After you finish this task, explain in additional comments in your code chunk whether or not the exon count is unique exons or if it contains any redundancy. 
+
+```{bash,engine.opts="-l"}
+# enter your student number here
+# enter your birthday here
+# enter your commands that provide a count of the number of exons in this region
+
+```
+
+
+
+## Lab Completion Checklist
+
+**Task**
+At the end of every lab, replace TODO with DONE to the left of each task to indicate you've completed it
+
+|status|task|
+|-|-|
+|DONE|This file has been knit|
+|TODO| |
+|TODO| |
+|TODO| I was able to install both Bioconda and samtools using conda|
+|TODO| The last few code chunks that run Python code run without errors when I knit this document|

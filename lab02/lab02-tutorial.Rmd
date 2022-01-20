@@ -1,0 +1,101 @@
+---
+title: "Lab 02: Building on Unix fundamentals"
+author: "Author: Ryan Morin"
+date: "Last updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Quick start
+
+*Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
+
+### Learning Objectives
+
+- Practice changing file permissions to allow/restrict certain functionality
+- Use some standard command-line utilities to explore tabular/delimited and fasta format files
+- Introduction to tarballs and compressed files
+- Some basic methods for data sanity checking and tidying 
+- Put `grep` and `egrep` to use in various use cases
+- Understand how to manipulate and explore genome annotations in bed format
+- Work with indexed annotation files using tabix
+- Use bedtools to perform some useful operations on genome annotations
+
+### Context
+
+Data you are given or that you find online may not be exactly what you expect. When you create/download a file, the permissions are often set to the default `bitmask`, which may not allow you to (for example) run a script. This lab will help familiarize you with how to handle these situations. Down the road, once you've implemented your own method of processing data may yield outputs with issues that you didn't anticipate. Getting into the habit of "sanity checking" is extremely important to ensure your analyses are yielding sensible results. This lab will help familiarize you with some simple ways to sanity check your results and will hopefully get you into the habit of doing such checks. 
+
+In class you have seen a few examples of how FASTA and other plain text file formats can be searched and manipulated with tools such as `sort` and `cut`. There are so many ways these simple formats can vary and such diverse (virtually endless) ways these and other tools can be combined that it's important to look at these with a greater variety of file formats to help equip you to use these tools effectively as you encounter variations of these files. You will also eventually encounter files with names that end in `.tar` or `.tar.gz` and this lab will help you learn how to extract and to create such things (and why you may want to do such things).
+
+### File permissions
+|read|write|execute|
+|-|-|
+
+Simply run this chunk for now and move to the next section. don't worry about how it works. Run it if you want to restore the original permissions after running the subsequent chunk.
+```{bash}
+chmod 700 lab_files/file1
+chmod 770 lab_files/file2
+chmod 605 lab_files/filea
+chmod 644 lab_files/filez
+```
+
+There are two different syntax that allow you to change the permissions of files with chmod. The easiest to learn involves individually setting the permissions for each of *user*, *group*, and *others*. If you run the code chunk below and scrutinize the output, you'll see what happens after each command is run on `lab_files/filea`.
+
+```{bash,engine.opts="-l"}
+echo "ORIGINAL"
+ls -l lab_files/filea
+chmod g+w lab_files/filea
+# activate write permissions for the group (staff)
+echo "after chmod g+w filea"
+
+ls -l lab_files/filea
+echo "ORIGINAL"
+ls -l lab_files/filez
+chmod a+x lab_files/filez
+# activate executable permissions for all users
+echo "after chmod a+x filez"
+
+ls -l lab_files/filez
+echo "ORIGINAL"
+ls -l lab_files/file2
+chmod g-rw lab_files/file2
+# Revoke read AND write permissions for the staff group (note: other users already don't have read permissions)
+echo "after chmod g-rw lab_files/file2"
+ls -l lab_files/file2
+
+```
+
+### Understanding and applying compression
+
+Text files in general, and sequence files in particular, are much larger than the complexity of the data they represent. Genomes have a lot of repetitive and *low-complexity* sequence in them. Any sequence (or text) that can be represented as a multiple of another sequence can be easily compressed. 
+
+For example, this sequence can be concisely represented with all repeats of length >2 collapsed. The notation is using [] to describe the repeating sub-sequence and {} to describe their multiplicity. 
+
+
+Original:
+`AAAAAAAAAAGGCCATTTACATACCTTAACCTCTCTCTCAAAAAAAAAA`
+
+Concise:
+`[A]{10}GGCCA[T]{3}ACATACCTTAAC[CT]{4}A{10}`
+
+
+This reformatting may not feel like a huge reduction in file size but keep in mind that the genome has quite large repeats in many places. Compression can also recognize other patterns in text allowing algorithms to further reduce the file size, e.g. by utilizing a better encoding when there is a limited number of characters present. The compression we tend to use in research is lossless, meaning that we lose no information during the compression and the process is entirely reversible. Let's look at a few examples and how they work in reality. This lab contains two fasta files that were each compressed with `gzip`. Knitting this markdown will decompress them to new files using `zcat`. To decompress them to files with their original name (minus the `.gz` suffix), we would use `gunzip FILE`. We used zcat here for pragmatic reasons, i.e. to retain the original files so this document can easily be re-knit. 
+
+```{bash}
+gzcat lab_files/fake_sequence1.fa.gz > lab_files/fake_sequence1.fa
+gzcat lab_files/real_sequence1.fa.gz > lab_files/real_sequence1.fa
+
+#glob matches all fasta files including those ending with .gz
+ls -l lab_files/*fa*
+
+```
+
+Scrutinize the file sizes in the output above. What do you notice about the file sizes of the two uncompressed (.fa) files? What about their corresponding compressed file? 
+
+**Important!**: Compressing text files is a convenient way to save disk space. The tradeoff is that the files are generally not directly useable. For example, you can't use `grep` or `egrep` directly on them to search for specific data in the files. In the lab activity you will see an alternative to `gzip` that allows some rapid access to compressed files that uses indexing, namely (`tabix` and `bgzip`). 
+
+
+
+
+
