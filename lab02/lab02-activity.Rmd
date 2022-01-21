@@ -118,9 +118,9 @@ Hopefully you'll notice that there's some redundancy in `exons.bed` due to the s
 
 ```{bash, engine.opts="-l"}
 
-bedtools intersect -a cpg.bed -b exons.bed -wa -wb | wc -l
+bedtools intersect -a lab_files/cpg.bed -b lab_files/exons.bed -wa -wb | wc -l
 
-bedtools intersect -a cpg.bed -b exons.bed -wa -wb | head -n 8
+bedtools intersect -a lab_files/cpg.bed -b lab_files/exons.bed -wa -wb | head -n 8
 
 #add your own code here as described  in the task above and add a brief explanation below of how it works and why
 
