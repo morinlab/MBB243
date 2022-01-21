@@ -1,0 +1,265 @@
+---
+title: "MBB 243 - Lecture 3"
+author: "Ryan Morin"
+date: 2022/01/26
+output: 
+  powerpoint_presentation
+---
+
+```{r setup, include=FALSE}
+require(reticulate)
+knitr::opts_chunk$set(echo = FALSE)
+# if necessary, use this command to install required non-standard command-line tools:
+# conda install -c bioconda samtools seqtk
+
+```
+
+# Programming in R and Python
+
+- The next few lectures will cover introductory concepts with syntax examples in both R and Python
+- *Syntax*: You will use each language in your labs so the syntax for both is important
+- *Terminology*: Languages sometimes use different terms to describe related concepts and the differences may be subtle
+- In situations when the concept is more easily illustrated in one language we will focus on a single language for consistency
+
+# Variables
+
+- String/character variables: require quotes
+- Numbers in R are all represented by the numeric *class*
+- Python has a more nuanced set of variable *types* for numbers
+  - int (signed integer)
+  - float (floating point numbers)
+- The class of a R variable can always be determined with the `class` function
+- The type of a Python variable can always be determined with the `type` function
+
+# Exploring basic R variables
+
+```{r, eval=T,echo=T}
+# initializing variables in R 
+a.string <- "Hey"
+one.number <- 3.14
+
+class(a.string)
+class(one.number)
+
+a.string=9999
+class(a.string) #reassigning will change the variable type accordingly
+
+```
+
+# Exploring basic Python variables
+
+- *IMPORTANT:* Python does not allow any decimal/dot (`.`) characters in variable names and yet R does allow this and it's commonly used
+
+```{r,eval=T,echo=F}
+require(reticulate)
+```
+
+```{python, eval=T,echo=T}
+# initializing variables in Python
+a_string = "Hey" # a new variable assigned quoted text will be initialized as a string and for numbers, it will automatically figure out if a variable should be a float
+one_integer = 3 
+one_float = 3.14 
+type(a_string)
+type(one_integer)
+type(one_float)
+```
+
+# Variable types change as necessary
+
+```{r, eval=T,echo=T}
+# initializing variables in R 
+a.string <- "Hey"
+
+class(a.string)
+a.string=9999
+
+class(a.string) #reassigning will change the variable type accordingly
+
+```
+
+# Variable types change as necessary
+
+```{python,eval=T,echo=T}
+a_string="1"
+type(a_string)
+a_string=1
+type(a_string) #because you set the value with a number it's now a numeric type
+
+```
+
+# Operators in Python
+
+:::::::::::::: {.columns}
+::: {.column}
+- Perform operations on variables and values, depending on the type
+- These are the Arithmetic operators but some have other effects in different contexts (e.g. strings)
+  - e.g. `+` is not just for numeric addition
+:::
+::: {.column}
+|Operator|Name|Example|
+|-|-|-|
+|+|Addition|x + y|	
+|-|Subtraction|x - y|
+|\*|Multiplication|x \* y|
+|/|Division|x / y|
+|%|Modulus|x % y|
+|\*\*|Exponentiation|x ** y|
+:::
+::::::::::::::
+
+# Doing some math
+
+```{python,eval=T,echo=T}
+num_1 = 4
+num_2 = 2
+num_1 + num_2
+num_1 - num_2
+num_1 * num_2
+num_1 / num_2
+num_1 % num_2 #modulo returns zero if the first number is perfectly divisible by the second
+num_1 ** num_2
+```
+
+# Same code, different variable values
+
+```{python,eval=T,echo=T}
+num_1 = 1.1
+num_2 = 0.3
+num_1 + num_2 #why is this not exactly 1.4?
+num_1 - num_2
+num_1 * num_2
+num_1 / num_2
+num_1 % num_2 #modulo just returns the remainder
+num_1 ** num_2
+# notice how all the numbers are now floating point decimals automatically
+```
+
+# Floating point arithmetic limitations 
+
+- Internally Python represents a floating point number as a fraction of binary values
+  - [Explained here](https://docs.python.org/3/tutorial/floatingpoint.html)
+- Operations will return values that are exactly or near the correct answer, depending on how readily a number can be represented in binary fractions
+
+```{python,eval=T,echo=T}
+inexact_result = 1.1 + 0.3
+close_enough = format(inexact_result, '.2f') #format the number keeping only the first two decimal places
+close_enough
+```
+
+# Operators in R
+
+:::::::::::::: {.columns}
+::: {.column}
+- Very similar set of arithmetic operators
+- None of these will work on character variables
+- This error is the telltale sign you used one in the wrong context:
+  - `non-numeric argument to binary operator`
+:::
+::: {.column}
+|Operator|Name|Example|
+|-|-|-|
+|+|Addition|x + y|	
+|-|Subtraction|x - y|
+|\*|Multiplication|x \* y|
+|/|Division|x / y|
+|^|Exponentiation|x ^ y|
+:::
+::::::::::::::
+
+
+# Variable types are treated differently
+
+- The type of a variable defines how it can be manipulated and what operators and functions will do with it
+- Python allows strings to be concatenated using the `+` operator
+- As you saw in Lab 1, R will complain if you try to do this
+
+```{python,echo=T,eval=T}
+dna1 = "TATA"
+dna2 = "CGCG"
+dna3 = dna1 + dna2
+dna3
+```
+
+# Vectors and Arrays
+
+- R vectors and Python arrays are equivalent variables that each can store one or more values at defined indexes
+- Convenient for storing related values in a specific order
+- Commonly used in conjunction with loops (to be covered soon)
+  - The indexing of R vectors starts at 1
+  - The indexing of Python arrays starts at 0
+
+# Vectors in R
+
+```{r, echo=T, eval=T,error=F}
+#assign a vector using only numeric values
+my.vec <- c(1, 2, 4)
+class(my.vec)
+my.vec
+#assigning a single non-numeric value makes it into a character vector
+other.vec=c("1", 3, 7, 11)
+class(other.vec)
+other.vec
+my.vec * 10
+# Trying this on other.vec throws: Error in other.vec * 10 : non-numeric argument to binary operator
+```
+
+# Manipulating values by index
+
+- The value stored at an index `i` can be assigned, manipluated, or accessed for another purpose
+
+```{r, echo=T, eval=T,error=F}
+my.vec <- c(1, 2, 4)
+my.vec[1] <- 30 #our index, i here is 1, the first element in this vector
+my.vec[2] <- my.vec[2] + 2 # our index here is 2
+i <- 3
+my.vec[i] <- 1/4 # our index is the value of the variable i, which is 3
+my.vec
+typeof(my.vec)
+```
+
+# Vectorized 
+
+# Arrays in Python
+
+```{python, echo=T}
+my_array = [1, 2, 4]
+my_array[0] = 30 #our index, i here is 0, the first element in this array
+my_array[1] = my_array[1] + 2 # our index here is 1
+i = 2
+my_array[i] = 1/4 # our index is the value of the variable i, which is 2
+my_array
+type(my_array)
+
+```
+
+# When do you walk away from interactive bash?
+
+- Eventually you will encounter data formats that require more sophisticated programming than is readily possible with the command line
+- Any process you want to apply to multiple individual files or only when certain conditions apply is not easily done interactively
+  - e.g. if file contains X do Y
+  - e.g. for every file do X, Y and then Z and make a new file with a different name
+- All theoretically possible in bash but there really are better ways
+
+# Scripts with command-line arguments
+
+- Each of Bash, Python and R code can be written into standalone scripts
+  - Not mixed together though. That's an oddity of RMarkdown
+- Python offers a nice balance of ease of implementation and built-in functionality for parsing various argument types automatically
+- e.g. 
+`hello_args.py word1 word2 word3`
+
+# Python script with command-line arguments
+
+```{python,eval=FALSE,echo=TRUE}
+#!/usr/bin/env python3
+import sys #import the library we need for parsing command-line arguments
+num_args = str(len(sys.argv)) #make the number into a string so we can combine it with a string
+print('This many arguments were provided: ' + num_args)
+print('And they were:' + str(sys.argv))
+```
+
+# Python script with command-line arguments
+
+```{bash, eval=T,echo=T}
+scripts/hello_args.py Hello World
+```
