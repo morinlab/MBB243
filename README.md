@@ -16,8 +16,7 @@ The purpose of this introductory data analysis course is to teach students in mo
 
 ## Location
 
-* **Until further notice, lectures and labs will NOT be held in person**
-* Zoom link for class is https://us02web.zoom.us/j/85725104049 and the passcode can be found in our Slack workspace
+* Zoom link for class is https://us02web.zoom.us/j/85725104049 and the passcode can be found in our Slack workspace (Attend in person unless you are self-isolating due to illness. And yes, we will notice if you self-isolate the whole semester!)
 * Lectures will be held in AQ 4130 (once we resume in-person teaching)
 * Labs will be in SSB 6178 (once we resume in-person teaching)
 
