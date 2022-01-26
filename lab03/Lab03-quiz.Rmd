@@ -1,0 +1,127 @@
+---
+title: "Tutorial"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(reticulate)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+### Self-Quiz
+
+```{r question1, echo=FALSE}
+question("Which of the following best describes the behaviour of a Python float variable?",
+  answer("Can be used as input for built-in functions"),
+  answer("Can be manipulated with *all* arithmetic operators"),
+  answer("Has access to functions (methods) that only work on floats"),
+  answer("all of these statements are true",correct = TRUE)
+)
+```
+
+```{r question2, echo=FALSE}
+question("Which of the following best describes the behaviour of a Python string variable?",
+  answer("Can be only used as input for built-in functions"),
+  answer("Can be manipulated with *all* arithmetic operators"),
+  answer("Has access to functions (methods) that only work on strings",correct = TRUE),
+  answer("all of these statements are true")
+)
+```
+
+```{r question3, echo=FALSE}
+question("Which of the following R code would create a numeric vector of length 3?",
+  answer("awesome_possum = [1,99,9999]"),
+  answer("balistic_badger = ['1','99','9999']"),
+  answer("carnivorous_chickadee <- (1, 99, 9999)"),
+  answer("dainty_dingo <- c('1', '99', '9999')"),
+  answer("erotic_elephant <- c(1, 99, 9999)",correct = TRUE),
+  answer("frisky_frigate = {a:1, b:2, c:3}")
+)
+```
+
+```{r question4, echo=FALSE}
+question("Which of the following is Python code that would create an array containing three numeric values?",
+  answer("awesome_possum = [1,99,9999]",correct = TRUE),
+  answer("balistic_badger = ['1','99','9999']"),
+  answer("carnivorous_chickadee <- (1, 99, 9999)"),
+  answer("dainty_dingo <- c('1', '99', '9999')"),
+  answer("erotic_elephant <- c(1, 99, 9999)"),
+  answer("frisky_frigate = {a:1, b:2, c:3}")
+)
+```
+
+```{python some_array1, exercise=FALSE,echo=TRUE}
+some_array = ["A","B","C","D","E", 1, 2, 3, 4, 5]
+```
+
+```{r question5, echo=FALSE}
+question("Which of the following statement(s) are true with respect to the Python array some_array, which is shown above?",
+  answer("It contains only numeric values"),
+  answer("It contains only string values"),
+  answer("It has length 9"),
+  answer("The last index in the array is 9",correct = TRUE),
+  answer("Both C and D are true")
+)
+```
+
+```{r some_vector1,echo=TRUE}
+some_R_vector <- c("A","B","C","D","E", 1, 2, 3, 4, 5)
+```
+
+```{r some_vector, exercise=TRUE}
+some_R_vector <- c("A","B","C","D","E", 1, 2, 3, 4, 5)
+```
+
+```{r question6, echo=FALSE}
+question("Which of the following statement(s) are true with respect to the R vector some_R_vector, which is shown above? Feel free to add some code to the box above to explore the variable.",
+  answer("It contains only numeric values"),
+  answer("It contains only string values",correct = TRUE),
+  answer("It has length 9"),
+  answer("The last index in the array is 9"),
+  answer("Both C and D are true")
+)
+```
+
+```{r,exercise=FALSE,echo=TRUE}
+this_vector <- c(0,1,2,3,4,8,9,10,100)
+this_val <- this_vector[8]
+
+```
+
+```{r this_val, exercise=TRUE}
+
+```
+
+```{r question7, echo=FALSE}
+question("What is the value of the variable this_val based on the R code above? (paste into the section below if you need to try running it to figure this out)",
+  answer("10",correct = TRUE),
+  answer("100"),
+  answer("8"),
+  answer("1"),
+  answer("0")
+)
+```
+
+```{python, echo=TRUE,eval=FALSE,exercise=FALSE}
+a_dict = {ATG:"Start"}
+a_dict["TAG"]="Stop"
+a_dict["UUU"]="Error"
+a_dict["UUU"]="???"
+a_dict["ATG"]="Met"
+```
+
+```{r question8, echo=FALSE}
+question("How many keys does the dictionary a_dict contain?",
+  answer("Just the one"),
+  answer("Two, clearly"),
+  answer("Obviously it's three!",correct = TRUE),
+  answer("It has to be four"),
+  answer("It's five. Final answer!")
+)
+```
+
+
+
