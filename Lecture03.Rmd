@@ -152,6 +152,18 @@ a_variable = 10
 # only line 1 is valid because the other lines don't have the same indentation "level"
 ```
 
+# Syntax note: whitespace in Python
+
+- Newlines (`\n`), tabs (`\t`) and spaces (`\s`) are entirely ignored by most programming languages
+- Here is what the Python interpreter sees
+
+```{python,echo=T,eval=F}
+a_variable = 10\n #<- newline means new line of code
+\s\s\sb_variable = 20\n #<- indent or space means nested code block
+\tc_variable = 30\n #<- never mix tabs and spaces in Python. Just don't!
+
+```
+
 # Exploring basic Python variables
 
 - *IMPORTANT:* Python does not allow any decimal/dot (`.`) characters in variable names and yet R does allow this and it's commonly used

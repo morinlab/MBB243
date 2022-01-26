@@ -201,4 +201,38 @@ A common data type used in virtually all programming languages. Used for values 
 
 - A value (e.g. string, integer) given to a program at runtime. Typically these will specify the input for the program or the path to an input file along with specifying options or settings for the program.
 
+## Week 3
+
+### Array
+
+- A variable that can store one or more values at defined positions (indexes). Python arrays are indexed starting at 0.
+
+### Argument
+
+- Something you hopefully don't have very often with your significant other
+- A variable or value that is provided when calling a function or running a program
+- In R and Python, arguments can be positional (provided in a specific order) or explicitly named
+
+### Dictionary
+
+- A variable that can store one or more key-value pairs (unordered), with each key uniquely referring to its value. 
+
+### Logical/Boolean
+
+- Equivalent to a binary value. Represented as TRUE/FALSE (R) or True/False (Python)
+
+### Vector
+
+- Vectors are variables that can store one or more values at defined positions (indexes). R vectors are indexed starting at 1. 
+- Names can be assigned to all elements in an R vector
+
+### Function
+
+- A function is a block of reusable code that is used to perform a similar or related action using a specific input or set of inputs
+
+### Method
+
+- In object-oriented programming languages, an object can have its own functions, which are usually described as methods. 
+- Because methods have direct access to the object's attributes, they do not need to be explicitly provided as arguments.
+
 
