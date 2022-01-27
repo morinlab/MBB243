@@ -10,7 +10,7 @@ file_base_path = "/local-scratch/course_files/MBB243/human_genes_chr7/"
 
 #keep this code intact!
 def get_filename(student_name):
-  fh = open("student_files.txt","r")
+  fh = open("student_files.tsv","r")
   for line in fh.readlines():
     line = line.rstrip()
     (name,fasta) = line.split("\t")
