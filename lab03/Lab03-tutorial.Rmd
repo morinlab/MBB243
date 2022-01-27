@@ -1,0 +1,141 @@
+---
+title: "Lab 03: Getting into Python"
+author: "Author: Ryan Morin"
+date: "Last updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+
+```
+
+
+
+## Quick start
+
+*Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
+
+### Learning Objectives
+
+- Explore the common types of variables in Python
+- Through putting them to use in code, understand the limitations of different variable types
+- Understand how to access object Methods and to call functions
+- Become familiar with some common Methods of the string class
+- Become familiar with manipulating variables such as arrays and dictionaries
+- Create Python scripts that bring together these tools to perform something useful
+
+### Preamble
+
+This tutorial is associated with a small assignment that you will do outside RMarkdown using what you have learned this week. There are some tasks to complete as exercises but will not form part of the assignment you will be asked to complete. During class, work your way through this document and run code chunks individually as you go to ensure your code is running as expected. 
+
+**Task**
+
+In programs you will implement, you will often want a variable that you will refer to in various places (and not change). These are often called "global" variables because their scope is global, meaning all the code will have access to them. Creating a global variable is straightforward. Unless otherwise specified, i.e. by creating in a more limited scope, Python variables are global by default. Here we will set a global variable to store your first name. One has been set for you that you just have to replace. Change the code below to set the variable student_name to store your own first name. _At the end of this tutorial you will need to replace line 8 of template.py with the line you just edited._ 
+
+
+```{python,echo=T,eval=T}
+student_name = "Student" 
+#change this variable to your first name
+
+```
+
+**Task**
+
+We're using the new variable in the chunk below. You may notice that there is no space between Hello and your name in the printed text when you run this code chunk. Why do you think this is? Try to fix it without changing your global variable. 
+
+```{python,echo=T,eval=T}
+print("Hello"+student_name,sep=" ")
+```
+
+Arrays (or "lists") are often used to keep a collection of values that need to remain in a specific order for later use. Although strings have some features of arrays, they are always strings even when we operate on smaller pieces of them. What if we want to convert a string to an array? Even better: what if we have two strings that are related in some way and want to create a pair of arrays that have the contents of those strings in the same order? The code chunk below uses the toy example from class to show why this might be useful and how you can accomplish it. 
+
+```{python,echo=T,eval=T}
+my_seq="AAAGCGCCGGGATTTTCCGTTTAAACCTCCCTC"
+scores="012345543210101234543211122334455"
+seq_array = list(my_seq) # list is one of Python's built-in functions.
+seq_array 
+score_array = list(scores)
+score_array
+coordinate_offset = 12345
+
+```
+
+**Task**
+
+Write some code to calculate and print the following values from the two arrays. Visually confirm that your code is working by looking at the printout of the full contents of each array above. 
+
+1. The length of the array score_array
+2. The last index in the array score_array
+3. The value (nucleotide) at the last index of my_seq
+4. The value (score) at the last index of score_array
+5. The nucleotide at index `-1` of my_seq
+
+What do you think is happening with the last one? 
+
+**Task**
+
+Assume the first nucleotide in this sequence is from position 12345 on chromosome 1. I've created a variable for you to use when working out the relative coordinates of the other sequences. Spend some time thinking about how you can use this variable to convert a coordinate to an index in these arrays. Now try to write some lines at the bottom of the code chunk above to make it print out the score value for position 12345, 12350 and 12361. What if you try to print out the value for position 12344? Is this a problem? 
+
+
+There are various ways to load sequence data into Python. The code chunk below shows you how to load the contents of a fasta file using BioPython. This involves a few steps you haven't been introduced to yet. Don't worry about the details for now. The last line stores the DNA sequence contained in the fasta file as a variable `sequence_string`. This was done because the sequence is stored in a more complex object that has several methods and attributes. One of its attributes is `seq`. Note the syntax for referring to an object's attribute is similar but not the same as referring to one of it's methods. These are contrasted below.
+
+`method_output = object_name.method()`
+
+`object_attribute = object_name.attribute`
+
+```{python,echo=T,eval=T}
+from Bio import SeqIO
+import os
+os.getcwd()
+my_fasta_path = "../data/human_genes_chr7/ENST00000199447.fa"
+iterator = SeqIO.parse(my_fasta_path, "fasta")
+sequence_record = next(iterator)
+
+type(sequence_record) #find out what Class is returned
+#you can use ?Bio.SeqRecord.SeqRecord to look at the documentation
+sequence_string = sequence_record.seq
+print(sequence_string)
+```
+
+Before delving into BioPython, let's explore some handy features of the string class. The code below counts the number of G in the sequence stored in sequence_string. It stores the count under a key-value pair in a dictionary we've named base_count. 
+
+**Task** 
+
+Modify the code block below to store the count of C, T and A in the same dictionary. At the end of the modified code, print out the contents of base_count so you can sanity check your result. 
+
+```{python,echo=T,eval=T}
+base_count = {} #empty dictionary
+sequence_string.count("G")
+base_count["G"] = sequence_string.count("G")
+
+```
+
+Another handy feature is searching for exact matches within strings. The code block below shows how this works. This simply finds the location of the first "CpG" (a consecutive C and G on the same strand). These are important dincleotides because of their role in epigenetics. Think about how you might use this and some other things you've learned to catalogue the location of _every_ CpG in this sequence.
+
+```{python,echo=T,eval=T}
+first = sequence_string.find("CG")
+print(sequence_string[0:first+2]) #why am I adding 2 here?
+```
+
+**Optional Task**
+
+Instead of just thinking about it, actually implement some code that records the position of every CpG in your sequence (e.g. in an array).
+
+## Assignment
+
+This week is another assignment that is graded based on completion. Your task is to modify the python script in this directory (`template.py`) to calculate the %GC of the sequence file assigned to you. Most of the code you use can be adapted from the code in the examples above. The formula for %GC is the percentage of bases that are either G or C out of the total number of bases.
+
+`%GC = 100 * number of G or C bases / (total number of bases)`
+
+To prove your script works (for the sake of getting your marks) please run it like this at the very end. This will capture the output printed from your script into a file the TA and instructor can see. 
+
+`./template.py > ~/lab3_output.txt`
+
+|status|task|
+|-|-|
+|DONE|This file has been knit|
+|TODO|I modified template.py and confirmed it runs and generates the expected result|
