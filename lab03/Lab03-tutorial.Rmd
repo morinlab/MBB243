@@ -91,7 +91,7 @@ There are various ways to load sequence data into Python. The code chunk below s
 from Bio import SeqIO
 import os
 os.getcwd()
-my_fasta_path = "../data/human_genes_chr7/ENST00000199447.fa"
+my_fasta_path = "/local-scratch/course_files/MBB243/human_genes_chr7/ENST00000199447.fa"
 iterator = SeqIO.parse(my_fasta_path, "fasta")
 sequence_record = next(iterator)
 
