@@ -1,0 +1,117 @@
+---
+title: "Lab 04"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(reticulate)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+### Self-Quiz
+
+```{r question1, echo=FALSE}
+question("Which (if any) of the following statements regarding Python if/else statements is False?",
+  answer("Only a single condition can be evaluated",correct = TRUE),
+  answer("The code after if and else must be indented"),
+  answer("The else is optional"),
+  answer("all of these statements are true")
+)
+```
+
+```{r question2, echo=FALSE}
+question("Which of the following Python code would evaluate to True?",
+  answer(" 100 > 3 "),
+  answer(" 100 = 100 "),
+  answer("100 <= 100",correct = TRUE),
+  answer(" 100 == 3 "),
+  answer(" 100 < 100")
+
+)
+```
+
+```{r question3, echo=FALSE}
+question("Which of the following statements about a Python dictionary is False?",
+  answer("By definition, they must have all unique keys"),
+  answer("By definition, they must have all unique values",correct = TRUE),
+  answer("Unlike elements in an array, Key/Value pairs are stored in no particular order"),
+  answer("You cannot refer to a value at a non-existent key in any experession")
+)
+```
+
+```{r question4, echo=FALSE}
+question("If you wanted to multiply every value in a numeric Python array by 10, what would be the easiest approach?",
+  answer("It's as easy as: some_python_array * 10 "),
+  answer("You would use some sort of loop",correct = TRUE)
+)
+```
+
+```{python some_array1, exercise=FALSE,echo=TRUE}
+some_python_array = [1, 2, 3, 4, 5]
+```
+
+```{r question5, echo=FALSE}
+question("If you wanted to multiply every value in a numeric R vector by 10, what would be the easiest approach?",
+  answer("It's as easy as: some_R_vector * 10 ",correct = TRUE),
+  answer("You would use some sort of loop")
+)
+```
+
+```{r some_vector1,echo=TRUE}
+some_R_vector <- c(1, 2, 3, 4, 5)
+
+
+```
+
+```{r some_vector, exercise=TRUE}
+some_R_vector <- c(1, 2, 3, 4, 5)
+```
+
+```{r question6, echo=FALSE}
+question("Which of the following statement(s) are true with respect to the R vector some_R_vector, which is shown above? Feel free to add some code to the box above to explore the variable.",
+  answer("It contains only numeric values"),
+  answer("It contains only string values",correct = TRUE),
+  answer("It has length 9"),
+  answer("The last index in the array is 9"),
+  answer("Both C and D are true")
+)
+```
+
+```{r,exercise=FALSE,echo=TRUE}
+this_vector <- c(0,1,2,3,4,8,9,10,100)
+this_val <- this_vector[8]
+
+```
+
+```{r this_val, exercise=TRUE}
+
+```
+
+```{r question7, echo=FALSE}
+question("Which of the following Python statements would evaluate to False?",
+  answer(" 1 > 0 and 2 == 2 "),
+  answer(" 3 + 3 == 6 or 1 + 1 == 2"),
+  answer(" 20/10 == 2 or 0 == 1000"),
+  answer(" 1 / 10 < 1 or 100 > 1"),
+  answer(" 1 == 10 and 100 < 10 ",correct = TRUE)
+)
+```
+
+```{r question8, echo=FALSE}
+question("Assuming the variable T is set to 1 and F is set to False as per the code below, which of these Python statements will evaluate to True?",
+  answer("T and F"),
+  answer("not T and not F"),
+  answer("T and not F",correct = TRUE),
+  answer("not T and F"),
+  answer("not T or F")
+)
+```
+
+```{python tf, exercise=FALSE,echo=TRUE}
+T = 1
+F = False
+```
+
