@@ -24,7 +24,7 @@ question("Which (if any) of the following statements regarding Python if/else st
 
 ```{r question2, echo=FALSE}
 question("Which of the following Python code would evaluate to True?",
-  answer(" 100 > 3 "),
+  answer(" 100 < 3 "),
   answer(" 100 = 100 "),
   answer("100 <= 100",correct = TRUE),
   answer(" 100 == 3 "),
@@ -86,9 +86,6 @@ this_val <- this_vector[8]
 
 ```
 
-```{r this_val, exercise=TRUE}
-
-```
 
 ```{r question7, echo=FALSE}
 question("Which of the following Python statements would evaluate to False?",
