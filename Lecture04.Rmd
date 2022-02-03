@@ -1,0 +1,607 @@
+---
+title: "MBB 243 - Lecture 4"
+author: "Ryan Morin"
+date: 2022/02/02
+output: 
+  powerpoint_presentation
+---
+
+```{r setup, include=FALSE}
+require(reticulate)
+knitr::opts_chunk$set(echo = FALSE)
+# if necessary, use this command to install required non-standard command-line tools:
+# conda install -c bioconda samtools seqtk
+
+```
+
+
+# Learning goals for the week
+
+- Apply and implement the most common type of loops in Python
+- Understand why you should avoid loops in R
+- Understand conditionals, boolean logic and their common applications in programming
+- Put conditionals to use in Python and R using various flavours of if/else
+- Put concepts into practical applications relating to sequence data
+
+# Comparing values with Conditions
+
+- Conditions are used in programs to make decisions
+- Most common type of comparison used in decision making is to determine how one numeric value compares to the other in magnitude
+- Another common comparison is between strings (identity or partial identity)
+
+# If this, then...
+
+- The `if` statement is shared across most programming languages with similar syntax
+- Used to check whether the evaluation of code results in one of two outcomes:
+  - True vs False or 0 vs a non-zero value
+
+```{python,eval=T,echo=T}
+if 1+1:
+  print("it's not zero!")
+
+if 1-1:
+  print("we can't get here!")
+```
+
+```{python,echo=F,eval=T}
+gene_expression = {}
+gene_expression["ACTB"]= 12
+gene_expression["TERT"]= 5
+```
+
+# Putting `if` to use
+
+```{python,eval=T,echo=T}
+highly_expressed = [] #empty array to store the genes that make the cut
+expression_threshold = 6 # some criterion we want to apply
+this_gene = "ACTB"
+#assume we have a dictionary that stores the expression value for every gene
+if gene_expression[this_gene] >  expression_threshold:
+  highly_expressed.append(this_gene) #any indented code following the expression will ONLY be run if the expression evaluates to true or a non-zero value
+print(highly_expressed)
+```
+
+# Putting `if` to use
+
+- Why does this code not change the contents of the highly_expressed array?
+
+```{python,eval=T,echo=T}
+
+this_gene = "TERT" # Do it for another gene and see what changes
+if gene_expression[this_gene] >  expression_threshold:
+  highly_expressed.append(this_gene)
+print(highly_expressed)
+```
+
+# Else is the counterpart to if
+:::::::::::::: {.columns}
+::: {.column}
+- Instead of executing specific code when a condition is met, you may want to use some other code instead
+- Combining if/else allows *something* to happen in any condition
+- Creates a non-linear path in your program
+- After the end of an if/else the code is once again followed linearly
+:::
+::: {.column}
+![](images/ifelse.png)
+:::
+::::::::::::::
+
+# Putting `else` to use
+
+```{python,eval=T,echo=T}
+not_highly_expressed = [] #new array to store some more genes
+this_gene = "TERT" # Same gene as previous example
+if gene_expression[this_gene] >  expression_threshold:
+  highly_expressed.append(this_gene)
+else:
+  not_highly_expressed.append(this_gene)
+print("Highly expressed:",highly_expressed)
+print("The rest:",not_highly_expressed)
+```
+
+# R syntax
+
+```{R,echo=T,eval=F}
+if (some_condition) {
+  Code that runs when that condition is met
+  Indentation level of this code is unimportant
+  The braces define where the code block ends
+} else {
+  Code that runs when the condition is NOT met  
+}
+Code that always runs afterward, regardless of the condition 
+```
+
+# Python syntax is trickier
+
+```{python,eval=F,echo=T}
+# the lines that start with if/else must end with a colon
+if some_condition: 
+  some code
+  some more code 
+# lines you want run when the condition is met are all at the next indentation level
+# This can be one tab or four spaces but don't mix and match!
+
+#the else must be at the same indentation level as the if
+else: 
+  some alternative code #etc
+more code that always runs
+
+```
+
+# Testing for equal values
+
+- To test if two variables have an *Equal value* we have to use `==`
+- Using `=` (the assignment operator) is one of the most common programming errors
+
+```{python,echo=T,eval=T}
+print(gene_expression) #our expression values used earlier
+if gene_expression["TERT"] == gene_expression["ACTB"]:
+  print("they are equal")
+else:
+  print("they are not equal")
+```
+
+# All the tests
+
+- Using >= instead of > allows you to handle the special condition of the two values being equal
+
+```{python,echo=T,eval=T}
+a = 1 #assign the variable
+a == 1 # check if it equals 1
+a >= 1 # is it greater than or equal to 1?
+a > 1 # is it greater than 1?
+a <= 1 # etc
+a < 1
+a != 1 # is it NOT equal?
+```
+
+# Boolean logic and variables
+
+- A form of algebra centered around three operators: OR, AND and NOT
+- Useful for binary data or logicals (e.g. True vs False, 0 vs 1)
+- In Python, a boolean is a simple type of variable for this
+
+```{python,echo=T,eval=T}
+a = True #no quotes should be used here
+b = False # if we instead put b = "False" this would be a string
+type(a)
+type(b)
+print("a:",a,"b:",b,sep=" ")
+```
+
+# Overview of logic and operators
+
+![](images/logic_table.png)
+
+# Boolean logic in Python
+
+```{python,eval=T,echo=T}
+a & b # this means logical AND
+a and b # Python allows this
+```
+
+# Boolean logic in Python
+
+```{python,eval=T,echo=T}
+a & b # this means logical AND
+a and b # Python allows this
+a | b # this means logical OR
+a or b # and this
+```
+
+# Boolean logic in Python
+
+```{python,eval=T,echo=T}
+a and b # are both true?
+a or b # Is either true?
+a and not b # Is a true but not b?
+not b # is b not true (i.e. is it False)?
+```
+
+# Logicals in R
+
+- R has a logical variable type that can be either TRUE or FALSE
+- R doesn't allow you to use the words `and` and `or`
+
+```{R, eval=T,echo=T}
+a = TRUE
+b = FALSE
+a && b
+a || b
+```
+
+# What's with the doubling up?
+
+- The `&&` is equivalent to `and` in Python whereas `||` is equivalent to `or`
+- Using a single `&` or `|` allows R to perform the evaluation across an entire vector
+
+```{R,echo=T,eval=T}
+some_stuff = c(TRUE,FALSE,TRUE)
+more_stuff = c(FALSE,FALSE,TRUE)
+some_stuff & more_stuff # The right thing to use for vectors with more than one value 
+some_stuff && more_stuff # Not useful here
+some_stuff || more_stuff # NYET!
+some_stuff | more_stuff # Yes
+```
+
+
+# Why are logicals/booleans useful?
+
+- Conditionals are actually always using booleans
+- You can evaluate multiple conditions at once and logically combine them
+
+```{python,echo=T,eval=T}
+a = 1
+b = 2
+c = 100
+b > a
+b > a and c > b
+if b > a and c > b:
+  print("c is the boss")
+```
+
+# Getting booleans from functions
+
+- Many functions return a boolean based on their input and are somewhat intuitive to understand
+
+```{python,echo=T,eval=T}
+seq = "GATTACA"
+seq.startswith("G") # does it start with a G?
+seq.endswith("G") # does it end with a G?
+seq.islower() # is it all lowercase
+seq.isupper() # is it all uppercase?
+```
+
+# For Loops
+
+- What if you want the same code run on every value in a list or dictionary?
+- What if you wanted to process every line of a file in a consistent way (e.g. similar to earlier lectures using the command line)?
+  - Two types of loops in Python: `for` and `while` 
+
+```{python,eval=F,echo=T}
+my_seq=list("AAAGCGCCGGGA") 
+#split sequence and scores into arrays
+scores=list("012345543210")
+for base in my_seq:
+  print(base)
+#note the formatting, including indentation, is similar to if/else
+```
+
+# For Loops
+
+```{python,eval=T,echo=T}
+my_seq=list("AAAGCGCCGGGA") 
+scores=list("012345543210")
+for base in my_seq:
+  print(base)
+```
+
+# Loops with counters
+
+```{python,eval=T,echo=T}
+i = 0 # a counter variable to track where we are
+for base in my_seq:
+  print("Nucleotide", base, "at index",i,"has score:",scores[i],sep=" ") 
+  i+=1 # same as i = i+1. Increases i with each iteration of the loop
+```
+
+```{python,eval=T,echo=F}
+genetic_code = {
+'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',
+'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
+'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',
+'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',                
+'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',
+'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
+'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',
+'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
+'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',
+'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
+'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',
+'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
+'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',
+'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
+'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
+'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',
+}
+```
+
+# Loops and Dictionaries
+
+```{python,eval=T,echo=T}
+# Using the genetic code dictionary from last class
+printed = 0
+for codon, amino in genetic_code.items():
+  print(codon,amino)
+  # use a counter here just for fun
+  printed += 1
+  # use "break" to terminate the loop
+  if printed == 5: 
+    break
+
+```
+
+# R has loops too
+
+- `for` loops are available in R but there are often better alternatives
+- Syntax is clunkier and more explicit
+- Importantly, the existence of `vectorized` functions make loops unnecessary in many contexts
+
+```{R,echo=T,eval=T}
+bignums <- c(10,20,30) # NOTE: R
+smallnums <- c() #empty vector for results
+for(i in c(1:length(bignums))){ #specify the range explicitly
+  smallnums[i] <- bignums[i]/10
+}
+smallnums
+```
+
+# Vectorization in R
+
+- Many functions in R automatically work across every element in a vector
+- This will be even more relevant once we encounter higher dimensional data structures in R (e.g. matrices and data frames)
+
+```{R,echo=T,eval=T}
+smallnums <- bignums / 10 # NOTE: R
+smallnums # all elements were affected by the same operation!
+biggernums = bignums * c(10,100,1000)
+biggernums
+# If we operate on two vectors of the same length the behaviour is different
+```
+
+# Recap
+
+- A `for` loop will give you access to every value in a list in increasing order from the first index (0 or 1, depending on language) to the last index
+- If you want to use the index at any iteration, you can count from 0 upwards using an integer variable
+  - This is the main option in R
+- You can use the dictionary method `items` to iterate over the key and value together (in no particular order!)
+- When using R, you can avoid many of the common scenarios that would require a loop in Python
+
+# Reading in data from files
+
+- Programs need access to data in order to be useful
+- Reading from a text file is straightforward, especially in conjunction with a loop
+
+```{python,eval=F,echo=T}
+input_fasta = "data/human_genes_chr7/ENST00000305119.fa"
+fasta_file_handle = open(input_fasta,"r")
+# open the file and store file handle
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n")
+  #remove newline
+  print(text_line)
+```
+
+# Reading from a FASTA file
+
+```{python,eval=T,echo=T}
+input_fasta = "data/human_genes_chr7/ENST00000305119.fa"
+fasta_file_handle = open(input_fasta,"r")
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n") 
+  print(text_line)
+```
+
+# Parsing a FASTA file
+
+- Reading data and storing it in a useful way is one form of "parsing"
+- Involves deconstructing the relevant components of a file and storing them as variables for use later in the code
+- Implementation will depend on the format/structure of the file being read and your needs (i.e. what the program should do)
+  - e.g. information from header is stored separately from the associated sequence data but linked in some way
+
+```{python,eval=T,echo=F}
+fasta_file_handle = open("data/some_human_genes.fa","r")
+```
+
+# Reminder: FASTA format
+
+`>ENSG00000001626|ENSG00000001626|ENST00000003084|1|1|CFTR`
+`GTAGTAGGTCTTTGGCATTAGGAGCTTGAGCCCAGACGGCCCTAGCAGGGACCCCAG`
+`CCGAGAGACCATGCAGAGGTCGCCTCTGGAAAAGGCCAGCGTTGTCTCCAAACTTTT`
+`CAGCTGGACCAGACCAATTTTGAGGAAAGGATACAGACAGCGCCTGGAATTGTCAGA`
+`>ENSG00000241644|ENSG00000241644|ENST00000013222|1|1|INMT`
+`ACATTTCAGGGACACCATGAAGGGTGGCTTCACTGGGGGTGATGAGTACCAGAAGCA`
+`CCTGCCCAGGGACTACTTGGCTACTTACTACAGCTTCGATGGCAGCCCCTCACCCGA`
+`CGAGATGCTGAAGTTTAACTTGGAATGTCTCCACAAGACCTTCGGCCCTGGAGGCCT`
+
+
+# Demo FASTA parser
+
+```{python,eval=T,echo=T}
+sequences = {}
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n") 
+  if text_line.startswith(">"):
+    text_line = text_line.lstrip(">")
+    header_info = text_line
+    header_vals = header_info.split("|")
+    id = header_vals[2]
+  else:
+    if id in sequences:
+      sequences[id] = sequences[id] + text_line
+    else:
+      sequences[id] = text_line
+```
+
+# Deconstructing the parser
+
+```{python,eval=T,echo=F}
+fasta_file_handle = open("data/some_human_genes.fa","r")
+```
+
+```{python,eval=T,echo=T}
+sequences = {} #dictionary to store sequence and unique identifier
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n")
+  print(text_line[0:45]) # for display
+# this code just removes the newline and stores the rest as a string
+# NOTE: every line is treated the same way here
+```
+
+# Deconstructing the parser
+
+```{python,eval=T,echo=F}
+fasta_file_handle = open("data/some_human_genes.fa","r")
+```
+
+```{python,eval=T,echo=T}
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n") 
+  if text_line.startswith(">"):
+    text_line = text_line.lstrip(">") 
+    print(text_line[0:45]) # for display
+# NOTE: why don't we see any sequences?
+```
+
+# Deconstructing the parser
+
+```{python,eval=T,echo=F}
+fasta_file_handle = open("data/some_human_genes.fa","r")
+```
+
+```{python,eval=T,echo=T}
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n") 
+  if text_line.startswith(">"):
+    text_line = text_line.lstrip(">")
+    header_info = text_line
+    header_vals = header_info.split("|")
+    id = header_vals[2]
+    print(header_vals[2]) # for display
+# NOTE: what is split("|") accomplishing?
+```
+
+# Deconstructing the parser
+
+```{python,eval=T,echo=F}
+fasta_file_handle = open("data/some_human_genes.fa","r")
+```
+
+```{python,eval=T,echo=T}
+sequences = {}
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n") 
+  if text_line.startswith(">"):
+    text_line = text_line.lstrip(">")
+    header_info = text_line
+    header_vals = header_info.split("|")
+    id = header_vals[2]
+  else:
+# here is where it gets tricky
+    if id in sequences:
+      sequences[id] = sequences[id] + text_line
+# concatenate to existing sequence
+    else:
+# add a new key to the dictionary
+# and put the first line of sequence
+      sequences[id] = text_line
+```
+
+# Concepts and Gotchas: if/else and dictionaries
+
+- Parser used two nested if/else statements
+  - The second `if` was only ever encountered when the first condition evaluated to False (i.e. line didn't start with ">")
+- The second if/else is required because our code attempted to modify a value in the dictionary before the key existed
+
+```{python,eval=F,echo=T}
+a_dict = {}
+a_dict["gorilla"] += 1 #this won't work because the key doesn't exist
+## KeyError: 'gorilla'
+a_dict["aardvark"] = 1 
+# this works because we're not relying on the existence of a value in the dictionary
+```
+
+# Concepts and Gotchas: Loops
+
+- In Python, variables that are declared within the loop survive after the last iteration and retain their final value
+- This may be convenient but if you ever reuse a variable that gets modified in a loop you need to remember to set it to the starting value you need
+- Best practice is to just not recycle variable names
+
+```{python,echo=T,eval=T}
+some_number = 0
+for i in (0,1,2):
+  some_number = i * 5
+  other_number = i * 10
+print(i,some_number,other_number)
+some_number = 0 #put it back explicitly to zero if you use it again later
+```
+
+# Things to consider
+
+- FASTA parsers exist in BioPython so you shouldn't have to implement one, but you may need to extract information from a complex header
+- Our example made assumptions about a consistent format in the header
+  - What would happen if the ENST identifiers were not unique in the file? 
+  - How might we store all the data in the header in a convenient way?
+
+# Load then process or load/process?
+
+- Parsing or loading the contents of a file is the first step in many workflows
+- Depending on the scale of your data, you may not actually want to store everything in memory
+- How much RAM do you think the parser example would use if run on the human genome sequence?
+- A preferable strategy in such cases is to run any subsequent analyses on-the-fly then reuse the variable for your next task
+
+# Sidebar: defining a function
+
+- Put reusable code into your own functions to reduce duplicated code and enhance readability of complex code
+
+```{python,echo=T,eval=T}
+def count_nucleotides(seq):
+  nucl_dict = {}
+  bases = list(seq)
+  for base in bases:
+    if base in nucl_dict.keys():
+      nucl_dict[base] += 1
+    else:
+      nucl_dict[base] = 1
+  return(nucl_dict)
+```
+
+# A better version
+
+```{python,eval=T,echo=F}
+fasta_file_handle = open("data/some_human_genes.fa","r")
+```
+
+```{python,eval=T,echo=T}
+sequence = "" # for the "current" sequence
+# NOTE: why make an empty variable here?
+for text_line in fasta_file_handle:
+  text_line = text_line.rstrip("\n") 
+  if text_line.startswith(">"):
+    if sequence: # NOTE: this is only false at the first header!
+      nuc_count = count_nucleotides(sequence)
+      print(id,sequence[0:10],nuc_count)
+      sequence = ""
+    text_line = text_line.lstrip(">")
+    header_info = text_line
+    header_vals = header_info.split("|")
+    id = header_vals[2]
+  else:
+    sequence += text_line
+nuc_count = count_nucleotides(sequence)
+print(id,sequence[0:10],nuc_count)
+# NOTE: Why do I need these last two lines? 
+```
+
+# Lab assignment
+
+- You have been provided a Python script with the demo FASTA parser code `scripts/fasta_parse.py` and access to the reference genome for S. cerevesiae `data/yeast_genome.fa`
+- Make a copy of that script and save it as `scripts/assignment-04.py` then modify it to:
+  - Parse the contents of the yeast genome fasta
+  - Calculate the length of each chromosome and the number of each nucleotide
+  - Calculate the %GC in each chromosome
+  - Report this information along with how many non-ACTG characters were found on each chromosome
+
+# Details
+
+- Your script should print its output to the terminal
+- The number of lines printed out should be the number of yeast chromosomes plus a header
+- The format of the printed output should look resemble the example below
+- The percent GC should be reported to two decimal places
+- A zero should be printed in the last column for any chromosome with zero non-ACTG bases
+
+```
+chrom size num_A num_C num_G num_T pc_GC not_ACTG
+chrI 240542 77836 45740 46965 70001 38.54 3
+```
