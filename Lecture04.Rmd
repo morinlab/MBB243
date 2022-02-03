@@ -3,7 +3,8 @@ title: "MBB 243 - Lecture 4"
 author: "Ryan Morin"
 date: 2022/02/02
 output: 
-  powerpoint_presentation
+  slidy_presentation: default
+  powerpoint_presentation: default
 ---
 
 ```{r setup, include=FALSE}
