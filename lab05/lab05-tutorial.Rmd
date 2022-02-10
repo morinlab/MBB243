@@ -1,0 +1,104 @@
+---
+title: "Lab 05: Fun with regular expressions"
+author: "Author: Ryan Morin"
+date: "Last updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Quick start
+
+*Click the Knit button in the panel above to convert this file to human-friendly HTML.* 
+
+### Learning Objectives
+
+- Practice implementing, testing and using regular expressions in Python
+- Practice using regular expressions for command-line searching of files
+
+### Match vs search
+
+The match function we saw in class is quite limited. It only searches for matches anchored at the start of the string. In class this wasn't a problem because all our strings were the same length as our regex. From the result of first code chunk below, you can see how this is an issue when you want to search within a string for a shorter match.
+
+```{python,echo=T,eval=T}
+import re
+full_string = "dearth"
+regexes=["earth","dea",".earth","nada"]
+for regex in regexes:
+  pattern = re.compile(regex)
+  if pattern.match(full_string):
+    print(full_string,"contains",regex,sep=" ")
+  else:
+    print("no match for",regex)
+
+```
+
+```{python,echo=T,eval=T}
+import re
+full_string = "dearth"
+regexes=["earth","dea",".earth","nada"]
+for regex in regexes:
+  pattern = re.compile(regex)
+  if pattern.search(full_string):
+    print(full_string,"contains",regex,sep=" ")
+  else:
+    print("no match for",regex)
+
+```
+
+In both these code chunks we are not reporting any information about the actual matching text. With regular expressions that are more complex, you will almost always want to know what the match looked like. This is useful when debugging a regular expression among other applications. 
+
+```{python,echo=T,eval=T}
+import re
+full_string = "dearth"
+regexes=["earth","dea",".earth","nada","[^d][a-z][a-z]"]
+for regex in regexes:
+  pattern = re.compile(regex)
+  if pattern.search(full_string):
+    print(full_string,"contains",regex,sep=" ")
+    for m in re.finditer(pattern, full_string):
+      print(m.start(),m.end(),m.group(0))
+  else:
+    print("no match for",regex)
+
+```
+
+**Task*
+
+Without using ".", make a regular expression that matches every element in the first array but none of the elements in the second array.
+
+```{python,echo=T,eval=T}
+good_seqs = ["CAGATTAC","GAT","GAA","CAG"]
+bad_seqs = ["AAA","TTT"]
+regex = ""
+pattern = re.compile(regex)
+for seq in good_seqs:
+  if pattern.search(seq):
+    print(seq,"matches your regex",regex,"GOOD!",sep=" ")
+  else:
+    print(seq,"has no match with",regex,"BAD!!!")
+
+for seq in bad_seqs:
+  if pattern.search(seq):
+    print(seq,"matches your regex",regex,"NOT GOOD!",sep=" ")
+  else:
+    print(seq, "has no match with",regex,"GOOD")
+
+```
+
+### Regex reminders and examples
+
+|Enclosure|Use|
+|-|-|
+|{m}|Defines number of matches must be m|
+|[]|Defines a character class (match any character in the class)|
+|$|End of string|
+|*|zero or more repetitions|
+|+|One or more repetitions|
+
+We were introduced to these symbols in class. Below are some examples that illustrate their use. Run the code chunks and explore how they work individually by looking at the resulting matches for each regular expression. 
+
+```{python,eval=T,echo=T}
+seq = "AAAGCATTCAGGAT"
+
+```

@@ -1,0 +1,163 @@
+---
+title: "Self Quiz 5"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(reticulate)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+### Self-Quiz
+
+```{python,eval=F,echo=T}
+alpha = ["A","B","C"]
+beta = [1,2,3]
+for i in alpha:
+  print(i)
+  for j in beta:
+    print(j)
+
+```
+
+```{r question1, echo=FALSE}
+question("If you run the nested loops shown above, how many times will the letter C be printed?",
+  answer("Once",correct = TRUE),       
+  answer("Twice"),
+  answer("Thrice"),
+  answer("infinity")
+)
+```
+
+```{r question99, echo=FALSE}
+question("If you run the nested loops shown above, how many times will the number 1 be printed?",
+  answer("Once"),       
+  answer("Twice"),
+  answer("Thrice",correct = TRUE),
+  answer("infinity")
+)
+```
+
+```{python,echo=T,eval=F}
+def do_math(num,denom):
+  res=100 * (num /denom)
+  res = round(res,1)
+  return(res)
+
+do_math(7,99)
+```
+
+
+```{r question2, echo=FALSE}
+question("What value would you expect in the variable this_num based on the code above?",
+  answer("70"),
+  answer("7"),
+  answer("700"),
+  answer("7.1",correct = TRUE),
+  answer("7.07")
+
+)
+```
+
+```{bash,echo=T,eval=F}
+something = glob("data/*.txt") 
+```
+
+
+```{r question3, echo=FALSE}
+question("Which of the following would give you an equivalent result to the Python code above?",
+  answer("ls data/"),
+  answer("ls data/*.txt",correct = TRUE),
+  answer("cat data/*.txt"),
+  answer("rm data/*.txt")
+)
+```
+
+
+```{python,echo=T,eval=F}
+for a in range(0,20,3):
+  print(a)
+
+
+```
+
+
+```{r question4, echo=FALSE}
+question("How many iterations will the loop above run for?",
+  answer("3"),
+    answer("5"),
+    answer("6"),
+  answer("7",correct = TRUE),
+    answer("8"),
+      answer("20")
+)
+```
+
+```{python some_array1, exercise=FALSE,echo=TRUE,eval=F}
+some_words = ["SPEAK", "PEAK", "LEEK", "LEAK", "SLEEK", "FREAK"]
+import re
+pattern = re.compile("[SLF][PLR][AE][AE]K")
+for w in some_words:
+  if pattern.match(w):
+    print(w)
+```
+
+```{r question5, echo=FALSE}
+question("What words will be printed by the code above?",
+  answer("None of them"),
+  answer("SPEAK, PEAK, LEEK, LEAK, SLEEK, FREAK"),
+  answer("PEAK, LEEK, LEEK"),
+  answer("SPEAK, SLEEK, FREAK",correct = TRUE)
+)
+```
+
+```{python some_regex, exercise=FALSE,echo=TRUE,eval=F}
+some_words = ["SPEAK", "PEAK", "LEEK", "LEAK", "SLEEK", "FREAK"]
+import re
+pattern = re.compile("[PLR][AE][AE]K$")
+for w in some_words:
+  if pattern.search(w):
+    print(w)
+```
+
+```{r questionregex, echo=FALSE}
+question("What words will be printed by the code above?",
+  answer("None of them"),
+  answer("SPEAK, PEAK, LEEK, LEAK, SLEEK, FREAK"),
+  answer("PEAK, LEEK, LEEK"),
+  answer("SPEAK, SLEEK, FREAK",correct = TRUE)
+)
+```
+
+
+```{python,eval=F,echo=T}
+strings = ["Why","why","WHY","SRSLY WHY?",]
+
+```
+
+```{r question6re, echo=FALSE}
+question("Which regular expression will match ALL the elements in the array shown above?",
+  answer("[A-Za-z][A-Za-z][A-Za-z]"),
+  answer("[W][H][Y]"),
+  answer("[a-z][a-z][a-z]"),
+  answer("..."),
+  answer("[wW]"),
+  answer("All of them!",correct = TRUE)
+)
+```
+
+```{r question6re1, echo=FALSE}
+question("Which regular expression will match ONLY the second element in the array shown above?",
+  answer("[A-Za-z][A-Za-z][A-Za-z]"),
+  answer("[W][H][Y]"),
+  answer("[a-z][a-z][a-z]",correct = TRUE),
+  answer("..."),
+  answer("[wW]")
+  
+)
+```
+
