@@ -524,6 +524,7 @@ some_number = 0
 for i in (0,1,2):
   some_number = i * 5
   other_number = i * 10
+  print(i,some_number,other_number)
 print(i,some_number,other_number)
 some_number = 0 #put it back explicitly to zero if you use it again later
 ```
