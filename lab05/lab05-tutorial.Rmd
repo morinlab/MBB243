@@ -13,8 +13,9 @@ output:
 
 ### Learning Objectives
 
+- Gain a better understanding of the practical applications of regular expressions
 - Practice implementing, testing and using regular expressions in Python
-- Practice using regular expressions for command-line searching of files
+
 
 ### Match vs search
 
@@ -88,17 +89,106 @@ for seq in bad_seqs:
 
 ### Regex reminders and examples
 
-|Enclosure|Use|
+|Character|Use|
 |-|-|
-|{m}|Defines number of matches must be m|
-|[]|Defines a character class (match any character in the class)|
-|$|End of string|
-|*|zero or more repetitions|
-|+|One or more repetitions|
+|`{m}`|Defines number of matches must be m|
+|`[]`|Defines a character class (match any character in the class)|
+|`$`|End of string|
+|`.`|Any character|
+|`A-Z`|Any uppercase character|
+|`a-z`|Any lowercase character|
+|`0-9`|Any digit|
+|`*`|zero or more repetitions|
+|`+`|One or more repetitions|
+|`( )`|Parentheses can be combined with alternation within larger regular expression|
+|`|`|Alternatition operator, for specifying one or more alternative match for the same position|
+|`^`|Start of string|
+|`$`|End of string|
+|`^`|When specified inside a character class, negate the behaviour for this set of characters (i.e. non-matching)|
 
-We were introduced to these symbols in class. Below are some examples that illustrate their use. Run the code chunks and explore how they work individually by looking at the resulting matches for each regular expression. 
+
+We were introduced to these symbols in class. Below are some examples that illustrate their use. Run the code chunks and explore how they work individually by looking at the resulting matches for each regular expression. Play around with the code chunks by changing which regex is used (un-comment some of the commented lines.). 
 
 ```{python,eval=T,echo=T}
-seq = "AAAGCATTCAGGAT"
+import re
+seq = "AAAGCATTCAGGATTT"
+pattern = re.compile("[^A][^A]") #match any two consecutive non-A positions
+#pattern = re.compile("[^A]+") #match any consecutive non-A positions
+#pattern = re.compile("[A]+[^A]+") #match any consecutive non-A positions after runs of A
+
+for m in re.finditer(pattern, seq):
+      print(m.start(),m.end(),m.group(0))
+```
+
+
+```{python,eval=T,echo=T}
+import re
+seq = "AAAGCATTCAGGATTT"
+pattern = re.compile("[AT]{3}")
+#pattern = re.compile("A{3}|T{3}") # use alternatives to match only consecutive runs of the same nucleotide 
+#pattern = re.compile("A+|C+|G+|T+")
+#pattern = re.compile("AA+|CC+|GG+|TT+")
+pattern = re.compile("AA*|CC*|GG*|TT*")
+for m in re.finditer(pattern, seq):
+      print(m.start(),m.end(),m.group(0))
+```
+
+Alternation within a regular expression is extremely useful when you want larger pieces to match a specific pattern. For example, you can use this if you want to match one or more specific substrings (e.g. a dinucleotide) at any position or even relative to another specific nucleotide. 
+
+```{python,eval=T,echo=T}
+import re
+seq = "AAAGCATTCAGGATTT"
+pattern = re.compile("GG|TT[C]")
+
+for m in re.finditer(pattern, seq):
+      print(m.start(),m.end(),m.group(0))
+
+pattern = re.compile("(GG|TT)[C]")
+
+for m in re.finditer(pattern, seq):
+      print(m.start(),m.end(),m.group(0))
+
+pattern = re.compile("(GC|CG)")
+
+for m in re.finditer(pattern, seq):
+      print(m.start(),m.end(),m.group(0))
 
 ```
+
+
+**Task**
+
+The incorrect copying of DNA during cell division can cause the introduction of a variety of types of mutations. Certain regions of the genome are more difficult to accurately copy due to their repetitive nature. The change in length of these repeating sequences can manifest as diseases such as Huntington's disease (HD). In the human population, the Huntingtin gene (HTT) has a variable length of repeating codons that encode Glutamine (Q). Each of you has a HTT gene sequence with a different length of this tract of DNA. Modify the following code block to report the length of the region of your sequence that encodes polyglutamine. You'll have to make your own regex that handles the different codons that encode Glutamine. Be sure to modify the first line to include your first name instead of "Student". 
+
+
+```{python,eval=T,echo=T}
+student_name = "Student" #change this to your first name
+student_seq = ""
+seqs = open("sequences/all_seq.txt","r")
+for l in seqs:
+  (a,b)=l.split(" ")
+  if a == student_name:
+    student_seq = b
+print(b)
+import re
+pattern = re.compile("aaaaa") #your regex goes here
+
+for m in re.finditer(pattern, student_seq):
+      print(m.start(),m.end(),m.group(0))
+```
+
+
+Motifs are patterns in protein sequences with specific properties or propensity to interact with or be modified by other proteins/enzymes. One such example is the consensus N-glycosylation site. This sequence motif has the pattern; Asn, followed by anything but Pro, followed by either Ser or Thr, followed by any amino acid with the exception of Pro. For the purpose of this lab, we've invented a new site known as the "W---S" motif. Although it's function is unclear, it does appear to spell out many English words. The motif is exactly 5 amino acids long. The constraints on this site are as follows (from the first position to the last): Tryptophan (W), Two of any amino acid, One of either Proline, Asparagine or Arginine, followed by Serine (S). 
+
+**Task**
+```{python,echo=T,eval=T}
+
+bizarre_protein = "MTLWARPSSKRGWYWHIRSSSHEEEGYFVWEEPSTLAVSFLYCWHIPSWHATSWHIRSSSRVADEGWRAPSPLYW"
+
+pattern = re.compile("MTLWA")
+
+for m in re.finditer(pattern, bizarre_protein):
+      print(m.start(),m.end(),m.group(0))
+  
+```
+
