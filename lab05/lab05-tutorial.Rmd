@@ -165,7 +165,7 @@ The incorrect copying of DNA during cell division can cause the introduction of 
 ```{python polyq,eval=T,echo=T}
 student_name = "Student" #change this to your first name
 student_seq = ""
-seqs = open("sequences/all_seq.txt","r")
+seqs = open("sequences/all_seq.tsv","r")
 for l in seqs:
   (a,b)=l.split(" ")
   if a == student_name:
