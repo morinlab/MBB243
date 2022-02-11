@@ -15,6 +15,7 @@ output:
 
 - Gain a better understanding of the practical applications of regular expressions
 - Practice implementing, testing and using regular expressions in Python
+- Learn how to write data to a file using Python
 
 
 ### Match vs search
@@ -161,7 +162,7 @@ for m in re.finditer(pattern, seq):
 The incorrect copying of DNA during cell division can cause the introduction of a variety of types of mutations. Certain regions of the genome are more difficult to accurately copy due to their repetitive nature. The change in length of these repeating sequences can manifest as diseases such as Huntington's disease (HD). In the human population, the Huntingtin gene (HTT) has a variable length of repeating codons that encode Glutamine (Q). Each of you has a HTT gene sequence with a different length of this tract of DNA. Modify the following code block to report the length of the region of your sequence that encodes polyglutamine. You'll have to make your own regex that handles the different codons that encode Glutamine. Be sure to modify the first line to include your first name instead of "Student". 
 
 
-```{python,eval=T,echo=T}
+```{python polyq,eval=T,echo=T}
 student_name = "Student" #change this to your first name
 student_seq = ""
 seqs = open("sequences/all_seq.txt","r")
@@ -181,7 +182,10 @@ for m in re.finditer(pattern, student_seq):
 Motifs are patterns in protein sequences with specific properties or propensity to interact with or be modified by other proteins/enzymes. One such example is the consensus N-glycosylation site. This sequence motif has the pattern; Asn, followed by anything but Pro, followed by either Ser or Thr, followed by any amino acid with the exception of Pro. For the purpose of this lab, we've invented a new site known as the "W---S" motif. Although it's function is unclear, it does appear to spell out many English words. The motif is exactly 5 amino acids long. The constraints on this site are as follows (from the first position to the last): Tryptophan (W), Two of any amino acid, One of either Proline, Asparagine or Arginine, followed by Serine (S). 
 
 **Task**
-```{python,echo=T,eval=T}
+
+Create a regular expression in the code below to match the W---S motif in the sequence. As described later in the document, you will eventually need to write the matches to a file. 
+
+```{python bizarre_protein,echo=T,eval=T}
 
 bizarre_protein = "MTLWARPSSKRGWYWHIRSSSHEEEGYFVWEEPSTLAVSFLYCWHIPSWHATSWHIRSSSRVADEGWRAPSPLYW"
 
@@ -192,3 +196,93 @@ for m in re.finditer(pattern, bizarre_protein):
   
 ```
 
+## Writing to a file from within Python
+
+As you saw in a previous lab, you can redirect the output of the `print` statements in any script to a new file using the command line redirect `>`. This is sometimes convenient but not the most flexible way to write to files. Python allows you to create and write to files directly from within your code. Similar to reading from a file, this involves creating a new file handle using `open`. The syntax is very similar to what you've seen before. The chunk below shows you the basic syntax. Every time you call the `write` method of your file handle, th string you provide will be written to that file as plain text. Once you close the file it will have to be re-opened to write more data to it. **Caution**: Opening the same file with "w" mode will clobber any contents. If you want to _append_ to the file, you need to open it in "a" mode. Try changing the "a" to "w" in the code chunk below and looking at the file it produces after each re-run of the chunk. Reminder: the quickest way to view the contents of a file is to use the Terminal:
+
+`cat ~/MBB243/lab05/some_hello_world_file.txt`
+
+What do you notice?
+
+```{python,eval=T,echo=T}
+out_handle = open("some_hello_world_file.txt","w")
+out_handle.write("Hello World\n")
+out_handle.close()
+
+out_handle = open("some_hello_world_file.txt","a")
+out_handle.write("Hello Again World\n")
+out_handle.close()
+
+```
+
+The code chunk below provides a toy example of a script that writes some data from a dictionary to a file in a tsv format. The dictionary has been structured to have an array of the same length stored under each key. The intention here is to use the key as the column header and write one line to the file for each element in the array. For fun, we're also writing the array index as the first column. Look carefully at the code line by line and be sure you understand the purpose of every line. A few things to note:
+
+* Data is written to the file in the order we call the `write` function
+* We need to add our own newline character to separate text that we want on different lines
+* We need to explicitly convert any numeric data to a string using `str` to combine with other strings
+* We are using a tab separator to divide columns (i.e. the output is a tsv file)
+* One annoyance of RMarkdown is that the numeric value returned by Python with each call to `write` would be printed. I've suppressed this by assigning it to a variable I've named `ignoreme`. The code chunk above shows how you would normally do this without assigning the output. 
+
+```{python,echo=T,eval=T}
+some_results = {"some_data": [1,1.11,1/10],"some_details":["value1","value2","value3"]}
+#store the lines we want to print to a file 
+text_lines = []
+# create a header from our dictionary keys (one per column)
+text_line = "index\t"
+
+for column in some_results.keys():
+  text_line = text_line + column + "\t"
+  print(text_line) #this is what will also go in the file
+text_lines.append(text_line)
+# note, the column variable still exists, so we can use it for convenience
+
+for i in range(0,len(some_results[column])):
+  text_line= str(i) + "\t"
+  for column in some_results.keys():
+    text_line += str(some_results[column][i])
+    text_line += "\t"
+  print(text_line) #this is what will also go in the file
+  text_lines.append(text_line)
+
+out_handle = open("example_outputs.tsv","w")
+for line in text_lines:
+  line = line.rstrip("\t")
+  print(line)
+  line = line + "\n"
+  ignoreme = out_handle.write(line)
+
+ignoreme = out_handle.close()
+```
+
+**Task**
+
+Modify the code chunks you worked on above (the ones named polyq and bizarre_protein) such that each of them writes a summary of your result to separate files. The format should be somewhat self-explanatory and concise. Two example outputs are shown below. You need not match this format exactly.
+
+###Example 1: polyq.txt
+
+```
+Longest polyglutamine tract start position: 33
+DNA length of longest polyglutamine tract: 24
+Sequence for longest polglutamine tract: CAGCAGCAGCAGCAGCAGCAGCAG
+```
+
+###Example 2: bizarre_protein.txt
+
+```
+motif_start motif_sequence
+14 WHIRS
+43 WHIPS
+66 WRAPS
+```
+
+## Lab Completion Checklist
+
+**Task**
+At the end of every lab, replace TODO with DONE to the left of each task to indicate you've completed it
+
+|status|task|
+|-|-|
+|DONE|This file has been knit|
+|TODO|I've modified the chunks and have regular expressions that accomplish what was described|
+|TODO|My modified code has created a bizare_protein.txt file containing the matches |
+|TODO|My modified code has created a polyq.txt file containing the results from my regular expression|
