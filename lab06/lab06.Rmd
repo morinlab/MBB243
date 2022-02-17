@@ -21,7 +21,7 @@ a_mat
 ### Q1
 
 ```{r q1, echo=FALSE}
-question("Based on the contents of a_mat, which of the following code would print out the value 8 if added to the code chunk above?",
+question("Based on the contents of a_mat, which of the following code would print out the value 8 if added below the existing lines in the code chunk above?",
   answer("a_mat[2]"),
   answer("a_mat[2,]"),
   answer("a_mat[4]"),
@@ -48,7 +48,59 @@ question("Based on the contents of a_mat, which of the following code would retu
 
 ### Q3
 
-```{r q3, echo=FALSE}
+Data frames can be created using a syntax similar to what we used when creating a list with named elements. The code below creates a data frame with three columns, as shown in the printout below. 
+
+```{r,eval=T,echo=T}
+df <- data.frame("first"=c("Doctor","The","Doctor","Dr.","Dr."),
+                 "second"=c("Dre","Doctor","Octopus","Morin","Evil"),
+                 "power"=c("Sick beats","Time travel","Robotic tentacles","confusion","evil"),
+                 "coolness"=c(9,12,3,8,4),
+                 row.names=c("a","b","c","d","e"))
+
+```
+
+```{r q3,echo=FALSE}
+question("Which of the following will return a data frame with the same contents but with the rows arranged from lowest to highest coolness score?",
+  answer("df[order(df$coolness)]"),
+  answer("df[order(df$coolness),]",correct = TRUE),
+  answer("df[,order(df$coolness)]"),
+  answer("df[order(rownames(df)),]")
+)
+```
+
+### Q4
+
+```{r q4, echo=FALSE}
+question("Which code will produce a data frame containing only rows with the first name set to either Dr or Doctor?",
+  answer("None of them"),
+  answer("df[grepl('D',df$first)]"),
+  answer("df[grepl('D',df$first),]",correct = TRUE),
+  answer("df[grepl('Doctor',df$first),]")
+)
+```
+
+
+```{r,echo=T,eval=T}
+
+days <- c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
+
+
+```
+
+### Q5
+
+```{r q5, echo=FALSE}
+question("Which line of code would subset the days vector to just weekdays?",
+  answer("None of them"),
+  answer("days[ grepl('S',days)]"),
+  answer("! days[ grepl('S',days)]"),
+  answer("days[ !grepl('S',days)]",correct = TRUE)
+)
+```
+
+### Q6
+
+```{r q6, echo=FALSE}
 question("Which of the following statements comparing R data frames and matrixes are accurate?",
   answer("Matrix and data frames both enforce unique row and column names"),
   answer("Both can only contain data of a single type"),
@@ -59,30 +111,7 @@ question("Which of the following statements comparing R data frames and matrixes
 ```
 
 
-### Q4
-
-```{r q4, echo=FALSE}
-question("What words will be printed by the code above?",
-  answer("None of them"),
-  answer("SPEAK, PEAK, LEEK, LEAK, SLEEK, FREAK"),
-  answer("PEAK, LEEK, LEEK"),
-  answer("SPEAK, SLEEK, FREAK",correct = TRUE)
-)
-```
-
-
-### Q5
-
-```{r q5, echo=FALSE}
-question("What words will be printed by the code above?",
-  answer("None of them"),
-  answer("SPEAK, PEAK, LEEK, LEAK, SLEEK, FREAK"),
-  answer("PEAK, LEEK, LEEK"),
-  answer("SPEAK, SLEEK, FREAK",correct = TRUE)
-)
-```
-
-### Gettinv vexxed by vectors
+### Getting vexxed by vectors
 
 *Add to the code below to create a new vector from this_vec that contains the elements in numerical order. Your code should print the contents of your new vector. When you have the correct implementation, you should get a printout identical to what is shown immediately below this.*
 
