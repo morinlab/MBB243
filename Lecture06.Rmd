@@ -409,6 +409,18 @@ colnames(gene_expression) = c("sample1","sample2")
 rownames(gene_expression)[c(1:5)] #first 5 names
 ```
 
+## Rownames and Colnames
+
+- A matrix can also have row names and column names, which can be set the same way as data frames
+- Matrix row and column names do not have to be unique (potentially very problematic!)
+
+```{r,echo=T,eval=T}
+mat <- matrix(1:4, ncol=2)
+rownames(mat)=c("ROW","ROW")
+colnames(mat)=c("COL1","COL2")
+mat["ROW",] #only first match is returned
+
+```
 
 ## Exploring the Data Frame
  
