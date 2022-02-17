@@ -41,7 +41,7 @@ The purpose of this introductory data analysis course is to teach students in mo
 |1|12-01-2022 | Molecular biology data flavours  | 14-01-2022 | Setting up a bash environment, installing software | Feb 27 | 
 |2|19-01-2022 | Genomic data types  | 21-01-2022 | Manipulating and searching text files | Feb 27 |
 |3|26-01-2022 | Fundamentals of R and Python | 28-01-2022| Basic data types and operations | Feb 27 |
-|4|02-02-2022 | Obtaining and manipulating sequence data | 04-02-2022 | Conditionals and control flow | 2 | Feb 27 |
+|4|02-02-2022 | Obtaining and manipulating sequence data | 04-02-2022 | Conditionals and control flow | Feb 27 |
 |5|09-02-2022 | Regular expressions and patterns | 11-02-2022 | Regular expressions (bash, Python and R) | Feb 27 |
 |6|16-02-2022 | Quantitative DNA/RNA sequence analysis | 16-02-2022 | Hypothesis testing and summarization | Feb 27 |
 |-|23-02-2022 | Reading Week| 23-02-2022| Reading Week | NA |
