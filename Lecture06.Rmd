@@ -390,7 +390,7 @@ mini[order(denominators),]
 ## characteristics of a data frame
 
 - Column names should be non-empty and R will assign (ugly) names when necessary
-- Row names _must_ be unique
+- Row names and column names _must_ be unique
 - The data stored in a data frame can be of numeric, factor or character type
 - Each column can have different data type
 - Each column must contain same number of elements
