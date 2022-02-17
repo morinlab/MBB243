@@ -1,0 +1,138 @@
+---
+title: "Self Quiz and Exercises for Week 6"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R data structures and functions
+
+
+```{r,eval=T,echo=T}
+a_mat <- matrix(1:8, ncol=2)
+a_mat
+```
+
+
+### Q1
+
+```{r q1, echo=FALSE}
+question("Based on the contents of a_mat, which of the following code would print out the value 8 if added to the code chunk above?",
+  answer("a_mat[2]"),
+  answer("a_mat[2,]"),
+  answer("a_mat[4]"),
+  answer("a_mat[2,4]"),
+  answer("a_mat[4,2]",correct = TRUE),
+  answer("None of them")
+)
+```
+
+
+### Q2
+
+```{r q2, echo=FALSE}
+question("Based on the contents of a_mat, which of the following code would return a vector containing these values: (5,6,7,8)?",
+  answer("a_mat[2]"),
+  answer("a_mat[2,]"),
+  answer("a_mat[,2]",correct = TRUE),
+  answer("a_mat[2,1]"),
+  answer("a_mat[4,2]"),
+  answer("None of them")
+)
+```
+
+
+### Q3
+
+```{r q3, echo=FALSE}
+question("Which of the following statements comparing R data frames and matrixes are accurate?",
+  answer("Matrix and data frames both enforce unique row and column names"),
+  answer("Both can only contain data of a single type"),
+  answer("Rows or columns can be subset directly into vectors using [] sytax and the corresponding row or column index"),
+  answer("In data frames, columns can contain a mix of data types but matrixes do not allow this."),
+  answer("None of the statements are accurate",correct = TRUE)
+)
+```
+
+
+### Q4
+
+```{r q4, echo=FALSE}
+question("What words will be printed by the code above?",
+  answer("None of them"),
+  answer("SPEAK, PEAK, LEEK, LEAK, SLEEK, FREAK"),
+  answer("PEAK, LEEK, LEEK"),
+  answer("SPEAK, SLEEK, FREAK",correct = TRUE)
+)
+```
+
+
+### Q5
+
+```{r q5, echo=FALSE}
+question("What words will be printed by the code above?",
+  answer("None of them"),
+  answer("SPEAK, PEAK, LEEK, LEAK, SLEEK, FREAK"),
+  answer("PEAK, LEEK, LEEK"),
+  answer("SPEAK, SLEEK, FREAK",correct = TRUE)
+)
+```
+
+### Gettinv vexxed by vectors
+
+*Add to the code below to create a new vector from this_vec that contains the elements in numerical order. Your code should print the contents of your new vector. When you have the correct implementation, you should get a printout identical to what is shown immediately below this.*
+
+```{r,echo=F,eval=T}
+this_vec = c(8,22,12,40,3,1)
+this_vec[order(this_vec)]
+```
+
+In your solution you must use the `order` function. 
+
+```{r try1, exercise=TRUE, exercise.lines = 5}
+this_vec = c(8,22,12,40,3,1)
+
+```
+
+*Add to the code below to create a new vector from this_vec that contains the elements in numerical order. When you have the correct implementation, you should get a printout identical to what is shown immediately below this.*
+
+
+```{r try2, exercise=TRUE, exercise.lines = 5}
+this_list = list(z="?",y="hard",m="really",c="now",f="was",w="so")
+
+```
+
+### Listing everything you like about lists
+
+*Add to the code below to create a new vector from this_list that contains the elements in the order according to the names (not the values). Once you have that, print the vector contents. When you have the correct implementation, you should get a sensible sentence with proper punctuation (below the corresponding names from the original list).*
+
+Hint/warning: Although `[[]]` is useful for getting a vector out of a list, you can't use it with vectors of length >1. 
+
+```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
+this_list = list(h="that",z="?",y="difficult",m="really",c="Now",f="was",w="so")
+```
+
+```{r print-limit-hint}
+order(names(this_list)) #here is the first step you will need. 
+
+```
+
+### Controlling The Matrix (like Neo)
+
+*Add to the code below to order the columns of the matrix based on the numeric values in the second row (i.e. row index 2). Print out the ordered matrix when you're done. You should be able to see a secret message in the bottom two lines of your matrix when you have the correct answer. *
+
+```{r reorder, exercise=TRUE, exercise.eval=TRUE}
+
+alpha_mat = matrix(c("M","z","d","E","w","o","o","G","L","J","o","o","A","c","G","D"),nrow=4)
+alpha_mat
+```
+
+```{r reorder-hint}
+order(alpha_mat[2,]) #this should get you started
+```
+
+
