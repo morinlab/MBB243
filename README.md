@@ -36,21 +36,21 @@ The purpose of this introductory data analysis course is to teach students in mo
 
 ## Schedule
 
-|Week|Date| Lecture topic     | Date| Lab topic | Assignment (# or NA - completion only) |
+|Week|Date| Lecture topic     | Date| Lab topic | Lab Due Date |
 |--|------| ----------- | ------|----------- | ---|
-|1|12-01-2022 | Molecular biology data flavours  | 14-01-2022 | Setting up a bash environment, installing software | NA |
-|2|19-01-2022 | Genomic data types  | 21-01-2022 | Manipulating and searching text files | 1 |
-|3|26-01-2022 | Fundamentals of R and Python | 28-01-2022| Basic data types and operations | NA |
-|4|02-02-2022 | Obtaining and manipulating sequence data | 04-02-2022 | Conditionals and control flow | 2 |
-|5|09-02-2022 | Regular expressions and patterns | 11-02-2022 | Regular expressions (bash, Python and R) | NA |
-|6|16-02-2022 | Quantitative DNA/RNA sequence analysis | 16-02-2022 | Hypothesis testing and summarization | 3 |
+|1|12-01-2022 | Molecular biology data flavours  | 14-01-2022 | Setting up a bash environment, installing software | Feb 27 | 
+|2|19-01-2022 | Genomic data types  | 21-01-2022 | Manipulating and searching text files | Feb 27 |
+|3|26-01-2022 | Fundamentals of R and Python | 28-01-2022| Basic data types and operations | Feb 27 |
+|4|02-02-2022 | Obtaining and manipulating sequence data | 04-02-2022 | Conditionals and control flow | 2 | Feb 27 |
+|5|09-02-2022 | Regular expressions and patterns | 11-02-2022 | Regular expressions (bash, Python and R) | Feb 27 |
+|6|16-02-2022 | Quantitative DNA/RNA sequence analysis | 16-02-2022 | Hypothesis testing and summarization | Feb 27 |
 |-|23-02-2022 | Reading Week| 23-02-2022| Reading Week | NA |
 |7|02-03-2022 | Midterm exam | 04-03-2022 | No lab | NA |
-|8|09-03-2022 | Exploratory data analysis in molecular biology | 11-03-2022 | Tidy data, data frames and data tables | NA |
-|9|16-03-2022 | Common visualization methods | 18-03-2022 | Cleaning and combining and reformatting data | 4 |
-|10|23-03-2022 | Basic modeling | 25-03-2022 | Creating, utilizing, and visualizing models | NA |
-|11|30-03-2022 | Methods for enhancing reproducibility | 01-04-2022 | Introduction to Snakemake | 5 |
-|12|06-04-2022 | Data analysis pipelines | 08-04-2022 | open lab | 5 (continued) |
+|8|09-03-2022 | Exploratory data analysis in molecular biology | 11-03-2022 | Tidy data, data frames and data tables | Mar 18 |
+|9|16-03-2022 | Common visualization methods | 18-03-2022 | Cleaning and combining and reformatting data | Apr 1 |
+|10|23-03-2022 | Basic modeling | 25-03-2022 | Creating, utilizing, and visualizing models | Apr 1 |
+|11|30-03-2022 | Methods for enhancing reproducibility | 01-04-2022 | Introduction to Snakemake | Apr 15 |
+|12|06-04-2022 | Data analysis pipelines | 08-04-2022 | open lab | Apr 15 |
 
 ## Lab materials and server
 
