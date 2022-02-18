@@ -103,7 +103,7 @@ Do you get an error about the permissions on id_rsa? If so, run this command:
 chmod 700 ~/.ssh/id_rsa
 ```
 
-Do you get an error about the repository not existing or not having permissions? If so, did you replace the `rdmorin` in the example above with your git user ID? Did you accidentally specify git clone using the https instead of git@github.com syntax?
+Do you get an error about the repository not existing or not having permissions? If so, did you replace the `rdmorin` in the example above with your git user ID? Did you accidentally specify git clone using the https instead of git@github.com syntax??
 
 ## More Resources
 
