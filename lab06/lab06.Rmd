@@ -9,7 +9,7 @@ library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## R data structures and functions
+## self-quiz: R data structures
 
 
 ```{r,eval=T,echo=T}
@@ -174,3 +174,100 @@ morin = read.csv("../data/Morin_genotypes.txt",sep="\t",nrows = 125000)
 table(morin$genotype)
 
 ```
+
+## Week 6 Lab assignment
+
+### Background
+
+You have been provided with the coding DNA sequences (CDS) for the various isoforms of all human genes on chromosome 7. A snippit from the fasta file is shown below. You may notice that many of the sequence records will start with ATG (the standard start codon for translation). Not all of them will, for a few reasons. 
+
+```
+>ENSG00000128596|ENST00000487361|ENST00000487361.5|CCDC136
+ATGCAAGCTATGGAGGGGGAGGTGTTACTCCCAGCTCTCTATGAGGAGGAAGAGGAAGAG
+GAAGAGGAGGAAGAAGAGGTGGAAGAAGAAGAAGAACAAGTGCAGAAAGGTGGCAGTGTT
+GGCTCTCTGTCAGTCAACAAGCACCGGGGACTGAGCCTCACGGAGACAGAGCTGGAGGAG
+CTGCGGGCTCAGGTGCTGCAGCTGGTGGCAGAACTGGAGGAGACCCGGGAACTGGCAGGG
+```
+
+For the sake of this assignment, you should only process sequences that start with ATG and ignore the rest. By my count, there are 4374 sequences in this file that you will need to process. Some of these isoforms have no coding sequence at all so will instead have FASTA records that look like the example below. Your code will need to be able to deal with these (i.e. not crash when these are encountered). 
+
+```
+>ENSG00000122642|ENST00000464334|ENST00000464334.1|FKBP9
+Sequence unavailable
+```
+
+
+The first goal of this assignment is for you to perform in silico translation of each sequence into the corresponding protein sequence using the genetic code. You should write this set of protein sequences to a new fasta file that you will name `translated.fasta`. This should be performed using a Python script that you develop based on the template provided. You can use a mix of BioPython functions, functions provided in previous labs, or custom Python code to accomplish this, as you see fit. 
+
+As a reminder, here are the single-letter and three-letter codes for each of the 20 amino acids.
+
+```
+G		Glycine		Gly									P		Proline		Pro
+A		Alanine		Ala									V		Valine		Val
+L		Leucine		Leu									I		Isoleucine		Ile
+M		Methionine		Met							    C		Cysteine		Cys
+F		Phenylalanine		Phe						    Y		Tyrosine		Tyr
+W		Tryptophan		Trp							    H		Histidine		His
+K		Lysine		Lys									R		Arginine		Arg
+Q		Glutamine		Gln								N		Asparagine		Asn
+E		Glutamic Acid		Glu						    D		Aspartic Acid		Asp
+S		Serine		Ser									T		Threonine		Thr
+
+```
+
+The second goal of this assignment is to tabulate the number of each amino acid individually in each of those protein sequences you've written to `translated.fasta`. In theory, it's not necessary to read the sequences back in if you prefer to perform this step in parallel with the previous step. One important thing to keep in mind is that you need to use a unique identifier for each sequence. I suggest you use the portion of the identifier that we used in an earlier example (it begins with ENST). You are expected to implement a new function `count_amino_acids` that will do the amino acid tabulation for you. Your script should output these counts to a tab-delimited text file with one row per transcript (i.e. per sequence record) and one column for each amino acid. The first column of this file should be the unique ID for your transcript. The output file should also have a header that defines what each column is. This file should be named `amino_count.tsv`. For amino acids, the header can be the single-letter code for that amino acid. A toy example of the process is shown below. Because there are 20 amino acids and 4374 protein-coding transcripts, your output file should have *4375* rows and *21* columns (including the row names and header). The file `example.tsv` in this directory shows the exact format. The template R script currently loads that file. You will need to modify your R script to use your own file as input. I suggest you implement your R code first, using this file to debug it, before you change your R code to use your own file as input. 
+
+
+```
+example translated proteins:
+
+>ENST00001
+MAPCWNLGFV
+>ENST00002
+MCPWARQQM
+
+Example output file (spaces used here insted of tabs to help them fit on your screen):
+
+ID    G P A V L I M C F Y W H K R Q N E D S T		
+ENSG00001   1 1 1 1 1 0 1 1 1 0 1 0 0 0 0 1 0 0 0 0
+ENSG00002   0 1 1 0 0 0 2 0 0 0 1 0 0 1 2 0 0 0 0 0
+
+```
+
+
+### Instructions
+
+This week's assignment requires some coding in both Python and R. You have been provided with template scripts that you should make a copy of in the lab06 directory before you start. Replace "studentname" with your name. Reminder: To copy a file use the `cp` command e.g. `cp template-studentname.R template-Ryan.R`. The code in these templates has been provided to help you get started. Don't remove or modify any of the existing code except where clearly stated. 
+
+```{bash,eval=T}
+ls template*
+```
+
+The Python script should be modified to perform some analysis on the contents of human_CDS_chr7.fa, which is currently compressed. Be sure to use `gunzip` to decompress it before you start! In your Python code, you will need to do the following:
+
+* Load the sequence of each transcript 
+* Write the translated protein from those that begin with ATG to a file named `translated.fasta`
+* Write the tabulated amino acid counts for each of those transcripts to a new file named `amino_count.tsv`, which will be in the same format as the example provided
+
+After making a copy with your name in the file name, you should modify your R template to do the following with `amino_count.tsv`. The output of this script does not need to be a file. It can simply print to the terminal using a print statement. A print statement example is provided in the template. Modify it accordingly. 
+
+* Read the tsv file into a data frame using the first column in amino_count.tsv as your row names
+* Calculate the total number of times each of the 20 amino acids appear in the proteins in your file (based on this data frame)
+* Determine which protein contains the most copies of a specific amino acid as specified in the table below. For example, Ryan's script should determine which translated sequence contains the most methionine (M) residues.
+
+
+|Student|AA|
+|-|-|
+|Ryan|M|
+|Adam|T|
+|Alex|S|
+|Elizabeth|D|
+|Houman|E|
+|Jonathan|N|
+|Kelly|Q|
+|Marina|Y|
+|Rachel|I|
+|Rebecca|K|
+|Tanvi|C|
+
+
