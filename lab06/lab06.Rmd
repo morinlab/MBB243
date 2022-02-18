@@ -56,7 +56,7 @@ df <- data.frame("first"=c("Doctor","The","Doctor","Dr.","Dr."),
                  "power"=c("Sick beats","Time travel","Robotic tentacles","confusion","evil"),
                  "coolness"=c(9,12,3,8,4),
                  row.names=c("a","b","c","d","e"))
-
+df
 ```
 
 ```{r q3,echo=FALSE}
@@ -108,6 +108,79 @@ question("Which of the following statements comparing R data frames and matrixes
   answer("In data frames, columns can contain a mix of data types but matrixes do not allow this."),
   answer("None of the statements are accurate",correct = TRUE)
 )
+```
+
+
+### Q7
+
+```{r,echo=T}
+x <- c(1,2,3)
+y <- 2
+```
+
+
+```{r q7, echo=FALSE}
+question("What is x+y?",
+  answer("c(3,2,3)"),         
+  answer("c(1,2,3,2)"),
+  answer("c(3,4,5)",correct = TRUE)
+)
+```
+
+
+### Q8
+
+```{r,echo=T}
+df <- data.frame(
+  x = 1:3,
+  y = 2
+)
+```
+
+
+```{r q8, echo=FALSE}
+question("What is df$y?",
+  answer("2"),         
+  answer("c(2, 2, 2)", correct=TRUE),
+  answer("6"),
+  answer("c(2,4,6)")
+)
+```
+
+
+### Q9
+
+```{r,q9,echo=FALSE}
+question("Which code will return a vector containing the mean of each column in df?",
+         answer("mean(df)"),
+         answer("mean(df$x) + mean(df$y)"),
+         answer("apply(df,2,mean)", correct=TRUE),
+         answer("apply(mean, df)"),
+         answer("df(mean$df)"),
+         answer("apply(df,1,mean)"))
+```
+
+###Q10
+
+```{r,q10code,exercise=TRUE}
+# a nested list
+movie_list <- list(
+  list(title = "The Matrix",
+       year = 1999,
+       cast = c("Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss", "Hugo Weaving", "Joe Pantoliano")),
+  list(title = "The Matrix Resurrections",
+       year = 2021,
+       cast = c("Keanu Reeves", "Carrie-Anne Moss", "Jada Pinkett Smith", "Lambert Wilson"))
+)
+```
+
+```{r,q10,echo=FALSE}
+question("Which code will return just the cast of The Matrix Resurrections?",
+         answer("movie_list$cast"),
+         answer("movie_list[[2]]$cast",correct=TRUE),
+         answer("movie_list[2]$cast"),
+         answer("movie_list[[2$cast]]")
+         )
 ```
 
 
@@ -170,7 +243,7 @@ order(alpha_mat[2,]) #this should get you started
 
 ```{r df, exercise=TRUE, exercise.eval=TRUE}
 
-morin = read.csv("../data/Morin_genotypes.txt",sep="\t",nrows = 125000)
+morin = read.csv("~/MBB243/data/Morin_genotypes.txt",sep="\t",nrows = 125000)
 table(morin$genotype)
 
 ```
