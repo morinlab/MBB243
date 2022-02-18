@@ -56,7 +56,7 @@ df <- data.frame("first"=c("Doctor","The","Doctor","Dr.","Dr."),
                  "power"=c("Sick beats","Time travel","Robotic tentacles","confusion","evil"),
                  "coolness"=c(9,12,3,8,4),
                  row.names=c("a","b","c","d","e"))
-
+df
 ```
 
 ```{r q3,echo=FALSE}
@@ -154,10 +154,10 @@ question("What is df$y?",
 question("Which code will return a vector containing the mean of each column in df?",
          answer("mean(df)"),
          answer("mean(df$x) + mean(df$y)"),
-         answer("sapply(df, mean)", correct=TRUE),
+         answer("apply(df,2,mean)", correct=TRUE),
          answer("apply(mean, df)"),
          answer("df(mean$df)"),
-         answer("summary(df)"))
+         answer("apply(df,1,mean)"))
 ```
 
 ###Q10
