@@ -43,7 +43,7 @@ The purpose of this introductory data analysis course is to teach students in mo
 |3|26-01-2022 | Fundamentals of R and Python | 28-01-2022| Basic data types and operations | Feb 27 |
 |4|02-02-2022 | Obtaining and manipulating sequence data | 04-02-2022 | Conditionals and control flow | Feb 27 |
 |5|09-02-2022 | Regular expressions and patterns | 11-02-2022 | Regular expressions (bash, Python and R) | Feb 27 |
-|6|16-02-2022 | Quantitative DNA/RNA sequence analysis | 16-02-2022 | Hypothesis testing and summarization | Mar 11 |
+|6|16-02-2022 | Quantitative DNA/RNA sequence analysis | 18-02-2022 | Hypothesis testing and summarization | Mar 11 |
 |-|23-02-2022 | Reading Week| 23-02-2022| Reading Week | NA |
 |7|02-03-2022 | Midterm exam | 04-03-2022 | No lab | NA |
 |8|09-03-2022 | Exploratory data analysis in molecular biology | 11-03-2022 | Tidy data, data frames and data tables | Mar 18 |
