@@ -111,6 +111,79 @@ question("Which of the following statements comparing R data frames and matrixes
 ```
 
 
+### Q7
+
+```{r,echo=T}
+x <- c(1,2,3)
+y <- 2
+```
+
+
+```{r q7, echo=FALSE}
+question("What is x+y?",
+  answer("c(3,2,3)"),         
+  answer("c(1,2,3,2)"),
+  answer("c(3,4,5)",correct = TRUE)
+)
+```
+
+
+### Q8
+
+```{r,echo=T}
+df <- data.frame(
+  x = 1:3,
+  y = 2
+)
+```
+
+
+```{r q8, echo=FALSE}
+question("What is df$y?",
+  answer("2"),         
+  answer("c(2, 2, 2)", correct=TRUE),
+  answer("6"),
+  answer("c(2,4,6)")
+)
+```
+
+
+### Q9
+
+```{r,q9,echo=FALSE}
+question("Which code will return a vector containing the mean of each column in df?",
+         answer("mean(df)"),
+         answer("mean(df$x) + mean(df$y)"),
+         answer("sapply(df, mean)", correct=TRUE),
+         answer("apply(mean, df)"),
+         answer("df(mean$df)"),
+         answer("summary(df)"))
+```
+
+###Q10
+
+```{r,q10code,exercise=TRUE}
+# a nested list
+movie_list <- list(
+  list(title = "The Matrix",
+       year = 1999,
+       cast = c("Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss", "Hugo Weaving", "Joe Pantoliano")),
+  list(title = "The Matrix Resurrections",
+       year = 2021,
+       cast = c("Keanu Reeves", "Carrie-Anne Moss", "Jada Pinkett Smith", "Lambert Wilson"))
+)
+```
+
+```{r,q10,echo=FALSE}
+question("Which code will return just the cast of The Matrix Resurrections?",
+         answer("movie_list$cast"),
+         answer("movie_list[[2]]$cast",correct=TRUE),
+         answer("movie_list[2]$cast"),
+         answer("movie_list[[2$cast]]")
+         )
+```
+
+
 ### Getting vexxed by vectors
 
 *Add to the code below to create a new vector from this_vec that contains the elements in numerical order. Your code should print the contents of your new vector. When you have the correct implementation, you should get a printout identical to what is shown immediately below this.*
@@ -170,7 +243,7 @@ order(alpha_mat[2,]) #this should get you started
 
 ```{r df, exercise=TRUE, exercise.eval=TRUE}
 
-morin = read.csv("../data/Morin_genotypes.txt",sep="\t",nrows = 125000)
+morin = read.csv("~/MBB243/data/Morin_genotypes.txt",sep="\t",nrows = 125000)
 table(morin$genotype)
 
 ```
