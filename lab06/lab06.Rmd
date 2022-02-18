@@ -164,4 +164,13 @@ alpha_mat
 order(alpha_mat[2,]) #this should get you started
 ```
 
+### Can't think of a way to frame a pun about data
 
+*The code below loads the first 125,000 of Ryan's genotypes from 23andMe. Add some code below this to subset this data frame to create a new data frame containing only rows that are heterozygous (not homozygous). Be sure the data frame doesn't contain any "no call" genotypes, which look like this: "--". When you have the right answer, you should have a data frame with 59930 rows. Confirm this by running the dim() function on your new data frame. *
+
+```{r df, exercise=TRUE, exercise.eval=TRUE}
+
+morin = read.csv("../data/Morin_genotypes.txt",sep="\t",nrows = 125000)
+table(morin$genotype)
+
+```
