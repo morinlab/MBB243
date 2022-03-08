@@ -47,9 +47,9 @@ The purpose of this introductory data analysis course is to teach students in mo
 |-|23-02-2022 | Reading Week| 23-02-2022| Reading Week | NA |
 |7|02-03-2022 | Midterm exam | 04-03-2022 | No lab | NA |
 |8|09-03-2022 | Exploratory data analysis in molecular biology | 11-03-2022 | Tidy data, data frames and data tables | Mar 18 |
-|9|16-03-2022 | Common visualization methods | 18-03-2022 | Cleaning and combining and reformatting data | Apr 1 |
-|10|23-03-2022 | Basic modeling | 25-03-2022 | Creating, utilizing, and visualizing models | Apr 1 |
-|11|30-03-2022 | Methods for enhancing reproducibility | 01-04-2022 | Introduction to Snakemake | Apr 15 |
+|9|16-03-2022 | More exploratory data analysis | 18-03-2022 | Advanced use of Tidyverse | Apr 1 |
+|10|23-03-2022 | Generic visualization methods| 25-03-2022 | ggplot | Apr 1 |
+|11|30-03-2022 | Advanced visualizations for molecular biology | 01-04-2022 | Visualizing genomic data types | Apr 15 |
 |12|06-04-2022 | Data analysis pipelines | 08-04-2022 | open lab | Apr 15 |
 
 ## Lab materials and server
