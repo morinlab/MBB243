@@ -38,14 +38,14 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Sanity checking
 
-- You will often (but not always) have a general idea of how your data should and shold not look
+- You will often (but not always) have a general idea of how your data should and should not look
 - Sanity checking can allow you to identify problems early in an analysis
   - Are you missing values for some variables?
   - Are some measurements very different from the rest?
   - Do you have mathematically impossible values based on what the data should represent?
 - Important: Don't manipulate your data just because it gives you a better result. It must be justifiable!
 
-# Sanity checking
+# Sanity checking?
 
 ![](images/sanitycheck.png)
 
@@ -57,7 +57,7 @@ knitr::opts_chunk$set(echo = FALSE)
   - Note: auto-creation of column names leads to X1, X2 ...
 ```{r read,echo=T}
 library(readr)
-exp_mini = read_csv("data/GSE125966_GOYA_mini.csv")
+exp = read_csv("data/GSE125966_GOYA_mini.csv")
 
 ```
 
@@ -67,7 +67,7 @@ exp_mini = read_csv("data/GSE125966_GOYA_mini.csv")
 - Manipulate/load data in a useable format
   - Did my data load the way I expected?
 ```{r quartile,echo=T}
-head(exp_mini)
+head(exp)
 ```
 
 
@@ -75,20 +75,19 @@ head(exp_mini)
 
 # Tibbles vs Data Frames
 
-- The readr package loads tabular data into a tibble 
-- It also guesses the data type of each column and assigns it for you
+- The `readr` package loads tabular data into a tibble 
+- Guesses the data type of each column and assigns it for you
 - "Smart" recognition and handling of text data such as dates
 - More convenient default with `print()`
 
 ```{r}
-print(exp_mini[,c(1,2)])
+print(exp[,c(1,2)])
 ```
 
 # How to address `readr` parsing issues
 
 ```{r geno_err1,eval=T, echo=T}
-geno <- "data/Morin_genotypes.txt" 
-ryan <- read_tsv(geno)
+ryan <- read_tsv("data/Morin_genotypes.txt" )
 ```
 - The code above will run with this warning:
 ```
@@ -102,6 +101,8 @@ ryan <- read_tsv(geno)
 
 # Diagnosing the issue
 
+- Sanity check: Do we have rows for all the expected chromosomes?
+
 ```{r,eval=T,echo=T}
 summary(ryan$chromosome)
 table(ryan$chromosome)
@@ -114,6 +115,7 @@ table(ryan$chromosome)
 - Explicitly specifying the type for that column and the others resolves this issue
 
 ```{r geno_err,eval=T, echo=T}
+geno="data/Morin_genotypes.txt" 
 ryan <- read_tsv(geno,col_types = "ccic") 
 #here, "ccic" indicates the class of the columns in their order: char, char, int, char
 ```
@@ -123,7 +125,7 @@ ryan <- read_tsv(geno,col_types = "ccic")
 - Tabulate variables to observe distribution (mean, median, quartiles)
 
 ```{r}
-summary(exp_mini[,2])
+summary(exp[,2])
 ```
 
 # Variables in statistics
@@ -200,7 +202,7 @@ ggplot(nums,aes(x=observations)) + geom_histogram() + xlim(c(7,13))
 # Real gene expression data
 
 ```{r,eval=T,echo=F, warning=F,message=F}
-filter(exp_mini, sample1 > -50) %>% ggplot(aes(x=log10(sample1))) + geom_histogram()
+filter(exp, sample1 > -50) %>% ggplot(aes(x=log10(sample1))) + geom_histogram()
 h1="images/histo1.png"
 ggsave(filename=h1)
 ```
@@ -248,18 +250,18 @@ ggsave(filename=h1)
   - `filter` function will return the rows of your data frame that meet your criteria
 
 ```{r,echo=T,eval=F}
-filter(exp_mini, sample1 > -0.5) 
+filter(exp, sample1 > -0.5) 
 # function: filter "Subset rows using column values"
 # input: your data frame or tibble
 # here, "sample1 > -0.5" is your criterion
-# any rows not meeting this will be dropped from the output
+# any rows failing criteria this will be dropped
 ```
 
 # Dropping outliers
 
 ```{r,echo=T,eval=F}
-exp_filt = filter(exp_mini, sample1 > -0.5) 
-summary(exp_mini)
+exp_filt = filter(exp, sample1 > -0.5) 
+summary(exp)
 summary(exp_filt)
 #note that sample2 is unaffected by this and will still have outliers!
 ```
@@ -353,7 +355,7 @@ table(ryan$Homozygous,ryan$Sex_chrom)
 # Is this tidy?
 
 ```{r,eval=T}
-head(exp_mini)
+head(exp)
 ```
 
 # How to make something tidy
@@ -389,10 +391,10 @@ wide_df = pivot_wider(long_df,
 
 ```{r,echo=T,eval=T}
 # let's give our gene column to a useful name using dplyr
-exp_mini = exp_mini %>% rename("Gene_ID"="X1")
+exp = exp %>% rename("Gene_ID"="X1")
 # use pivot_longer function to bring sample1 and sample2 columns into one column
 
-exp_tidy = pivot_longer(exp_mini,-Gene_ID,names_to="sample",values_to="expression")
+exp_tidy = pivot_longer(exp,-Gene_ID,names_to="sample",values_to="expression")
 ```
 
 # Gene expression in a tidy format
@@ -455,7 +457,8 @@ ggplot(exp_tidy,aes(x=sample,y=log10(expression))) + geom_boxplot() + geom_quasi
 # Example
 
 ```{r, echo=T,eval=T,message=F,warning=F}
-covid <- read_csv("data/covid19_cases_worldwide_monthly.csv")
+covid_file <- "data/covid19_cases_worldwide_monthly.csv"
+covid <- read_csv(covid_file)
 head(covid,5)
 
 ```
@@ -492,8 +495,11 @@ head(covid_trim)
 - We can combine the `if_else` function with `mutate` to conditionally modify the data frame with a different result depending on the data itself
 - Syntax: `if_else(condition,do_if_true,do_if_false)`
 
+
 ```{r, echo=T,eval=T}
+
 covid_trim = mutate(covid_trim,death_rate = if_else(cases>0,deaths/cases,0))
+
 # equivalent to doing this for every row: 
 # if(cases>0){
 #   death_rate = deaths/cases
@@ -519,24 +525,119 @@ filter(covid_trim,death_rate>1)
 
 ```{r, eval=T,echo=T}
 ryan = ryan %>% 
-  mutate(Homozygous=grepl("AA|GG|CC|TT|II",genotype)) %>%
+  mutate(
+    Homozygous=grepl("AA|GG|CC|TT|II",genotype)
+    ) %>%
 # create logical column that is TRUE for all homozygous rows
-  mutate(Sex_chrom=grepl("X|Y",chromosome))
-table(ryan$Homozygous,ryan$Sex_chrom)
+  mutate(
+    Sex_chrom=grepl("X|Y",chromosome)
+    )
+head(ryan)
 ```
 
 # Should we be worried?
 
+```{r,eval=T,echo=T}
+table(ryan$Homozygous,ryan$Sex_chrom)
+```
+
 - Difficult to conclude why we're seeing heterozygous SNPs on the X chromosome without other examples of similar data
-- A good comparator would be similar data from a female
+- A good comparitor would be similar data from a female
 
 # Ryan vs some rando named Ashley
 
 ```{r, echo=T,eval=T}
 ash=read_tsv("data/genome_Ashley_Bodily.txt",col_types = "ccic")
 ash = ash %>% 
-  mutate(Homozygous=grepl("AA|GG|CC|TT|II",genotype)) %>%
+  mutate(
+    Homozygous=grepl("AA|GG|CC|TT|II",genotype)
+    ) %>%
 # create logical column that is TRUE for all homozygous rows
-  mutate(Sex_chrom=grepl("X|Y",chromosome))
+  mutate(
+    Sex_chrom=grepl("X|Y",chromosome)
+    )
 table(ash$Homozygous,ash$Sex_chrom)
 ```
+
+
+# Mutating more than one column at a time
+
+```{r, echo=T,eval=T}
+ash=read_tsv("data/genome_Ashley_Bodily.txt",
+             col_types = "ccic")
+ash = ash %>% 
+  mutate(
+    Homozygous=grepl("AA|GG|CC|TT|II",genotype),
+    Sex_chrom=grepl("X|Y",chromosome)
+    )
+
+table(ash$Homozygous,ash$Sex_chrom)
+
+```
+
+# Excel works similarly but mutate is tied to the same row
+
+![](images/excel_formula.png)
+
+# `arrange`: a better way to reorder rows
+
+- In exploratory analysis situations and for visualizations you will commonly want your rows ordered a specific way
+- Instead of the `order` function, we can use the more powerful Tidyverse equivalent: `arrange`
+- Syntax: 
+
+```
+arrange(df,
+  FirstColumn,
+  columnTieBreaker,
+  Another_column)
+```
+
+# Data to arrange
+
+```{r,echo=F,eval=T}
+dat <- data.frame(firstname=c("Matt","Aaron","Sarah-Jane","Sarit","Juanita","Sandeep"),
+                  surname=c("Smith","Smith","Smith","Kim","Velculescu","Dave"),
+                  birth_year=c(1982,2000,1973,1998,1986,1978))
+head(dat)
+```
+
+# Data to arrange
+
+- Let's order rows based on surname only
+
+```{r,eval=T,echo=T}
+arrange(dat,surname)
+```
+
+# Data to arrange
+
+- Let's order rows based on surname _then_ use firstname to break ties
+
+```{r,eval=T,echo=T}
+arrange(dat,surname,firstname)
+```
+
+# Tidyverse vs "base R" equivalent
+
+- All things we can accomplish using Tidyverse syntax are possible in base R
+ - Just because we _can_ doesn't mean we _should_ use the other syntax
+ - base R is generally, if not always, harder to read and debug
+
+```{r,echo=T,eval=T}
+dat[order(dat$surname,dat$firstname),]
+```
+
+# Sort(`arrange`) and Filter (`filter`)
+
+![](images/excel_sortfilter.png)
+
+# Recap
+
+|Function|Goal| 
+|-|-|
+|filter|Keep only rows matching certain criteria|
+|select|Keep only columns of specified name (or naming pattern)|
+|mutate|Create one or more new columns based on the output of operations/functions|
+|pivot_longer|Bring together columns to convert data to tidy format|
+|pivot_wider|Separate column into multiple columns for readability|
+|arrange|Reorder rows based on one or more columns|
