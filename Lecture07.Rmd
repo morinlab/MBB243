@@ -57,7 +57,7 @@ knitr::opts_chunk$set(echo = FALSE)
   - Note: auto-creation of column names leads to X1, X2 ...
 ```{r read,echo=T}
 library(readr)
-exp = read_csv("data/GSE125966_GOYA_mini.csv")
+expr = read_csv("data/GSE125966_GOYA_mini.csv")
 
 ```
 
@@ -67,7 +67,7 @@ exp = read_csv("data/GSE125966_GOYA_mini.csv")
 - Manipulate/load data in a useable format
   - Did my data load the way I expected?
 ```{r quartile,echo=T}
-head(exp)
+head(expr)
 ```
 
 
@@ -81,7 +81,7 @@ head(exp)
 - More convenient default with `print()`
 
 ```{r}
-print(exp[,c(1,2)])
+print(expr[,c(1,2)])
 ```
 
 # How to address `readr` parsing issues
@@ -125,7 +125,7 @@ ryan <- read_tsv(geno,col_types = "ccic")
 - Tabulate variables to observe distribution (mean, median, quartiles)
 
 ```{r}
-summary(exp[,2])
+summary(expr[,2])
 ```
 
 # Variables in statistics
@@ -202,7 +202,7 @@ ggplot(nums,aes(x=observations)) + geom_histogram() + xlim(c(7,13))
 # Real gene expression data
 
 ```{r,eval=T,echo=F, warning=F,message=F}
-filter(exp, sample1 > -50) %>% ggplot(aes(x=log10(sample1))) + geom_histogram()
+filter(expr, sample1 > -50) %>% ggplot(aes(x=log10(sample1))) + geom_histogram()
 h1="images/histo1.png"
 ggsave(filename=h1)
 ```
@@ -250,7 +250,7 @@ ggsave(filename=h1)
   - `filter` function will return the rows of your data frame that meet your criteria
 
 ```{r,echo=T,eval=F}
-filter(exp, sample1 > -0.5) 
+filter(expr, sample1 > -0.5) 
 # function: filter "Subset rows using column values"
 # input: your data frame or tibble
 # here, "sample1 > -0.5" is your criterion
@@ -259,10 +259,9 @@ filter(exp, sample1 > -0.5)
 
 # Dropping outliers
 
-```{r,echo=T,eval=F}
-exp_filt = filter(exp, sample1 > -0.5) 
-summary(exp)
-summary(exp_filt)
+```{r,echo=T,eval=T}
+exp_filt = filter(expr, sample1 > -0.5) 
+select(exp_filt,sample1,sample2) %>% summary()
 #note that sample2 is unaffected by this and will still have outliers!
 ```
 
@@ -355,7 +354,7 @@ table(ryan$Homozygous,ryan$Sex_chrom)
 # Is this tidy?
 
 ```{r,eval=T}
-head(exp)
+head(expr)
 ```
 
 # How to make something tidy
@@ -391,10 +390,10 @@ wide_df = pivot_wider(long_df,
 
 ```{r,echo=T,eval=T}
 # let's give our gene column to a useful name using dplyr
-exp = exp %>% rename("Gene_ID"="X1")
+expr = expr %>% rename("Gene_ID"="X1")
 # use pivot_longer function to bring sample1 and sample2 columns into one column
 
-exp_tidy = pivot_longer(exp,-Gene_ID,names_to="sample",values_to="expression")
+exp_tidy = pivot_longer(expr,-Gene_ID,names_to="sample",values_to="expression")
 ```
 
 # Gene expression in a tidy format
