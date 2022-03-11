@@ -1,5 +1,5 @@
 ---
-title: 'Lab 03 – Exploratory Data Analysis: Introducing the Tidyverse'
+title: 'Lab 07 – Exploratory Data Analysis: Introducing the Tidyverse'
 output:
   html_document:
     df_print: paged
@@ -341,8 +341,6 @@ mutate(covid, death_rate = ifelse(cases > 0, deaths / cases, 0)) %>%
 ### `readr`: Exporting data using `write_csv()`
 
 Export final data frame to disk.
-
-Discuss different formats (CSV, TSV, lines).
 
 ```{r}
 write_csv(covid, "data/covid19_cases_worldwide_monthly.updated.csv")
