@@ -1,0 +1,356 @@
+---
+title: 'Lab 03 – Exploratory Data Analysis: Introducing the Tidyverse'
+output:
+  html_document:
+    df_print: paged
+---
+
+## Tutorial
+
+### Learning Objectives
+
+-   Install packages from CRAN and Bioconductor
+
+-   Understand the basics of the file system
+
+    -   Identify and update the current working directory using help from `here`
+    -   Explain how their working directory impacts their code
+    -   Use RStudio projects to automatically update the working directory
+
+-   Load data from tabular files (CSV, TSV) into R
+
+    -   Explain advantages of `readr` package over base R
+    -   Inspect the output of `read_csv()` for potential issues
+    -   Explain advantages of tibbles over data frames
+
+-   Manipulate data frames in R using the `dplyr` package
+
+    -   Explain advantages of using `dplyr` functions compared to base R equivalents
+    -   Subset columns by name or condition using `select()`
+    -   Rename columns using `rename()`
+    -   Subset rows conditionally on one or more columns using `filter()`
+    -   Sort rows by one or more columns using `arrange()` and `desc()`
+    -   Create new columns from existing columns using `mutate()`
+    -   Combine multiple `dplyr` commands using pipes (`%>%`)
+    -   Understand how grouping can be used
+
+-   Troubleshoot error messages in R
+
+### Context
+
+Hopefully you've become familiar with the most important data structures in R, including the data frame and its vector columns. While much more is possible in R, these two data structures alone cover most use cases in the types of data analyses you will likely need. As a result, you can now start a retrospective analysis of the worldwide COVID-19 dataset from the early months of the pandemic.
+
+Today, you will learn the power of R packages and why they're one of the reasons R is so popular and effective for data science. The two packages introduced today are `readr` (for importing and exporting data) and `dplyr` (for exploring and wrangling data). These packages come with functions that are often faster and more convenient to use than their base R equivalents. They're essential tools in your toolbox.
+
+In this tutorial, you will explore monthly COVID-19 statistics for territories spanning the globe, not just Canada. The data was originally downloaded from the [EU Open Data Portal](https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data). It was lightly processed and filtered for this lab.
+
+### The tidyverse
+
+The `readr` and `dplyr` packages are part of a larger suite known as the [tidyverse](https://www.tidyverse.org/). In total, there are eight core packages in the tidyverse, and these tutorials will cover over half of them. While the full list of package authors and contributors is too long to include here, [Hadley Wickam](http://hadley.nz/) can be attributed as the driving force behind this movement. I use the term "movement" because the tidyverse also encapsulates the unifying philosophy that informs package design. It's not quite a cult, but it's also not entirely unlike one. The following quote is taken from their website:
+
+> The tidyverse is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+
+Core to the tidyverse is the concept of tidy data. The idea is so important that Hadley even wrote a [peer-reviewed paper](https://www.jstatsoft.org/article/view/v059i10) on the topic. You can find useful summaries [here](https://tidyr.tidyverse.org/articles/tidy-data.html) and [here](https://r4ds.had.co.nz/tidy-data.html). In essence, tidy data frames have one observation per row, one variable per column, and one value per cell. A visual summary is shown in the figure below, which was taken from the [R for Data Science](https://r4ds.had.co.nz/tidy-data.html) online book by Hadley Wickham and Garrett Grolemund. In general, you will want to format your data such that it follows these tidy principles.
+
+![Tidy data](images/tidy-1.png)
+
+### Packages and CRAN
+
+So far, the term "R package" has been used in this course with only a vague definition. Similar to Python libraries, the diversity and utility of R packages are arguably one of the reasons why R is so popular and powerful in the life sciences and beyond. You can think of them as bundles of R code that someone else (or a team) wrote and shared with the community for re-use. This way, you don't have to write this code yourself. Some packages are general-purpose like `dplyr`, whereas other packages serve a very specific need or field. Therein lies the beauty of packages and the R community (referred to as [\#rstats](https://twitter.com/search?q=%23rstats) on Twitter): odds are that someone has worked on a similar problem---however general or specific---and shared code that you can re-use.
+
+Repositories are where packages are shared with the community. The most important repository is the Comprehensive R Archive Network, typically referred to as CRAN. CRAN is considered the official package repository because the website also hosts R itself; you already visited the website if you had to install R on your computer. That said, there are other repositories worth knowing about. Another important one is Bioconductor, which hosts bioinformatics-focused packages. Lastly, you may eventually install a package from GitHub, a popular website for sharing code. GitHub is typically used for distributing less-developed package before they pass the rigorous checks to be hosted on CRAN.
+
+Installing a package from CRAN is usually as easy as running the `install.packages()` function. In some cases, you might have to install other software (*i.e.* dependencies) outside of R for package installation to work. However, in most cases, dependencies are simply other R packages, which are also installed automatically, streamlining the process for you, the user.
+
+The first argument for the `install.packages()` function is a list of packages to install as a character vector. If you only have one package to install, then you can run `install.packages("readr")`. Otherwise, you can install a series of packages using `install.packages(c("readr", "dplyr"))`. At the time of writing this tutorial, this command installed 24 additional packages as dependencies. It's a good thing you don't have to worry about that part.
+
+```{r, eval=FALSE}
+install.packages(c("here", "readr", "dplyr"))
+```
+
+Briefly, the `here` package will help us consistently access files on disk; the `readr` package will be used to read and write data files in various formats like CSV; and `dplyr` will allow us to efficiently manipulate data frames using a powerful set of expressive "verb functions". Let's load all three packages.
+
+```{r}
+library(here)
+library(readr)
+library(dplyr)
+```
+
+### The File System
+
+It's typical to load and store data as files on a computer. These involve interactions with the computer's file system, akin to when you use Windows Explorer on Windows or Finder on macOS. An important concept when interacting with the file system is the working directory. You can think of the working directory as a "You Are Here!" in your folder structure. In R, you can figure out where you are in your file system by running `getwd()`.
+
+```{r}
+getwd()
+```
+
+The concept of "being somewhere" in your file system is very useful for quickly referring to relevant files. For example, you can see that the working directory printed above corresponds to the `lab03` folder. If I wanted to check what files are in this folder, I could use a function like `list.files()` without specifying where I am. That's because most functions that interact with the file system assume that you are referring to location **relative to your working directory**.
+
+```{r}
+list.files()
+```
+
+To illustrate this point further, let's imagine there was no such thing as a working directory. If I wanted to list the files in the `lab03` folder, I would have to provide a full location, also known as an absolute path. As you can see in the R command below, this will very quickly become tedious. **N.B.** On Windows, absolute paths start with the drive letter and the folders are separated by backslashes, such as `c:\path\to\file.txt`.
+
+```{r}
+list.files("/Users/rmorin/Dropbox/Teaching/MBB_243/lab03")
+```
+
+If you want to refer to files or folders within the `lab03` folder, you can use "relative paths", which are locations that assume that you're starting in your working directory. You'll notice that unlike the absolute path above, relative paths don't start with a forward slash (or a drive letter on Windows). In this case, I added a forward slash after the folder name to indicate that it's a folder. The trailing slash can be omitted.
+
+```{r}
+# Equivalent to: list.files("data")
+list.files("data/")
+```
+
+If you want to refer to a parent folder using a path relative to the working directory, you can use the `..` shortcut. Here, this generates a list of all of the lab folders.
+
+```{r}
+list.files("../")
+```
+
+Let's say that you wanted the folder containing all of the labs to be your working directory. The `getwd()` function has a sibling, `setwd()`, that you can use in this scenario.
+
+```{r, eval=FALSE}
+setwd("../")
+```
+
+However, running this every time you open R is tedious. RStudio projects partially aim to solve this problem. Assuming that all of the files related to a project are in the same folder, you can "convert" this folder into an RStudio project. All that changes is the creation of a file ending with `.Rproj`, which you can be opened with RStudio. The benefit of using RStudio projects is that RStudio will automatically update the working directory to wherever the `.Rproj` file is located.
+
+Another benefit of using RStudio projects is their integration with the `here` package that you installed earlier. This helps guarantee that file paths are all relative to the same directory, which in this case is where the `.Rproj` file is located. To demonstrate this, you can run the `here()` function, which comes from the `here` package you loaded earlier. If you haven't loaded the package yet, do so now with `library(here)`. You'll see that `here()` prints the location of the RStudio project (*i.e.* without the `lab03/` component).
+
+```{r}
+here()
+```
+
+That said, `here()`'s most useful feature is the fact that it can take in a series of directories/files as input arguments and generate an absolute path that will work anywhere. So, if you want to access the `lab03/` folder, you can provide that value as an argument. This way, you can use the output in any other function that works with file paths, like `list.files()`.
+
+```{r}
+here("lab03/")
+
+list.files(here("lab03/"))
+```
+
+### `readr`: Importing data using `read_csv()`
+
+The `readr` package that you installed and loaded earlier offers a suite of functions for reading, parsing, and writing data files. The package offers additional facilities, but those will be set aside for now. Instead, let's focus on the reading functions like `read_csv()`, which are analogous to the base R `read.csv()` function. Generally speaking, the `readr` functions have a more consistent syntax, are faster, automatically parse common date/time formats, and display progress bars compared to their base R equivalents.
+
+In light of these convenient features, it's sensible to first reach for the `readr` functions whenever you need to load data. That's what you can do now to load the global monthly COVID-19 data. When you load the CSV file with `read_csv()`, you can see a log of what were the inferred column types.
+
+```{r}
+covid <- read_csv("data/covid19_cases_worldwide_monthly.csv")
+```
+
+It's a good practice to quickly review these to confirm `readr`'s guesses. These guesses are normally printed when you run the function, but if you have more than 20 columns, you'll need to run `spec(covid)` to obtain a full listing.
+
+Note that the package only uses the first 1,000 rows to infer column types by default. Hence, you'll need to be careful if your dataset happens to only have numbers in the first 1000 rows of a given column but characters appear in that same column later in the file. In this case, you'll want to either increase the `guess_max` argument or explicitly provide column types to the `col_types` argument.
+
+
+```{r}
+spec(covid)
+```
+
+Another advantage of using `read_csv()` over `read.csv()` is that the former function returns a tibble instead of a plain data frame. Practically speaking, tibbles are just fancy data frames. In this case, "fancy" means a few things. First, tibbles have better behavior and safeguards for users. This is best summarized by the `tibble` package [homepage](https://tibble.tidyverse.org/):
+
+> Tibbles are data.frames that are lazy and surly: they do less (i.e. they don’t change variable names or types, and don’t do partial matching) and complain more (e.g. when a variable does not exist). This forces you to confront problems earlier, typically leading to cleaner, more expressive code. 
+
+Second, tibbles print nicer because they automatically limit to the first few rows, whereas data frames will print everything by default, which can be unwieldy for large data frames. Tibbles also include useful metadata in the output, namely the dimensions (number of rows and columns) and the column types. You can compare the example outputs below. 
+
+Note that if your tibble is very wide, some of the columns might not get printed. Instead, the names of the columns that have been omitted are listed below the tibble along with their respective column types. If you want to preview the entire tibble (or data frame), you should run `View(covid)` in RStudio, which will open the data in an Excel-like read-only table.
+
+#### Tibble printing
+
+```{r, echo=FALSE}
+print(covid)
+```
+
+#### Data frame printing
+
+Note that the following output was specifically truncated to the first 50 rows. Otherwise, all 1,370 rows would be printed. 
+
+```{r, echo=FALSE}
+as.data.frame(covid) %>% head(50) %>% print()
+```
+
+### `dplyr`: The Heart of the Tidyverse
+
+Functions organized as verbs.
+
+Advantages of using dplyr over base R.
+
+#### Wrangling columns with `select()` and `rename()`
+
+Goal: We only care about month, territory, and cases.
+
+Base R version for selecting columns.
+
+```{r}
+covid[,c("month", "territory", "cases")]
+```
+
+```{r}
+select(covid, month, territory, cases)
+```
+
+You can also use the `starts_with` function in combination with `select` to specify patterns that define the columns you want to select. For example, if you wanted all columns that start with the letter c, you would use the following:
+
+
+```{r}
+select(covid,starts_with("c"))
+```
+
+
+
+Goal: Clarify that population is for 2018.
+
+Using `rename()` to modify your column names.
+
+The need to use `<-` to update data frame. Otherwise, the new data frame is just printed.
+
+```{r}
+rename(covid, population_2018 = population)
+
+covid <- rename(covid, population_2018 = population)
+```
+
+Base R version for renaming columns is less readable.
+
+`names()` is the same as `colnames()` for data frames.
+
+```{r, eval=FALSE}
+names(covid)[names(covid) == "population"] <- "population_2018"
+```
+
+#### Wrangling rows with `arrange()` and `filter()`
+
+Goal: Find most deadly month in any country.
+
+Using `arrange()`
+
+`desc()` vs `-`
+
+```{r}
+#order with increasing numerical value
+arrange(covid, deaths)
+# reverse the default ordering direction
+arrange(covid, -deaths)
+# another way to reverse the default ordering direction
+arrange(covid, desc(deaths))
+```
+
+Base R version.
+
+```{r}
+covid[order(covid$deaths, decreasing = TRUE),]
+```
+
+Goal: Find the deadliest month per territory. 
+
+Start by ordering on territory _then_ decreasing on death numbers. This puts the territory/month combination with the highest value at the top but we still have the other months for the first territory in the way. To keep only the first row for any combination of uniquely identifying rows, we can use `group_by`. This internally links together rows as a group and allows you to perform various operations within each group. In this case, we'll combine this with `slice_head`. Similar to `head`, this is one of several `slice` functions that operate on groups. Essentially, a slice is a selection from a group and `slice_head` will give you back the first N rows in that group based on their order in a data frame. 
+
+```{r}
+arrange(covid, territory, desc(deaths))
+
+```
+
+Add grouping and slice
+
+```{r}
+arrange(covid, territory, desc(deaths)) %>% group_by(territory) %>% slice_head()
+```
+
+Goal: Recreate small data frame for Canada.
+
+Using `filter()`.
+
+```{r}
+filter(covid, territory == "Canada")
+```
+
+Using base R.
+
+```{r}
+covid[covid$territory == "Canada",]
+```
+
+Goal: Get the case and death counts for all Oceania territories for the month of May.
+
+The comma implies `&` (AND). Both syntax are valid. 
+
+```{r}
+filter(covid, continent == "Oceania" & month == "May")
+filter(covid, continent == "Oceania", month == "May")
+```
+
+For June and May.
+
+```{r}
+# Wrong
+filter(covid, continent == "Oceania", month == "May", month == "Jun")
+
+filter(covid, continent == "Oceania", month == "May" | month == "Jun")
+filter(covid, continent == "Oceania", month %in% c("May", "Jun"))
+```
+
+#### Create new columns with `mutate()`
+
+Goal: Calculate a new column based on the number of deaths normalized by the number of cases. 
+
+This is a reminder of the example shown in class.
+
+Using `mutate()`.
+
+```{r}
+mutate(covid, death_rate = deaths / cases)
+
+mutate(covid, death_rate = ifelse(cases > 0, deaths / cases, 0))
+
+covid <- mutate(covid, death_rate = ifelse(cases > 0, deaths / cases, 0))
+```
+
+Base R version.
+
+```{r}
+covid$death_rate <- ifelse(covid$cases > 0, covid$deaths / covid$cases, 0)
+```
+
+#### Combining different `dplyr` verbs
+
+Goal: Order the months in based on the death rate in China (increasing order).
+
+Assume we don't have `death_rate` column.
+
+Intermediate variables are problematic and just a general nuisance.
+
+```{r}
+covid <- mutate(covid, death_rate = ifelse(cases > 0, deaths / cases, 0))
+covid_china <- filter(covid, territory == "China")
+covid_china <- arrange(covid_china, death_rate)
+select(covid_china, month, death_rate)
+```
+
+Using pipes.
+
+```{r}
+mutate(covid, death_rate = ifelse(cases > 0, deaths / cases, 0)) %>%
+  filter(territory == "China") %>%
+  arrange(death_rate) %>%
+  select(month, death_rate)
+```
+
+### `readr`: Exporting data using `write_csv()`
+
+Export final data frame to disk.
+
+Discuss different formats (CSV, TSV, lines).
+
+```{r}
+write_csv(covid, "data/covid19_cases_worldwide_monthly.updated.csv")
+```
+
+## More Resources
+
+-   <https://r4ds.had.co.nz/>
+-   <http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2>
+-   <http://swcarpentry.github.io/r-novice-gapminder/13-dplyr>
+
