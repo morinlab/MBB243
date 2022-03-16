@@ -1,5 +1,5 @@
 ---
-title: "assignment"
+title: "Lab07 Assignment"
 author: "Ryan Morin"
 date: "11/03/2022"
 output: html_document
@@ -11,18 +11,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Assignment
 
-The media, the public, friends and family really appreciate your PI team's initial reporting from the EU data. However, they got more questions for you.
-
-### Fix month column so that it orders chronologically (not alphabetically)
-
 ### Highest and lowest death rates
 
-The WHO wants to know, of the countries that have \>10,000 cases, which one has the highest death rate and which one has the lowest death rate to better understand the health care systems of some countries. Please store the number 10000 in a separate variable so that the WHO can easily adjust that threshold in your code snippet instead of coming back to you to ask the same question.
-
-### On April 22.
-
-Your friend Bob really want to know the total number of new cases on Earth day (April 22) worldwide and he wants to know how you get that number. Please show and describe how you get the number from this dataset so that Bob can do it himself next time.
+The WHO wants to know, of the countries that have \>10,000 cases, which one has the highest death rate and which one has the lowest death rate to better understand the health care systems of some countries. Create a code chunk in this Markdown file to load in the required data and manipulate it to determine this information. Your code should separately set a variable to store the number 10000 so that the WHO can easily adjust that threshold in your code snippet instead of coming back to you to ask the same question.
 
 ### In Europe, cumulative cases by countries
 
-Some media outlets want to get the cumulative cases in 2020 of different countries in Europe. Please write them a snippet of code to get this answer and store 'Europe' in a separate variable. That way their analysts can simpily change the variable to get information about other continents, avoiding mistakes resulting in erroneous reporting.
+Some media outlets want to get the cumulative cases in 2020 of different countries in Europe. In a second code chunk, create a snippet of code to get this answer and store 'Europe' in a separate variable. That way their analysts can simply change the variable to get information about other continents, avoiding mistakes resulting in erroneous reporting.
+
+
