@@ -18,6 +18,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
+# FINAL EXAM CANCELLED
+
+- Second midterm will be held in class instead of our lab
+- *April 8 2:30 - 4:30*
 
 # Learning goals for the week
 
@@ -371,9 +375,6 @@ ungroup() %>%
 - `summarize` returns one row per group and one new column for each summarized variable (plus your grouping columns)
 - `mutate` manipulates the original data frame, duplicating the result for all rows in the same group
 
-# Intermission
-
-![](images/intermission.jpeg)
 
 # Bringing related data together
 
