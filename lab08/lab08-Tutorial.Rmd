@@ -25,10 +25,12 @@ Each of you has been assigned the same tasks but using a different chromosome. Y
 
 |Student|Chromosome|
 |-|-|
-||2|
 |Adam|3|
+|Alex|1|
+|Marina|2|
 |Elizabeth|4|
 |Houman|6|
+|Kelly|15|
 |Jonathan|8|
 |Rachel|9|
 |Rebecca|11|
