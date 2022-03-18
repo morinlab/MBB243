@@ -103,7 +103,7 @@ We will now practice working with multiple data setsmthat contain data we want t
 Your eventual goal is to get a trimmed down version of this gene expression data that only contains the valunes for the genes in `interest_g`. Think about the order of steps you could use to accomplish this. In the tasks below, I've guided you through one way to do it that is hopefully straightforward but you can imagine (and are welcome to try) doing this other ways if you prefer.
 
 ```{r,eval=T,echo=T}
-all_exp <- read_csv("../data/GSE125966_GOYA_stranded_log2CPM.csv") %>% rename("gene_id"="X1")
+all_exp <- read_csv("../data/GSE125966_GOYA_stranded_log2CPM.csv") %>% rename("gene_id"=1)
 interest_g = read_tsv("genes_of_interest.tsv")
 gene_info = read_tsv("data/gene_id.txt") 
 colnames(gene_info)=c("Ensembl_ID","Symbol","HGNC","gene_id")  
@@ -134,6 +134,6 @@ Your next challenge is to convert this data into a tidy format. This involves sp
 
 **Task** 
 
-Your final challenge is to use grouping to determine the mean expression of every gene in the genes of interest. When you complete this, you should have a data frame/tibble with 140 rows and two columns. Save this file as `~/lab08_expression_summary.tsv`.
+Your final challenge is to use grouping to determine the mean expression of every gene in the genes of interest. When you complete this, you should have a data frame/tibble with 140 rows and two columns. Save this file as `expression_summary.tsv` in your working directory. 
 
 
