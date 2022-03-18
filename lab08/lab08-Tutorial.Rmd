@@ -1,0 +1,139 @@
+---
+title: 'Lab 08 – More Tidyverse'
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+## Tutorial
+
+### Learning Objectives
+
+- Gain expertise combining dplyr functions with pipes
+  - Converting to/from tidy data
+  - Combining data sets
+  - encoding categorical variables
+
+## Assignment instructions
+
+Each of you has been assigned the same tasks but using a different chromosome. You will all get different answers to the same questions. Keep this in mind if you help each other with the assignment. 
+
+|Student|Chromosome|
+|-|-|
+||2|
+|Adam|3|
+|Elizabeth|4|
+|Houman|6|
+|Jonathan|8|
+|Rachel|9|
+|Rebecca|11|
+|Tanvi|13|
+
+
+#### Human gene coordinates
+
+```{r,eval=T,echo=T}
+gene_coord <- read_tsv("../data/ensembl_genes_hg38.tsv")
+colnames(gene_coord) = c("ensembl_gene_id","transcript_id","exon_start","exon_end","chromosome","gene_name","strand","gene_type")
+gene_coord
+```
+
+You have been provided a tsv file that is loaded into a tibble for you in the code above. As you can see, this file contains information about the exons of a large number of transcripts and genes. As a reminder: each gene can have one or more distinct transcripts that arise from alternative splicing. Because this file is from the Ensembl resource, the unique identifier for each gene is `ensembl_gene_id`. Although each row has a gene_name that is more human-friendly, you cannot assume that those are uniquely mapped to a single ensembl_gene_id. Let's start by determining how many distinct genes we have and how many transcripts each has. The code below shows the two methos we learned in class for working with grouped data. The first part creates a new data frame that has a column `num_exon`, which is the number of exons in the corresponding transcript_id. The second part modifies the original data frame to have this column. 
+
+## "Mutating" some genes
+
+```{r,eval=T,echo=T}
+exon_summary <- gene_coord %>% 
+  group_by(transcript_id) %>% 
+  summarize(num_exon = n())
+#number of exons across all transcripts
+
+gene_coord <- gene_coord %>% 
+  group_by(transcript_id) %>% 
+  mutate(num_exon=n()) %>%
+  ungroup() # Reminder to ungroup after grouping!
+
+```
+
+**Task**
+
+1. Add some code to the chunk above, using either `exon_summary` or `gene_coord` (you decide), to determine the transcript (and associated gene name) with the most exons on your assigned chromosome. 
+2. Add some more code that will create a new column in `gene_coord` that contains the *length* of every exon
+3. Using your modified data frame, write some more code that calculates the length of every transcript (i.e. the sum of the length of all the exons in that transcript)
+4. Add just a bit more code to allow you to determine which gene on your assigned chromosome has the longest transcript. 
+
+*Answer below by filling in the blanks:*
+
+My assigned chromosome was - and the transcript with the most exons on that chromosome was - (gene_id: - ) . The gene with the longest transcript on my chromosome was -.
+
+
+With so many genes in the genome it's worth knowing how diverse their exon structure is. You can use what you learned to calculate some descriptive statistics on existing values or create some new values that you can work with. One problem with the current data is that some exons exist in multiple transcripts. This means that we cannot use the data as-is to summarize the number of exons per gene. To accomplish this, we first need to reduce our data to only include exons with distinct coordinates (i.e. exon_start and exon_end are unique). This gives you a straightforward way to collapse your rows to only the ones containing unique or `distinct` data. In the next example you'll see a more complicated way to accomplish this that retains your additional columns.
+
+```{r,echo=T,eval=T}
+exon_gene = gene_coord %>% 
+  ungroup() %>% #in case you forgot
+  select(ensembl_gene_id,exon_start,exon_end,chromosome) %>% 
+  distinct()
+exon_gene
+```
+
+If you explore the `exon_gene` tibble created above, you should notice that the number of rows is now much smaller. That's because all redundant exons from other transcripts are no longer shown. Using this data you can begin to determine the number of exons in each gene. 
+
+**Task**
+
+In the code chunk above, add some new code that will determine some things regarding the genes on your assigned chromosome. You probably want to start by reducing your data to only include rows for your chromosome. 
+
+1. Determine how many genes are on your chromosome
+2. Count up the number of exons in every gene on your chromosome
+3. Calculate the mean, median, max and min number of exons in the genes on your chromosome
+
+*Answer below by filling in the blanks:*
+
+My chromosome has - genes on it. The mean number of exons across those genes was -. The median was -. The lowest number of exons in any gene was - and the highest number was -. 
+
+## Exploring more gene expression
+
+We will now practice working with multiple data setsmthat contain data we want to analyze together. The code chunk below loads a larger version of the gene expression data you've seen used as an example in class. As a reminder, the format of the gene expression data is a row for each gene. The ID of each gene is in the first column. Every additional column represents a sample (or patient) and contains the corresponding expression reading for that gene. The file containing the human-friendly gene names (also known as the HGNC Symbol) has been loaded for you. To make the data a bit easier to work with, I've also provided you with a second data frame that contains some information for the genes we care about in this experiment, i.e. `interest_g`. 
+
+Your eventual goal is to get a trimmed down version of this gene expression data that only contains the valunes for the genes in `interest_g`. Think about the order of steps you could use to accomplish this. In the tasks below, I've guided you through one way to do it that is hopefully straightforward but you can imagine (and are welcome to try) doing this other ways if you prefer.
+
+```{r,eval=T,echo=T}
+all_exp <- read_csv("../data/GSE125966_GOYA_stranded_log2CPM.csv") %>% rename("gene_id"="X1")
+interest_g = read_tsv("data/genes_of_interest.tsv")
+gene_info = read_tsv("data/gene_id.txt") 
+colnames(gene_info)=c("Ensembl_ID","Symbol","HGNC","gene_id")  
+gene_info = gene_info %>% 
+  select(Ensembl_ID,gene_id) %>%
+  filter(!is.na(gene_id)) %>%
+  mutate(gene_id = paste0("GeneID:",gene_id))
+
+```
+
+**Task** 
+
+Add to/modify the code chunk with the ultimate goal of creating a new matrix `named_exp` that contains only the rows from `all_exp` for our genes of interest. The `named_exp` should also have new columns representing all the columns in the `interest_g` data frame because we'll need these later. 
+
+1. Because we only want the expression of some genes, reduce the contents of `gene_info` to only the genes in `interest_g` either by dropping the extraneous rows or by directly linking the two data frames in a way that automatically does this. Note that I've modified `gene_info` for you so it's easier to link to your expression data. 
+
+2. Create a copy of your expression matrix (i.e create `named_exp`) that has additional columns from `gene_info` rows. The easiest way to accomplish this is using some sort of `join` but you cannot trust that the data frame containing gene_info will just "work". That said, this shouldn't be as tricky as the example in class. Think about the gotchas we've covered. Play around with it and sanity check your result. To start with, think carefully about how many rows you expect to have in your expression matrix. Also keep in mind that I'm trying to trip you up. The answer might surprise you! #clickbait
+
+3. Sanity check! How many rows and columns did you end up with? Do any of your columns or rows contain a lot of NA values? If so, now you should figure out which of those should be dropped. In general, data with lots of NA values is useless to you and should be eliminated but first you should understand the cause and be sure you know it's reasonable to do that.
+
+# Getting back to tidy data
+
+
+**Task** 
+
+Your next challenge is to convert this data into a tidy format. This involves spreading your gene expression values into rows with the sample id columns becoming a new column to differentiate the values. Reminder: this is a job for pivot_longer. There are two straightforward ways to accomplish this. I suggest you try using the `starts_with()` method of selecting columns to be included in your pivot. 
+
+
+**Task** 
+
+Your final challenge is to use grouping to determine the mean expression of every gene in the genes of interest. When you complete this, you should have a data frame/tibble with 140 rows and two columns. Save this file as `~/lab08_expression_summary.tsv`.
+
+
