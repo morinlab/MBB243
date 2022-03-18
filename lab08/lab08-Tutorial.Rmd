@@ -104,7 +104,7 @@ Your eventual goal is to get a trimmed down version of this gene expression data
 
 ```{r,eval=T,echo=T}
 all_exp <- read_csv("../data/GSE125966_GOYA_stranded_log2CPM.csv") %>% rename("gene_id"="X1")
-interest_g = read_tsv("data/genes_of_interest.tsv")
+interest_g = read_tsv("genes_of_interest.tsv")
 gene_info = read_tsv("data/gene_id.txt") 
 colnames(gene_info)=c("Ensembl_ID","Symbol","HGNC","gene_id")  
 gene_info = gene_info %>% 
