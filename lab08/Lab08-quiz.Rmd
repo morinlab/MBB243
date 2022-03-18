@@ -1,0 +1,100 @@
+---
+title: "Lab 08 - Self Quiz"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(reticulate)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+### Self-Quiz
+
+```{r question1, echo=FALSE}
+question("df is a data frame with two numeric columns named X and Y. What code below would output only the rows in df that have values greater than 10 in either column X or Y?",
+  answer("select(df,X>10 & Y>10)"),
+  answer("filter(df,X>10 & Y>10)"),
+  answer("filter(df,X>10 | Y>10)",correct = TRUE),
+  answer("select(df,X>10 | Y>10)"),
+  answer("None of the above")
+)
+```
+
+
+```{r df1, exercise=T,echo=TRUE}
+df <- data.frame(X=c(1:15),Y=c(7:11))
+df
+
+```
+
+```{r question2, echo=FALSE}
+question("Which code below would give you back a data frame (df) with the rows ordered in descending numerical order based on the contents of column X and the rows ordered alphabetically based on the contents of Y for any rows of X that are identical?",
+  answer("order(df,X,Y)"),
+  answer("order(df,-X,Y"),
+  answer("arrange(df,X,Y)"),
+  answer("select(df,-X,-Y)"),
+  answer("arrange(df,-X,Y)",correct = TRUE)
+)
+```
+
+```{r df3, exercise=T,echo=TRUE}
+df <- data.frame(X=c(1,1,2,2,3,3,5),Y=c("A","C","Z","D","M","N","W"))
+df
+
+```
+
+```{r,echo=F,eval=T}
+df1 <- data.frame(subject_id=c("001","001","003","003"),
+                 exposure=c("sugar","caffeine","caffeine","sugar"),
+                 mass=c(0.3,0.1,0.12,0))
+
+df2 <- pivot_wider(df1,subject_id,names_from="exposure",values_from="mass")
+```
+
+```{r,eval=T,echo=T}
+print(df1)
+print(df2)
+```
+
+```{r question3, echo=FALSE}
+question("Which of the two objects above that contain the same data is representing the data in a tidy format?",
+  answer("I'm going to guess df1",correct = TRUE),
+  answer("I'm leaning towards df2"),
+  answer("Trick question, neither!"),
+  answer("Trick question, both are neat and tidy!")
+)
+```
+
+
+```{r question4, echo=FALSE}
+question("Which of the following pieces of code would calculate the sum of X and Y per row and store the result in a new column named Z in our data frame df?",
+  answer("df <- df %>% mutate(Z= X + Y)"),
+  answer("df <- mutate(df,Z = X + Y)"),
+  answer("df$Z = df$X + df$Y"),
+  answer("all of the above will accomplish this",correct = TRUE)
+)
+```
+
+```{r, exercise=FALSE,echo=FALSE,eval=TRUE}
+df <- data.frame(chrom=c("1","2","X","Y"),start_position=c(1111,2222,3333,4444),end_position = c(1234,4444,3920,9000),strand=c("+","+","-","-"))
+print(df)
+```
+
+```{r question5, echo=FALSE}
+question("What code below would extract the two numeric columns in the data frame shown above?",
+  answer("select(df,c(2,3))"),
+  answer("select(df,ends_with('position'))"),
+  answer("select(df,start_position:end_position)"),
+  answer("all of them",correct=TRUE)
+)
+```
+
+```{r df4, exercise=T,echo=TRUE}
+df <- data.frame(chrom=c("1","2","X","Y"),start_position=c(1111,2222,3333,4444),end_position = c(1234,4444,3920,9000),strand=c("+","+","-","-"))
+df
+
+```
