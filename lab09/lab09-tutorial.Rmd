@@ -52,7 +52,8 @@ Reminder of ggplot2 functions and their uses.
 |`geom_smooth()`|Geometry|Smoothing lines or linear fit across one or more set of points|
 |`theme_X`|Theme|Override default plot visuals using a custom or pre-made theme|
 |`xlim()` and `ylim()`|Other|Override default x/y scale of the plot|
-|`scale_colour_discrete()`|Colour scale||
+|`coord_cartesian()`|Other|Set the x and y zoom limits for a plot (similar to above but does not drop data)|
+|`scale_colour_discrete()`|Colour scale|One of a variety of similarly named functions for controling the colour scale of a plot|
 
 ```{r}
 library(readr)
