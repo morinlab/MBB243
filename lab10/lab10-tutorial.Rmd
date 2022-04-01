@@ -3,9 +3,9 @@ title: 'Lab 10: One Test, Two Test, Type I Error, Type II Error'
 author: "Bruno Grande and Ryan Morin"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 ## Tutorial
@@ -30,7 +30,8 @@ This lab unites some of the concepts we've covered over the last few weeks. You 
 
 ```{r, warning=FALSE,message=FALSE,echo=FALSE}
 library(tidyverse)
-library(ComplexHeatmap)
+library(pheatmap)
+#library(ComplexHeatmap)
 library(cowplot)
 library(broom)
 library(patchwork)
