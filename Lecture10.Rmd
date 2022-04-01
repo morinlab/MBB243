@@ -9,6 +9,7 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(ggbeeswarm)
+library(ggmosaic)
 library(ggthemes)
 library(GGally)
 library(ggcor)
@@ -40,7 +41,7 @@ knitr::opts_chunk$set(
 library(readr)
 
 metadata <- read_csv("data/pannets_metadata.csv")
-
+meta = metadata
 ```
 
 ```{r,echo=F,warning=F,message=F}
@@ -210,6 +211,47 @@ quickcor(mtcars, cor.test = TRUE) +
 ```{r}
  ggplot(mtcars,aes(x=vs,y=cyl)) + geom_point()
 ```
+
+# Associations between other types of variables
+
+- We often want to know if a categorical variable is associated with another categorical variable
+  - e.g. Do the values of two categorical variables occur together more/less than we expect by chance?
+- For this scenario, the appropriate test depends on the number of categories we have. Fisher's test is used for a 2x2 table such as this example
+- e.g. does the frequency of metastasis in this cancer vary by subtype?
+
+```{r}
+ggplot(metadata, aes(x = Subtype, y = Metastasis)) + geom_count()
+```
+
+# Another plotting option: geom_mosaic
+
+```{r}
+ggplot(metadata) + geom_mosaic(aes(x = product(Metastasis, Subtype), fill = Metastasis))
+```
+
+# Testing the hypothesis
+
+```{r}
+table(meta$Subtype,meta$Metastasis)
+fisher.test(table(meta$Subtype,meta$Metastasis))
+
+```
+
+# How NOT to interpret P values
+:::::::::::::: {.columns}
+::: {.column}
+
+- P value < 0.05 is a standard threshold
+- Beyond this, P values have little meaning in isolation
+- Sometimes ordering (e.g ranking) on P values is useful when many tests were done
+- In the lab we will cover how to properly deal with P values when testing many hypotheses
+
+:::
+::: {.column}
+
+![](images/p_values_2x.png)
+:::
+::::::::::::::
 
 # Correlation across platforms
 
@@ -485,7 +527,7 @@ filter(long_exp,Gene=="PDP1") %>% ggplot(aes(x=Expr.x,y=Expr.y)) + geom_point() 
   - Values with very low variability or near the bottom of the dynamic range of either technique can't be trusted
 - Removing outliers from our data leaves us with a data set with more meaningful correlations
 
-# Hypothesis testing
+# More hypothesis testing
 
 - Thus far we've focused on tests of linear or monotonic relationships between continuous variables
 - Our hypothesis with these tests is that the two variables being compared are related

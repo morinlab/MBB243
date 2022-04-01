@@ -1,0 +1,503 @@
+---
+title: 'Lab 10: One Test, Two Test, Type I Error, Type II Error'
+author: "Bruno Grande and Ryan Morin"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+## Tutorial
+
+### Learning Objectives
+
+- Visualize the categorical data for a dataset using the `ggplot` package
+  - Process a data frame to produce a contingency table
+  - Calculate P-value using `fisher.test()`
+  - Visualize odds ratios, confidence intervals and understand how they relate to P values
+- Learn how to apply `wilcox.test()` and use it on some gene expression data
+- Perform P-value correction for multiple hypothesis testing
+  - Visualize P-value distribution first using the `ggplot` package
+  - Explain the multiple hypothesis problem
+  - Correct P-values using `p.adjust()`
+
+### Context
+
+This lab unites some of the concepts we've covered over the last few weeks. You will be using various exploratory data analysis techniques on gene expression data and mutation data. You will be bringing together metadata with gene expression data and testing for associations between categorical variables (e.g. clinical pheotypes and genotypes) and associations between continuous variables and categorical variables (e.g. subtypes and gene expression). Ironically, you will be using methods that are not typically applied to gene expression data because there are (theoretically) much more appropriate model-based methods available for this. The use of Wilcoxon test here is nonetheless an opportunity to see how a standard statistical test can be applied and how you should deal with many P values from many hypothesis tests. By no coincidence, one of the data sets we've touched on throughout the course will return with a vengeance for this assignment. This data set includes data from more than 500 patients with the most common type of lymphoma known as DLBCL. It's not a coincidence because this is also one of the types of lymphoma that is studied in the Morin laboratory 
+
+### Exploring the data
+
+```{r, warning=FALSE,message=FALSE,echo=FALSE}
+library(tidyverse)
+library(ComplexHeatmap)
+library(cowplot)
+library(broom)
+library(patchwork)
+```
+
+```{r, warning=FALSE,message=FALSE}
+metadata <- read_csv("data/pannets_metadata.csv")
+metadata
+```
+
+```{r, warning=FALSE,message=FALSE}
+rnaseq <- read_csv("data/pannets_expr_rnaseq.csv.gz")
+rnaseq_long <- pivot_longer(rnaseq, cols = -Gene, 
+                            names_to = "Tumour",
+                            values_to = "Expr")
+
+rnaseq_wide <- pivot_wider(rnaseq_long, id_cols = Tumour,
+                           names_from = Gene, 
+                           values_from = Expr)
+head(rnaseq)
+```
+
+### Wilcoxon rank sum test
+
+Today will pick up on some data and concepts you saw in lecture this week. We saw one example of a differentially expressed gene and briefly discussed the idea of scaling this analysis to all the genes. Here's the XIST gene, which is located on chromosome X, and thus is strongly differentially expressed between males and females
+
+In the boxplot below, we can see how XIST is virtually unexpressed in male tumours. This isn't typical of X chromosome genes because males do have one copy of X. This gene is involved in the inactivation of one copy of the X chromosome specifically in females, hence the extremely strong expression difference. 
+
+The P-value from the Wilcoxon test is unsurprisingly very small
+
+```{r,fig.height=2,fig.width=2,warning=FALSE,message=FALSE}
+xist_expr <- 
+  rnaseq_wide %>% 
+  select(Tumour, XIST) %>% 
+  left_join(metadata, by = "Tumour")
+
+ggplot(xist_expr, aes(x = Sex, y = XIST)) +
+  geom_boxplot()
+
+wilcox.test(xist_expr$XIST ~ xist_expr$Sex)
+```
+
+Here's another exapmle, this time for a chromosome expressed in males and females. This gene (DDX3X), it turns out, is a tumour suppressor gene. 
+
+```{r,fig.height=2,fig.width=2,warning=FALSE,message=FALSE}
+ddx_expr <- 
+  rnaseq_wide %>% 
+  select(Tumour, DDX3X) %>% 
+  left_join(metadata, by = "Tumour")
+
+ggplot(ddx_expr, aes(x = Sex, y = DDX3X)) +
+  geom_boxplot()
+
+wilcox.test(ddx_expr$DDX3X ~ ddx_expr$Sex)
+```
+
+Now let's scale this up and use a brute force approach to search for all differentially expressed genes! The code below uses the `sd` function to filter out genes that have low standard deviation across the entire data set. Think about what else we probably would want to do at this step if we wanted to improve our results.
+
+```{r, warning=FALSE,message=FALSE}
+wilcoxon_tests <- 
+  rnaseq_long %>% 
+  left_join(metadata, by = "Tumour") %>% 
+  group_by(Gene) %>% 
+  filter(sd(Expr) > 0) %>% 
+  summarize(test = wilcox.test(Expr ~ Subtype, exact = FALSE)$p.value)
+# Drop genes that don't meet our standard threshold of significance and count up what's left
+wilcoxon_tests %>% 
+  filter(test <= 0.05) %>% 
+  nrow()
+```
+
+This is roughly 1/4 of all genes. Very difficult to draw many biological conclusions from this. Ideally we would find a lot fewer genes so we could use them to better understand the biology that underlies the difference. You will explore this in another cancer data set for your assignment. 
+
+### Fisher's exact test
+
+In the previous tutorial, we saw how we can compare continuous variables between two groups
+
+In other words, one variable was continuous and the other was categorical (with only two groups)
+
+In this tutorial, we will see how we can compare two categorical variables
+
+Let's explore the patient metadata
+
+```{r}
+metadata
+```
+
+If we want to test for association between two categorical variables, the Fisher's exact test is usually the right approach. This test officially tests whether the odds ratio (OR) is significantly distinct from the null, or an odds ratio of 1. The odds ratio is defined as the ratio of the odds of A in the presence of B and the odds of A in the absence of B, or equivalently (due to symmetry), the ratio of the odds of B in the presence of A and the odds of B in the absence of A. _fun, right?_ What does that actually mean? Essentially, does A co-occur in the same state with B? Or does A avoid B? (the inverse of the first question). 
+
+Using a simple analogy, let's see if wearing shorts is associated with sunny weather outside. Imagine you've recorded the weather for the last two weeks (TRUE for sunny, FALSE for any other weather). You've also recorded whether or not you wore shorts. The odds ratio calculation for this is worked out below for you. If you run Fisher's test on this you'll see that the difference is significant but the confidence interval around the estimated odds ratio is quite large (i.e. we don't have a lot of confidence in the actual odds ratio).
+
+```{r}
+
+sunny <-c(FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
+          FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE)
+shorts <- c(TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
+            FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE)
+
+#contingency table
+table(shorts,sunny)
+
+odds_of_not_sunny_and_no_shorts = 1/9
+odds_of_sunny_and_shorts = 3/1
+
+odds_ratio = (3/1) / (1/9)
+
+fisher.test(table(shorts,sunny))
+```
+
+Before running the test on our real data, we need to create a contingency table
+
+Let's focus on the two columns for now: sex and metastasis
+
+```{r}
+select(metadata, Sex, Metastasis)
+```
+
+In this case, the contingency table counts up the number for each pair of values
+
+In this case, there are two values for sex (male and female) and two values for metastasis (True or False)
+
+Using the tidyverse, we could obtain those counts as follows, where `n()` counts the number of rows in each group
+
+```{r}
+metadata %>% 
+  group_by(Sex, Metastasis) %>% 
+  summarize(n = n())
+```
+
+The `count()` dplyr function is a shortcut for this common pattern
+
+```{r}
+count(metadata, Sex, Metastasis)
+```
+
+Normally, contingency tables are formatted in two dimensions, as follows
+
+```{r}
+count(metadata, Sex, Metastasis) %>% 
+  pivot_wider(id_cols = Metastasis, values_from = n,
+              names_from = Sex, names_prefix = "Sex_")
+```
+
+Visually, you can check if there is a trend for more metastases among males or females
+
+The null hypothesis is that there is no difference between the proportion of males-to-females for cases with metastases and those without, or vice versa
+
+We can calculate these proportions
+
+Based on this, it seems that females are more likely to have metastases, but is this significant?
+
+This is where the Fisher's exact test come in
+
+```{r}
+count(metadata, Sex, Metastasis) %>% 
+  pivot_wider(id_cols = Metastasis, values_from = n,
+              names_from = Sex, names_prefix = "Sex_") %>% 
+  mutate(Proportion = Sex_F / Sex_M)
+```
+
+The `fisher.test()` does the counting for you if you provide two "parallel" vectors consisting of categorical values. For example:
+
+```{r}
+var1 <- c(0,0,0,1,1,1,0,1,0,0,0,0,1,1,0,1,0,0,0,0,1)
+var2 <- c(1,0,1,1,0,1,0,0,0,0,0,0,1,1,0,1,0,0,1,0,1)
+# our contingency table:
+table(var1,var2)
+fisher.test(var1,var2)
+#Same as:
+#fisher.test(table(var1,var2))
+
+```
+
+Notice that the order doesn't matter
+
+The P-value is 0.5, so the trend we noticed isn't significant, presumably due to the small sample size
+
+```{r}
+fisher.test(metadata$Sex, metadata$Metastasis)
+fisher.test(metadata$Metastasis, metadata$Sex)
+```
+
+Let's look at another pair of categorical variables: subtype and metastasis
+
+Here, we are using alternative approaches to create the contingency table
+
+`table()` works like `fisher.test()` by taking in two "parallel vector"
+
+```{r}
+table(Subtype = metadata$Subtype, Metastasis = metadata$Metastasis)
+```
+
+On the other hand, `xtabs()` works off of a data frame, but has an unusual interface
+
+The `~ Subtype + Metastasis` part is called a formula, which are used in a lot of other statistical functions in R. The main advantage of `xtabs()` is its conciseness.
+
+```{r}
+xtabs(~ Subtype + Metastasis, metadata)
+```
+
+From the contingency tables above, you can see whether an association (positive or negative) exists between the variables if there is a relative abundance or depletion along the diagonal
+
+Here, you can see that the diagonal has relatively few cases (4 + 4 = 8) compared to the rest of the table
+
+Let's verify with a statistical test, providing the contingency table directly to `fisher.test()`
+
+In this case, the association is significant (P-value = 0.006)
+
+In other words, based on the contingency table, we can say that the A-D-M mutant cases are significantly more likely to develop metastases
+
+Importantly, we cannot say that the mutations cause metastases: correlation does not imply causation
+
+But this generates a hypothesis that can be investigated with additional experiments
+
+```{r}
+fisher.test(xtabs(~ Subtype + Metastasis, metadata))
+```
+
+Let's look how we can visualize these results
+
+There are only a few ways of visualizing contingency tables
+
+First, you can encode the counts as the point size
+
+```{r,fig.width=3,fig.height=3}
+ggplot(metadata, aes(x = Subtype, y = Metastasis)) +
+  geom_count()
+```
+
+Second, there is the most customized mosaic plot
+
+For this, we need to install a ggplot2 extension package
+
+```{r,fig.width=4,fig.height=3}
+library(ggmosaic)
+
+ggplot(metadata) +
+  geom_mosaic(aes(x = product(Metastasis, Subtype), fill = Metastasis))
+```
+
+A mosaic plot looks like a stacked relative barplot (adding up to 100%), but the width of the bars is proportional to the sample size of that bar
+
+For example, from the plot below, we can see that there are more A-D-M mutant cases than WT cases (see numbers below)
+
+From this plot, we can see how the "metastasis rate" is much higher in mutant cases
+
+```{r}
+table(metadata$Subtype)
+```
+
+However, it might make more sense to put the metastasized cases at the bottom and set the WT group as the left-most reference group
+
+```{r,fig.width=4,fig.height=3}
+metadata %>% 
+  mutate(Metastasis = as.character(Metastasis), 
+         Metastasis = fct_relevel(Metastasis, "TRUE", "FALSE"),
+         Subtype = fct_relevel(Subtype, "A-D-M WT")) %>% 
+  ggplot() +
+  geom_mosaic(aes(x = product(Metastasis, Subtype), fill = Metastasis)) +
+  scale_fill_discrete(limits = c("FALSE", "TRUE"))
+```
+
+### Fisher's test on many hypotheses
+
+Let's extend this concept to make some inferences about the genetics of a common cancer with two main subgroups. The data loaded below is from several large studies that sequenced tumours from patients with diffuse large B-cell lymphoma (DLBCL) and recorded their mutation status (0=unmutated, 1=mutated) across all patients. 
+
+```{r,message=F,warning=F}
+# Results from the re-analysis of data (by members of the Morin lab) from these studies:
+# Chapuy et al. Nat Med. 2018 May;24(5):679-690.
+# Schmitz et al. N Engl J Med. 2018 Apr 12;378(15):1396-1407.
+
+mutations_lymphoma_long <- read_tsv("data/gambl_capture_mutmat_coo.tsv")
+head(mutations_lymphoma_long)
+# Lets' peek at how the numbers break down by making sets of contingency tables
+group_by(mutations_lymphoma_long,Gene,Subgroup) %>% 
+    summarize(mutated=sum(Mutation_Status==1),
+              unmutated=sum(Mutation_Status==0))
+
+```
+
+
+```{r}
+all_fisher_res <- group_by(mutations_lymphoma_long,Gene) %>%
+  summarize(tidy(fisher.test(Mutation_Status,Subgroup)))
+
+head(all_fisher_res)
+```
+
+Plot of all P values with a red line indicating the location of P = 0.05. 
+
+```{r,fig.width=6,fig.height=8}
+
+all_fisher_res = arrange(all_fisher_res,p.value)
+all_fisher_res$Gene = factor(all_fisher_res$Gene,
+                             levels=unique(all_fisher_res$Gene))
+
+ggplot(all_fisher_res,aes(x=Gene,y=p.value)) + 
+  geom_point() + theme(text = element_text(size=rel(3.5)))  +
+  labs("Fisher's test raw P-values") + 
+  geom_hline(aes(yintercept=0.05),colour="red") +
+  coord_flip()
+
+```
+
+Plot of the Odds Ratio estimate for all genes, colouring by whether or not P < 0.05. Fisher's test is really determining whether the data supports a difference in the odds ratio that is significantly far from an odds ratio of 1 (or a log odds ratio of zero). The plot below uses a log transformation of the odds ratio because it creates a more uniform scale across the estimates.  
+
+```{r,fig.width=6,fig.height=8}
+all_fisher_res = arrange(all_fisher_res,estimate)
+all_fisher_res$Gene = factor(all_fisher_res$Gene,levels=unique(all_fisher_res$Gene))
+
+ggplot(all_fisher_res,aes(x=Gene,y=log(estimate),colour=p.value<0.05)) + 
+  geom_hline(aes(yintercept=0),colour="black")+
+  geom_point() +  labs("Fisher's test odds ratios") + 
+   ylab("log(Odds Ratio)") +
+  theme(text = element_text(size=rel(3.5)))  +
+  coord_flip()
+
+```
+
+A convenient way to visualize more information from the output of Fisher's test is to combine the odds ratio and confidence interval into one plot, often referred to as a "forest plot". Since error bars are a common need in plots in general, the use of error bars here is something you may find useful to repurpose for other plots. You will hopefully notice that the 95% confidence intervals around the odds ratio (OR) are closely related to whether or not you obtain a significant P value. That's because the test is estimating the OR and the range around it where the true OR may exist. 
+
+```{r,fig.width=5,fig.height=8}
+all_fisher_res = arrange(all_fisher_res,estimate)
+all_fisher_res$Gene = factor(all_fisher_res$Gene,levels=unique(all_fisher_res$Gene))
+ggplot(all_fisher_res,aes(x = Gene, y = log(estimate))) +
+    geom_point(aes(colour=p.value<0.05),size = 2, shape = "square") +
+    geom_hline(yintercept = 0, lty = 2) +
+    coord_flip() +
+    geom_errorbar(aes(ymin = log(conf.low), ymax = log(conf.high), width = 0.2)) +
+    ylab("log(Odds Ratio)") +
+    xlab("Gene") +
+    cowplot::theme_cowplot() +
+    theme(axis.text.y = element_text(size = 7))
+```
+
+
+Now let's sanity check a few of the results using the mosiac plot approach we saw earlier. The three plots below show an example of a gene with no significant difference (MYC) and two genes with significant differences. You should look carefully at the identity of the other two genes and if you have time, search them up in the literature. Your professor is known to ask bonus questions in final exams that relate to his research. _You have been warned!_
+
+You'll notice we've added `scale_fill_manual` to the ggplot call. This is explicitly setting colours for the variable we're using to fill. Instead of ggplot defaulting to the standard colours in the usual order, this forces it to use the colours we want assigned. How do the last two plots differ? How do you think this relates to the values in the plot above? 
+
+```{r}
+
+mutations_lymphoma_long %>% filter(Gene=="MYC") %>% ggplot() + 
+  geom_mosaic(aes(x = product(Subgroup, Mutation_Status), 
+                  fill = Subgroup))  +
+  scale_fill_manual(values=c("ABC"="#05ACEF","GCB"="#F58F20")) + 
+  labs(title="Gene: MYC")
+
+mutations_lymphoma_long %>% filter(Gene=="EZH2") %>% 
+  ggplot() + geom_mosaic(aes(x = product(Subgroup, Mutation_Status), 
+                             fill = Subgroup))  +
+  scale_fill_manual(values=c("ABC"="#05ACEF","GCB"="#F58F20")) + 
+  labs(title="Gene: EZH2")
+
+mutations_lymphoma_long %>% filter(Gene=="MYD88") %>% 
+  ggplot() + geom_mosaic(aes(x = product(Subgroup, Mutation_Status), 
+                             fill = Subgroup))  +
+  scale_fill_manual(values=c("ABC"="#05ACEF","GCB"="#F58F20")) + 
+  labs(title="Gene: MYD88")
+
+
+```
+
+
+###  Multiple hypothesis testing
+
+Your analysis above actually tested many similar hypotheses because the Fisher's test was run once for every gene in the data set (97 genes). If we look at the distribution of P values across all the results (with a higher bin number for granularity) you'll notice that many of our P values are near or below 0.05. More importantly, you have a fairly even distribution of P values spanning the rest of the range. It's important to look at your P value distribution before deciding if your testing has generated meaningful results.
+
+Ideally, this spike on the left just indicates that our data has a lot of differences between these two groups, but he have to appreciate that with almost 100 tests, we are likely to have accepted approximately 5 Type I errors (more comonly called "false positives"). To account for the growing number of false positives we will get when we do more tests, we use one of a few available controlling procedures, often referred to as multiple test correction.
+
+```{r,fig.width=6,fig.height=3}
+all_fisher_res  %>% ggplot(aes(x=p.value)) + geom_histogram(bins=80) + theme_cowplot()
+# if you set bins to 10 your plot looks more like classic "anti-conservative"
+# P value distribution described in the link at the end of this tutorial
+```
+
+The code chunk below shows how you can run the most conservative (and thus, least popular) method for adjusting for multiple testing. Most methods give you a modified P value for each test that is larger than the raw P value. These adjusted P values (sometimes called q values) can then be thresholded the same way you would a P value. A more popular approach is to use the Benjamini-Hochberg false discovery rate (FDR) adjustment. This method doesn't adjust each P value evenly. Instead, it progressively adjusts your P values more drastically starting from the smallest P value (and based on the number of tests conducted). In other words, your smallest P values remain very small and the larger ones do not. 
+
+```{r,fig.width=5,fig.height=7}
+all_fisher_res = mutate(all_fisher_res,
+                        bonf.p=p.adjust(p.value,method="bonf"))
+
+# This is identical to:
+# all_fisher_res = mutate(all_fisher_res,bonf.p=  p.value *97) %>%
+# mutate(bonf.p=ifelse(bonf.p>1,1,bonf.p))
+
+ggplot(all_fisher_res,aes(x=Gene,y=log(estimate),colour=bonf.p<0.05)) + 
+  geom_hline(aes(yintercept=0),colour="black")+
+  theme(text = element_text(size=rel(3.5))) +
+  geom_point() + labs("Fisher's test odds ratios") +
+  theme(text = element_text(size=rel(3.5)))  +
+  coord_flip()
+
+```
+
+**Task** 
+
+Look up the documentation for the `p.adjust()` method. Modify your code chunk above to redo the correction, storing the adjusted P as a new column in your data frame. Regenerate the plot and look at how things change. 
+
+```{r,echo=F}
+# Hand-picked gene list to show example heatmap
+genes_to_show = c("GeneID:23495","GeneID:9294","GeneID:8994","GeneID:27086",
+                  "GeneID:4603","GeneID:96597","GeneID:10538","GeneID:388512",
+                  "GeneID:11040","GeneID:51700","GeneID:79754","GeneID:26053",
+                  "GeneID:55534","GeneID:2530","GeneID:100129034","GeneID:3662",
+                  "GeneID:201181","GeneID:327657","GeneID:440352","GeneID:9467",
+                  "GeneID:23635","GeneID:80820","GeneID:93550","GeneID:22898",
+                  "GeneID:387496", "GeneID:8934","GeneID:5602","GeneID:4311",
+                  "GeneID:7050", "GeneID:10783", "GeneID:23648", "GeneID:23231",
+                  "GeneID:219972","GeneID:29760","GeneID:53947",  "GeneID:1393",
+                  "GeneID:5144" ,"GeneID:80183","GeneID:6503" ,"GeneID:152137",
+                  "GeneID:6689","GeneID:3738" ,"GeneID:5218","GeneID:56660",
+                  "GeneID:5169","GeneID:375387","GeneID:26230","GeneID:4052",
+                  "GeneID:127077","GeneID:6691","GeneID:27143","GeneID:3758",
+                  "GeneID:5923")
+
+```
+
+```{r,eval=T,fig.width=9,fig.height=7,message=F,warning=F}
+
+goya_expression = read_csv("data/GSE125966_GOYA_stranded_log2CPM.csv") %>% 
+  rename("GENE"=1)
+goya_metadata = read_tsv("GOYA_metadata.tsv")
+
+# subsetting to a small set of genes to show how to visualize expression in a heatmap
+goya_expression_mini = filter(goya_expression,GENE %in% genes_to_show) %>% 
+  column_to_rownames("GENE")
+# If you make your own, just be sure not to feed a matrix with too many rows into pheatmap
+nrow(goya_expression_mini)
+pheatmap(goya_expression_mini,
+         show_colnames = F,
+         annotation_col=column_to_rownames(goya_metadata,"ID"),
+         border_color = NA)
+
+# Long, tidy, you know the drill
+goya_expression_long = pivot_longer(goya_expression,-GENE,names_to="ID",
+                                    values_to="expression")
+
+```
+
+## Assignment
+
+The code chunk above loads a gene expression matrix and some metadata and it converts it to a long/tidy format for you. Using a combination of the code examples from class and this tutorial, add code to the chunk above to calculate the mean expression of each gene across the entire data set and the standard deviation of that gene's expression. Plot a histogram of the mean expression values and save it as "mean_expression.pdf". **Every code modification you add for this assignment should go in the chunk above and this Rmd file should be saved and submitted as part of your assignment.** 
+
+Next, filter this data down to remove genes that have low standard deviations (e.g. drop them if their standard deviation is <1). You should be left with a long table that is now roughly half the size of your original table. Now you should ALSO filter it further to drop all genes that have an expression value that is an outlier (based on your histogram). This should reduce your gene expression table size a lot. You can sanity check this using `length(unique(your_data_frame$GENE))` to determine how many genes you have left. If you have more than about 7000 you've done something wrong. Now plot a second histogram showing the distribution of your remaining genes and save it as "filtered_mean_expression.pdf". 
+
+Now you should join your filtered expression table to your metadata being sure you use the right type of join. You should have the same number of rows after the join. This should give you a new column (COO) that designates which rows correspond to samples in one of two major subgroups of lymphoma (ABC and GCB). Unfortunately, there are also samples that will have UNCLASSIFIED as their designation, but we'll just ignore those and use the ones that match the other two categories. 
+
+Next, you should apply the appropriate statistical test to determine which genes have significantly different expression values between ABC and GCB patients. This will probably give you way more raw "significant" p values than you expect. You should adjust these using the Bonferroni method. Using the method you used previously, add the gene symbols to your data frame from the contents of `data/gene_id.txt`. Filter your data frame to only contain the genes that meet the threshold for signifiance and save that to a file named `diffexp.tsv`.
+
+**OPTIONAL**
+
+If you want to possibly earn some extra marks, try creating a heatmap using the example code provided. Show your top 100 genes instead of the ones that were provided for you. Save it as `optional_heatmap.pdf` and submit that image along with your assignment. 
+
+# Completion checklist
+
+[X] I have put an X in the box to the left indicating I completed the task
+
+[] I have a file named `mean_expression.pdf` that shows a histogram of the average expression values of every gene in the full data set
+
+[] I filtered my gene expression data and saved a second histogram into a file named `filtered_mean_expression.pdf`
+
+[] I identified the genes with significant differential expression between ABC and GCB samples and saved them to `diffexp.tsv`
+
+## More Resources
+
+- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5426219
+- http://varianceexplained.org/statistics/interpreting-pvalue-histogram/
+
+
